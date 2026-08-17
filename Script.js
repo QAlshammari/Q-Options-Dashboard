@@ -612,49 +612,66 @@ async function exportPdf(){
 
 let topTradesExportState = { dataUrl:'', blob:null, filename:'' };
 
-function showPreview(dataUrl, filename, blob){
-  const modal=$('previewModal');
-  const img=$('previewImage');
-  const dl=$('previewDownload');
+function fitLivePreview(){
+  const content=$('previewContent');
+  const viewport=$('previewLiveViewport');
+  const scaleBox=$('previewLiveScale');
+  const card=$('liveShareCapture');
+  if(!content || !viewport || !scaleBox || !card) return;
 
-  topTradesExportState = { dataUrl, blob, filename };
-  img.src=dataUrl;                 // Data URL works reliably for iOS preview
-  img.alt='Q Options Top Trades';
-  dl.href='#';
-  dl.removeAttribute('download');  // iOS Safari is unreliable with blob + download
-  dl.textContent=isIOSDevice() ? 'حفظ / مشاركة الصورة' : 'تنزيل الصورة';
+  const available=Math.max(280, content.clientWidth || 320);
+  const cardWidth=card.offsetWidth || 1240;
+  const cardHeight=card.offsetHeight || 1740;
+  const scale=Math.min(1, available/cardWidth);
+
+  scaleBox.style.transform=`translateX(-50%) scale(${scale})`;
+  viewport.style.height=`${Math.ceil(cardHeight*scale)}px`;
+}
+
+function showLivePreview(){
+  const modal=$('previewModal');
+  const content=$('previewContent');
+  if(!modal || !content) return;
+
+  topTradesExportState={dataUrl:'',blob:null,filename:''};
+  content.innerHTML=`<div class="preview-live-viewport" id="previewLiveViewport"><div class="preview-live-scale" id="previewLiveScale">${buildShareTemplate(10,'liveShareCapture')}</div></div>`;
   modal.hidden=false;
+  document.body.classList.add('preview-open');
+
+  requestAnimationFrame(()=>requestAnimationFrame(fitLivePreview));
+  setTimeout(fitLivePreview,250);
+  setTimeout(fitLivePreview,800);
 }
 
 function hidePreview(){
   const modal=$('previewModal');
-  const img=$('previewImage');
-  modal.hidden=true;
-  img.src='';
+  const content=$('previewContent');
+  if(modal) modal.hidden=true;
+  if(content) content.innerHTML='';
+  document.body.classList.remove('preview-open');
+  topTradesExportState={dataUrl:'',blob:null,filename:''};
 }
 
-async function saveOrShareTopTrades(e){
-  e?.preventDefault?.();
-  const {dataUrl,blob,filename}=topTradesExportState;
-  if(!dataUrl){ showToast('الصورة غير جاهزة بعد'); return; }
+function openTopTradesPreview(){
+  showLivePreview();
+  showToast('تم فتح أهم الصفقات');
+}
 
+async function shareOrDownloadBlob(blob,dataUrl,filename){
   try{
-    // Best path on iPhone/iPad: native share sheet can Save Image / Files / AirDrop etc.
     if(blob && typeof File!=='undefined' && navigator.share){
-      const file=new File([blob],filename||'Q-Options-Top-Trades.png',{type:'image/png'});
+      const file=new File([blob],filename,{type:'image/png'});
       if(!navigator.canShare || navigator.canShare({files:[file]})){
         await navigator.share({files:[file],title:'Q Options - أهم الصفقات'});
-        return;
+        return true;
       }
     }
   }catch(err){
-    // User cancel is normal; other failures fall through to browser fallback.
-    if(err?.name==='AbortError') return;
+    if(err?.name==='AbortError') return true;
     console.warn('Share fallback:',err);
   }
 
   if(isIOSDevice()){
-    // Open the PNG itself; user can long-press then Save to Photos.
     const w=window.open();
     if(w){
       w.document.write(`<html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Q Options Top Trades</title></head><body style="margin:0;background:#111;display:flex;justify-content:center"><img src="${dataUrl}" style="width:100%;height:auto;display:block"></body></html>`);
@@ -662,59 +679,64 @@ async function saveOrShareTopTrades(e){
     }else{
       location.href=dataUrl;
     }
-    return;
+    return true;
   }
 
-  // Desktop/Android fallback: real Blob download.
   if(blob){
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
-    a.href=url;
-    a.download=filename||'Q-Options-Top-Trades.png';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    a.href=url;a.download=filename;
+    document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),3000);
   }else{
     const a=document.createElement('a');
-    a.href=dataUrl;
-    a.download=filename||'Q-Options-Top-Trades.png';
-    a.click();
+    a.href=dataUrl;a.download=filename;a.click();
   }
+  return true;
 }
 
-async function exportHighlightsImage(){
-  if(!window.html2canvas){showToast('مكتبة تصدير الصورة لم يتم تحميلها');return}
-  hidePreview();
-  topTradesExportState = { dataUrl:'', blob:null, filename:'' };
-  setExportBusy(true);showToast('جاري تجهيز صورة أهم الصفقات…');
+async function saveOrShareTopTrades(e){
+  e?.preventDefault?.();
+  if(!window.html2canvas){showToast('مكتبة حفظ الصورة لم يتم تحميلها');return}
+
+  const btn=$('previewDownload');
+  const oldText=btn?.textContent || 'حفظ / مشاركة الصورة';
+  if(btn){btn.disabled=true;btn.textContent='جاري تجهيز الصورة…'}
+  showToast('جاري تجهيز الصورة عالية الدقة…');
+
   try{
+    // Render a clean full-size copy off-screen. The visible preview stays responsive.
     const stage=$('exportStage');
-    stage.innerHTML=buildShareTemplate(10, 'shareCapture');
+    stage.innerHTML=buildShareTemplate(10,'shareCapture');
     const target=$('shareCapture');
     await waitForImages(target);
-    await new Promise(r=>setTimeout(r,220));
+    await new Promise(r=>setTimeout(r,180));
 
+    const scale=isIOSDevice()?1.35:2;
     const canvas=await html2canvas(target,{
-      scale:2,
+      scale,
       useCORS:true,
       allowTaint:false,
-      backgroundColor:'#f8f1e5',
+      backgroundColor:'#fffaf2',
       logging:false,
-      imageTimeout:10000
+      imageTimeout:12000,
+      windowWidth:1240
     });
 
-    // Data URL is intentionally used for preview because blob: previews can fail in iOS Safari.
     const dataUrl=canvas.toDataURL('image/png',1);
     const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',1));
-    const filename=`Q-Options-Top-Trades-${safeFileRange()}.png`;
+    if(!blob && !dataUrl) throw new Error('PNG generation failed');
 
-    showPreview(dataUrl,filename,blob);
-    showToast('تم فتح معاينة أهم الصفقات');
+    const filename=`Q-Options-Top-Trades-${safeFileRange()}.png`;
+    topTradesExportState={dataUrl,blob,filename};
+    showToast('الصورة جاهزة');
+    await shareOrDownloadBlob(blob,dataUrl,filename);
   }catch(err){
-    console.error(err);showToast('تعذر تجهيز صورة أهم الصفقات');
+    console.error(err);
+    showToast('تعذر حفظ الصورة — المعاينة ما زالت متاحة');
   }finally{
-    $('exportStage').innerHTML='';setExportBusy(false);
+    $('exportStage').innerHTML='';
+    if(btn){btn.disabled=false;btn.textContent=oldText}
   }
 }
 
@@ -730,10 +752,11 @@ function showToast(message){
 $('excelFile').addEventListener('change',e=>{const f=e.target.files[0];if(f) handleFile(f)});
 $('demoBtn').addEventListener('click',()=>{setCurrentWeekRange();trades=buildDemoTrades();render();showToast('تم تحميل بيانات تجريبية للأسبوع الحالي')});
 $('pdfBtn').addEventListener('click',exportPdf);
-$('imageBtn').addEventListener('click',exportHighlightsImage);
+$('imageBtn').addEventListener('click',openTopTradesPreview);
 $('previewClose')?.addEventListener('click',hidePreview);
 $('previewDownload')?.addEventListener('click',saveOrShareTopTrades);
 $('previewModal')?.addEventListener('click',e=>{ if(e.target.id==='previewModal') hidePreview(); });
+window.addEventListener('resize',()=>{if(!$('previewModal')?.hidden) fitLivePreview()});
 $('fromDate').addEventListener('change',render);
 $('toDate').addEventListener('change',render);
 
