@@ -60,46 +60,89 @@ function setCurrentWeekRange(){
   $('toDate').value = range.to;
 }
 
+function normalizeDigits(value){
+  return String(value ?? '')
+    .replace(/[٠-٩]/g,d=>'0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(d)])
+    .replace(/[۰-۹]/g,d=>'0123456789'['۰۱۲۳۴۵۶۷۸۹'.indexOf(d)]);
+}
+
 function parseDate(v){
   if (!v) return '';
   if (typeof v === 'number' && window.XLSX) {
     const d = XLSX.SSF.parse_date_code(v);
     if (d) return `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;
   }
-  const d = new Date(v);
+
+  const raw = normalizeDigits(v).trim();
+  if (!raw) return '';
+
+  // يدعم 2026-08-17 وكذلك 17/08/2026 و 17-08-2026
+  let m = raw.match(/^(\d{4})[\/.-](\d{1,2})[\/.-](\d{1,2})$/);
+  if (m) return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
+  m = raw.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/);
+  if (m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+
+  const d = new Date(raw);
   if (!isNaN(d)) return toISO(d);
-  return String(v).trim();
+  return raw;
 }
 
 function num(v){
   if (v === null || v === undefined || v === '') return 0;
-  const n = Number(String(v).replace(/[$,%\s,]/g,''));
+  const raw = normalizeDigits(v)
+    .replace(/٬/g,'')
+    .replace(/٫/g,'.')
+    .replace(/[\s,$%٪]/g,'')
+    .replace(/,/g,'');
+  const n = Number(raw);
   return isNaN(n) ? 0 : n;
+}
+
+function normalizeKey(value){
+  return normalizeDigits(value)
+    .trim()
+    .toLowerCase()
+    .replace(/[أإآ]/g,'ا')
+    .replace(/ة/g,'ه')
+    .replace(/ى/g,'ي')
+    .replace(/[\s_\-–—/\\()\[\].:%٪$]/g,'');
 }
 
 function getVal(row,aliases){
   const entries = Object.entries(row);
-  for (const a of aliases){
-    const hit = entries.find(([k]) => String(k).trim().toLowerCase() === a.toLowerCase());
-    if (hit) return hit[1];
+  const wanted = aliases.map(normalizeKey);
+  for (const [k,v] of entries){
+    if (wanted.includes(normalizeKey(k))) return v;
   }
   return '';
 }
 
 function normalizeRows(rows){
   return rows.map(r => {
-    const date = parseDate(getVal(r,['date','التاريخ','تاريخ']));
-    const symbol = getVal(r,['symbol','ticker','company','اسم الشركة','الشركة','السهم']) || '—';
-    const strike = getVal(r,['strike','الاسترايك','سترايك']) || '—';
-    const buy = num(getVal(r,['buy','buy price','entry','سعر الشراء','الدخول']));
-    const sellRaw = getVal(r,['sell','sell price','exit','سعر البيع','الخروج']);
-    const sell = sellRaw === '' ? null : num(sellRaw);
-    const profitRaw = getVal(r,['profit','p/l','pnl','الربح','الربح والخسارة','صافي الربح']);
-    const profit = profitRaw === '' ? ((sell !== null ? sell-buy : 0)*100) : num(profitRaw);
-    const pctRaw = getVal(r,['pct','percent','percentage','النسبة','النسبة %','profit %']);
-    const p = pctRaw === '' ? (buy ? ((sell ?? buy)-buy)/buy*100 : 0) : num(pctRaw);
-    const notes = getVal(r,['notes','note','الملاحظات','ملاحظات']) || '';
-    return {date,symbol:String(symbol),strike:String(strike),buy,sell,profit,pct:p,notes:String(notes)};
+    // إذا كانت أسماء الأعمدة مختلفة، نستخدم ترتيب الأعمدة كخيار احتياطي.
+    const vals = Object.values(r);
+    const pick = (aliases,index) => {
+      const byName = getVal(r,aliases);
+      return byName !== '' ? byName : (vals[index] ?? '');
+    };
+
+    const date = parseDate(pick(['date','trade date','التاريخ','تاريخ','تاريخ الصفقة'],0));
+    const symbol = pick(['symbol','ticker','company','stock','اسم الشركة','اسم السهم','الشركة','السهم','الرمز'],1) || '—';
+    const strike = pick(['strike','strike price','الاسترايك','سترايك','سعر الاسترايك'],2) || '—';
+    const buy = num(pick(['buy','buy price','entry','entry price','سعر الشراء','سعر الدخول','الدخول'],3));
+    const sellRaw = pick(['sell','sell price','exit','exit price','سعر البيع','سعر الخروج','الخروج'],4);
+    const sell = sellRaw === '' || sellRaw === null || sellRaw === undefined ? null : num(sellRaw);
+    const profitRaw = pick(['profit','p/l','pnl','net profit','الربح','الربح والخسارة','صافي الربح','ربح','الخسارة'],5);
+    const profit = profitRaw === '' || profitRaw === null || profitRaw === undefined
+      ? ((sell !== null ? sell-buy : 0)*100)
+      : num(profitRaw);
+    const pctRaw = pick(['pct','percent','percentage','profit %','return %','النسبة','النسبة %','نسبة الربح','نسبة العائد'],6);
+    const p = pctRaw === '' || pctRaw === null || pctRaw === undefined
+      ? (buy ? ((sell ?? buy)-buy)/buy*100 : 0)
+      : num(pctRaw);
+    const notes = pick(['notes','note','remarks','الملاحظات','ملاحظات','ملاحظة'],7) || '';
+
+    return {date,symbol:String(symbol).trim(),strike:String(strike).trim(),buy,sell,profit,pct:p,notes:String(notes).trim()};
   }).filter(x => x.symbol !== '—' || x.date);
 }
 
@@ -235,44 +278,61 @@ function renderCharts(ordered,byDay,winCount,lossCount){
 async function handleFile(file){
   try{
     const ext=file.name.split('.').pop().toLowerCase();
-    let rows=[];
+    let normalized=[];
+
     if(ext==='csv'){
-      rows=parseCsv(await file.text());
+      normalized=normalizeRows(parseCsv(await file.text()));
     }else{
       if(!window.XLSX) throw new Error('مكتبة Excel لم يتم تحميلها');
       const buf=await file.arrayBuffer();
-      const wb=XLSX.read(buf,{type:'array'});
-      const ws=wb.Sheets[wb.SheetNames[0]];
-      rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+      const wb=XLSX.read(buf,{type:'array',cellDates:false});
+
+      // نجرب جميع الأوراق حتى نجد ورقة تحتوي على صفقات صالحة.
+      for(const sheetName of wb.SheetNames){
+        const ws=wb.Sheets[sheetName];
+        const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:true});
+        const candidate=normalizeRows(rows);
+        if(candidate.length){normalized=candidate;break}
+      }
     }
-    const normalized=normalizeRows(rows);
-    if(!normalized.length){showToast('لم أجد صفقات صالحة في الملف');return}
+
+    if(!normalized.length){
+      showToast('لم أجد صفقات. استخدم قالب Q Options الجاهز');
+      return;
+    }
+
     trades=normalized;
     setRangeFromTrades();
     render();
-    showToast(`تم تحميل ${trades.length} صفقة`);
+    showToast(`تم تحميل ${trades.length} صفقة بنجاح`);
   }catch(err){
     console.error(err);
-    showToast('تعذر قراءة الملف. تأكد من صيغة Excel / CSV');
+    showToast('تعذر قراءة الملف. استخدم XLSX أو CSV بالقالب المرفق');
   }finally{
     $('excelFile').value='';
   }
 }
 
 function parseCsv(text){
-  const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/).filter(Boolean);
+  const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/).filter(line=>line.trim()!=='');
   if(!lines.length) return [];
+
+  // Excel قد يحفظ CSV بفاصلة أو فاصلة منقوطة أو Tab حسب الجهاز/اللغة.
+  const header=lines[0];
+  const counts={',':(header.match(/,/g)||[]).length,';':(header.match(/;/g)||[]).length,'\t':(header.match(/\t/g)||[]).length};
+  const delimiter=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];
+
   const split=line=>{
     const out=[];let cur='',q=false;
     for(let i=0;i<line.length;i++){
       const c=line[i];
       if(c==='"'){if(q&&line[i+1]==='"'){cur+='"';i++}else q=!q}
-      else if(c===','&&!q){out.push(cur);cur=''}
+      else if(c===delimiter&&!q){out.push(cur);cur=''}
       else cur+=c;
     }
     out.push(cur);return out;
   };
-  const headers=split(lines[0]);
+  const headers=split(lines[0]).map(h=>h.trim());
   return lines.slice(1).map(line=>{const values=split(line),obj={};headers.forEach((h,i)=>obj[h]=values[i]??'');return obj});
 }
 
@@ -377,17 +437,47 @@ function setExportBusy(busy){
   ['pdfBtn','imageBtn'].forEach(id=>{if($(id)) $(id).disabled=busy});
 }
 
+function isIOSDevice(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function openNativePdfPrint(){
+  showToast('فتح نافذة PDF / الطباعة…');
+  setTimeout(()=>window.print(),180);
+}
+
 async function exportPdf(){
-  if(!window.html2canvas || !window.jspdf){showToast('مكتبة التصدير لم يتم تحميلها');return}
-  setExportBusy(true);showToast('جاري تجهيز تقرير PDF…');
+  // على iPhone/iPad: نافذة الطباعة الأصلية أكثر ثباتاً، ومنها يمكن حفظ/مشاركة PDF.
+  if(isIOSDevice()){
+    openNativePdfPrint();
+    return;
+  }
+
+  // إذا لم تحمل مكتبات التصدير لأي سبب، لا يتعطل الزر: ننتقل مباشرة للطباعة.
+  if(!window.html2canvas || !window.jspdf){
+    openNativePdfPrint();
+    return;
+  }
+
+  setExportBusy(true);
+  showToast('جاري تجهيز تقرير PDF…');
   try{
     const stage=$('exportStage');
     stage.innerHTML=buildPdfTemplate();
     const target=$('pdfCapture');
     await waitForImages(target);
-    await new Promise(r=>setTimeout(r,120));
-    const canvas=await html2canvas(target,{scale:2,useCORS:true,backgroundColor:'#f8f1e5',logging:false});
-    const imgData=canvas.toDataURL('image/jpeg',0.94);
+    await new Promise(r=>setTimeout(r,150));
+
+    const canvas=await html2canvas(target,{
+      scale:1.75,
+      useCORS:true,
+      allowTaint:false,
+      backgroundColor:'#f8f1e5',
+      logging:false,
+      imageTimeout:8000
+    });
+    const imgData=canvas.toDataURL('image/jpeg',0.92);
     const {jsPDF}=window.jspdf;
     const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});
     const pageW=pdf.internal.pageSize.getWidth();
@@ -396,17 +486,21 @@ async function exportPdf(){
     const contentW=pageW-margin*2;
     const renderedH=canvas.height*contentW/canvas.width;
     let offset=0;
+
     while(offset<renderedH){
       if(offset>0) pdf.addPage('a4','landscape');
       pdf.addImage(imgData,'JPEG',margin,margin-offset,contentW,renderedH,undefined,'FAST');
       offset+=pageH-margin*2;
     }
+
     pdf.save(`Q-Options-Weekly-Report-${safeFileRange()}.pdf`);
     showToast('تم تجهيز تقرير PDF');
   }catch(err){
-    console.error(err);showToast('تعذر تصدير PDF');
+    console.error(err);
+    openNativePdfPrint();
   }finally{
-    $('exportStage').innerHTML='';setExportBusy(false);
+    $('exportStage').innerHTML='';
+    setExportBusy(false);
   }
 }
 
