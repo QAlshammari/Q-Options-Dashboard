@@ -163,8 +163,11 @@ footer{min-height:58px;display:grid;grid-template-columns:1fr 1fr 1fr;align-item
 .footer-brand{direction:ltr;font-weight:800;letter-spacing:1px;color:#876329}.footer-contact{text-align:center;color:#927d61}.footer-contact b{color:#785720;font-size:11px}.footer-contact b::before{content:"• ";color:#c49749}.footer-contact b::after{content:" •";color:#c49749}footer>div:last-child{text-align:left;direction:ltr}
 
 /* ========================= EXPORT TEMPLATES ========================= */
-.export-stage{position:fixed;left:-20000px;top:0;z-index:-100;width:1200px;pointer-events:none}
+.export-stage{position:fixed;left:0;top:0;z-index:-9999;width:1200px;min-width:1200px;pointer-events:none;overflow:visible}
 .export-stage .infographic-card{
+  width:1120px!important;
+  min-width:1120px!important;
+  max-width:1120px!important;
   transform:none!important;
   transform-origin:top left!important;
 }
@@ -1201,4 +1204,268 @@ body{
   .refined-light .info-header.logo-only{height:345px!important;min-height:345px!important}
   .refined-light .info-header.logo-only .info-logo-wrap{height:345px!important}
   .refined-light .info-header.logo-only .info-logo.bigger{height:335px!important;transform:scale(1.62)!important}
+}
+
+/* =========================================================
+   FINAL21 — واجهة مبهجة ثلاثية الأبعاد
+   ========================================================= */
+.stat-card{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  transform:translateY(-2px);
+  border-width:1px!important;
+  border-style:solid!important;
+  box-shadow:0 7px 0 rgba(161,109,28,.22),0 15px 28px rgba(96,66,25,.13),inset 0 2px 0 rgba(255,255,255,.96)!important;
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.stat-card::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:2px 7% auto;
+  height:43%;
+  border-radius:18px 18px 50% 50%;
+  background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,0));
+  pointer-events:none;
+}
+.stat-card:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(161,109,28,.24),0 7px 14px rgba(96,66,25,.12)!important}
+.stat-card:nth-child(1){background:linear-gradient(145deg,#fffdf8,#fff4d9)!important;border-color:#ecd59e!important;box-shadow:0 7px 0 rgba(194,145,55,.25),0 14px 29px rgba(232,183,76,.18),inset 0 2px 0 #fff!important}
+.stat-card:nth-child(2){background:linear-gradient(145deg,#fcfffd,#eaf9ef)!important;border-color:#bfe4cc!important;box-shadow:0 7px 0 rgba(55,150,87,.20),0 14px 29px rgba(58,172,96,.16),inset 0 2px 0 #fff!important}
+.stat-card:nth-child(3){background:linear-gradient(145deg,#fffefd,#f7eadc)!important;border-color:#dfc4a2!important;box-shadow:0 7px 0 rgba(163,103,45,.20),0 14px 29px rgba(179,113,53,.15),inset 0 2px 0 #fff!important}
+.stat-card:nth-child(4){background:linear-gradient(145deg,#fbfffd,#eaf8ef)!important;border-color:#bce3c8!important;box-shadow:0 7px 0 rgba(48,149,82,.20),0 14px 29px rgba(52,172,92,.15),inset 0 2px 0 #fff!important}
+.stat-card:nth-child(5){background:linear-gradient(145deg,#fffdfd,#fff0ed)!important;border-color:#f0c5bf!important;box-shadow:0 7px 0 rgba(194,67,57,.19),0 14px 29px rgba(227,76,63,.14),inset 0 2px 0 #fff!important}
+.stat-card:nth-child(6){background:linear-gradient(145deg,#fffef9,#fff1c9)!important;border-color:#e4bf67!important;box-shadow:0 8px 0 rgba(187,132,35,.27),0 16px 32px rgba(224,169,53,.22),inset 0 2px 0 #fff!important}
+
+.stat-card .icon{
+  position:relative;
+  transform:translateY(-2px);
+  border:1px solid rgba(255,255,255,.72);
+  box-shadow:0 6px 0 rgba(72,50,20,.12),0 12px 22px currentColor,inset 0 2px 0 rgba(255,255,255,.48)!important;
+  text-shadow:0 0 12px rgba(255,255,255,.88);
+}
+.stat-card .icon.green{box-shadow:0 6px 0 #287c47,0 0 22px rgba(51,176,97,.48),inset 0 2px 0 rgba(255,255,255,.55)!important}
+.stat-card .icon.red{box-shadow:0 6px 0 #9f312d,0 0 22px rgba(226,68,59,.48),inset 0 2px 0 rgba(255,255,255,.55)!important}
+.stat-card .icon.gold,.stat-card .icon.gold-soft{box-shadow:0 6px 0 #9b6a1e,0 0 24px rgba(227,170,57,.52),inset 0 2px 0 rgba(255,255,255,.62)!important}
+.stat-card .icon.bronze{box-shadow:0 6px 0 #795021,0 0 22px rgba(180,112,44,.45),inset 0 2px 0 rgba(255,255,255,.55)!important}
+
+.action-btn{
+  overflow:hidden;
+  isolation:isolate;
+  transform:translateY(-3px);
+  border:1px solid #d3a34c!important;
+  box-shadow:0 9px 0 #8c5d18,0 18px 30px rgba(137,91,25,.25),inset 0 2px 0 rgba(255,255,255,.70)!important;
+}
+.action-btn::after{
+  content:"";
+  position:absolute;
+  inset:auto 8% 4px;
+  height:18%;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,213,119,.34),transparent 70%);
+  pointer-events:none;
+}
+.action-btn .action-icon{
+  border:1px solid rgba(255,255,255,.68)!important;
+  box-shadow:0 5px 0 rgba(44,28,9,.24),0 0 19px rgba(255,204,95,.58),inset 0 2px 0 rgba(255,255,255,.45)!important;
+  text-shadow:0 0 11px currentColor;
+}
+.action-btn:active{transform:translateY(5px)!important;box-shadow:0 2px 0 #8c5d18,0 7px 14px rgba(137,91,25,.18)!important}
+
+.chart-panel{
+  position:relative;
+  overflow:hidden;
+  border:1px solid #dfc38b!important;
+  background:linear-gradient(145deg,#fffefb 0%,#fff9ed 58%,#f3dfb9 100%)!important;
+  box-shadow:0 8px 0 rgba(174,119,32,.28),0 18px 34px rgba(114,77,25,.16),inset 0 2px 0 rgba(255,255,255,.98)!important;
+}
+.chart-panel::before{
+  content:"";
+  position:absolute;
+  inset:2px 5% auto;
+  height:40%;
+  border-radius:22px 22px 55% 55%;
+  background:linear-gradient(180deg,rgba(255,255,255,.74),transparent);
+  pointer-events:none;
+}
+.chart-panel canvas{filter:drop-shadow(0 9px 8px rgba(126,83,22,.16)) saturate(1.08)}
+.chart-panel .pill{box-shadow:0 4px 0 rgba(160,105,29,.24),0 8px 14px rgba(131,87,24,.13),inset 0 1px 0 #fff!important}
+
+@media(max-width:650px){
+  .stat-card{transform:translateY(-1px)}
+  .action-btn{transform:translateY(-2px)}
+  .chart-panel{box-shadow:0 6px 0 rgba(174,119,32,.25),0 13px 24px rgba(114,77,25,.14),inset 0 2px 0 #fff!important}
+}
+
+/* الأدوات الأربع — ألوان مميزة مع هوية ذهبية موحدة */
+.toolbar{
+  align-items:stretch!important;
+  grid-auto-rows:1fr;
+}
+.toolbar>.action-btn{
+  height:100%!important;
+  min-height:112px!important;
+  border-radius:20px!important;
+}
+.toolbar>.action-btn:nth-child(1){
+  color:#fff9e9!important;
+  background:linear-gradient(155deg,#e5bd68 0%,#b37b24 48%,#7d4e10 100%)!important;
+  border-color:#f1d590!important;
+  box-shadow:0 9px 0 #75470c,0 17px 29px rgba(191,130,35,.30),0 0 25px rgba(229,182,83,.17),inset 0 2px 0 rgba(255,255,255,.75)!important;
+}
+.toolbar>.action-btn:nth-child(2){
+  color:#432e13!important;
+  background:linear-gradient(155deg,#fffdf5 0%,#f7dfaa 48%,#cc963c 100%)!important;
+  border-color:#e8c271!important;
+  box-shadow:0 9px 0 #a16d1b,0 17px 29px rgba(203,151,57,.25),0 0 25px rgba(255,215,126,.20),inset 0 2px 0 #fff!important;
+}
+.toolbar>.action-btn:nth-child(3){
+  color:#fff8e8!important;
+  background:linear-gradient(155deg,#635a4d 0%,#33291d 46%,#17120d 100%)!important;
+  border-color:#d5ad5d!important;
+  box-shadow:0 9px 0 #9a681d,0 17px 29px rgba(59,43,23,.34),0 0 26px rgba(205,157,63,.18),inset 0 2px 0 rgba(255,255,255,.43)!important;
+}
+.toolbar>.action-btn:nth-child(4){
+  color:#fff8e8!important;
+  background:linear-gradient(155deg,#a8752c 0%,#573512 46%,#28190c 100%)!important;
+  border-color:#e1b75e!important;
+  box-shadow:0 9px 0 #7b4b11,0 17px 29px rgba(111,69,20,.34),0 0 27px rgba(224,171,61,.21),inset 0 2px 0 rgba(255,255,255,.48)!important;
+}
+.toolbar>.action-btn:nth-child(1) .action-icon{background:linear-gradient(145deg,#ffe5a5,#9e6614)!important;color:#fff!important;box-shadow:0 5px 0 #70440b,0 0 22px rgba(255,210,111,.72),inset 0 2px 0 rgba(255,255,255,.70)!important}
+.toolbar>.action-btn:nth-child(2) .action-icon{background:linear-gradient(145deg,#fffdf8,#e0ad4d)!important;color:#745018!important;box-shadow:0 5px 0 #a06a16,0 0 22px rgba(255,220,139,.78),inset 0 2px 0 #fff!important}
+.toolbar>.action-btn:nth-child(3) .action-icon{background:linear-gradient(145deg,#f1eee8,#696158)!important;color:#fff!important;box-shadow:0 5px 0 #29231d,0 0 22px rgba(255,244,216,.44),inset 0 2px 0 rgba(255,255,255,.68)!important}
+.toolbar>.action-btn:nth-child(4) .action-icon{background:linear-gradient(145deg,#e8b95c,#754710)!important;color:#fff8df!important;box-shadow:0 5px 0 #432709,0 0 23px rgba(241,184,69,.70),inset 0 2px 0 rgba(255,255,255,.60)!important}
+.toolbar>.action-btn:nth-child(2) .action-text small{color:#7b5b2c!important}
+.toolbar>.action-btn:nth-child(1) .action-text small,
+.toolbar>.action-btn:nth-child(3) .action-text small,
+.toolbar>.action-btn:nth-child(4) .action-text small{color:rgba(255,248,230,.72)!important}
+@media(max-width:650px){
+  .toolbar>.action-btn{min-height:96px!important;border-radius:17px!important}
+}
+
+/* =========================================================
+   FINAL22 — شعار كامل + بطاقة العائد البطل
+   ========================================================= */
+.preview-head{display:none!important}
+.preview-dialog{padding-top:5px!important}
+.refined-light .info-header.logo-only{
+  height:355px!important;
+  min-height:355px!important;
+  overflow:visible!important;
+  margin:-4px auto 0!important;
+}
+.refined-light .info-header.logo-only .info-logo-wrap{
+  height:355px!important;
+  overflow:visible!important;
+}
+.refined-light .info-header.logo-only .info-logo.bigger{
+  height:345px!important;
+  transform:scale(1.40)!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+}
+
+.refined-light .info-icon{
+  position:relative;
+  transform:translateY(-2px);
+  border-width:1px!important;
+  border-style:solid!important;
+  text-shadow:0 0 9px currentColor;
+}
+.refined-light .info-icon.cash{
+  box-shadow:0 5px 0 #8b681c,0 0 19px rgba(223,174,67,.72),inset 0 2px 0 rgba(255,255,255,.72)!important;
+}
+.refined-light .info-icon.win{
+  box-shadow:0 5px 0 #277e47,0 0 20px rgba(48,185,96,.66),inset 0 2px 0 rgba(255,255,255,.75)!important;
+}
+.refined-light .info-icon.loss{
+  box-shadow:0 5px 0 #9e342e,0 0 20px rgba(231,68,57,.62),inset 0 2px 0 rgba(255,255,255,.72)!important;
+}
+.refined-light .info-icon.stopped{
+  box-shadow:0 5px 0 #16859a,0 0 20px rgba(35,190,216,.68),inset 0 2px 0 rgba(255,255,255,.78)!important;
+}
+.refined-light .info-icon.layers{
+  box-shadow:0 5px 0 #8d6a29,0 0 19px rgba(211,170,79,.62),inset 0 2px 0 rgba(255,255,255,.74)!important;
+}
+
+@keyframes championGlow{
+  0%,100%{box-shadow:0 8px 0 #a66e14,0 0 20px rgba(224,174,54,.34),0 16px 28px rgba(79,139,60,.15),inset 0 2px 0 #fff}
+  50%{box-shadow:0 8px 0 #a66e14,0 0 34px rgba(237,188,61,.62),0 17px 35px rgba(48,166,80,.25),inset 0 2px 0 #fff}
+}
+.refined-light .info-stat.featured{
+  position:relative!important;
+  overflow:visible!important;
+  z-index:3!important;
+  border:2px solid #d9a93c!important;
+  background:
+    radial-gradient(circle at 18% 12%,rgba(255,255,255,.96),transparent 28%),
+    linear-gradient(145deg,#fffef5 0%,#fff0ae 48%,#d8a53a 100%)!important;
+  animation:championGlow 2.2s ease-in-out infinite!important;
+}
+.refined-light .info-stat.featured::after{
+  content:"🏆";
+  position:absolute;
+  top:-13px;
+  left:12px;
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  font-size:22px;
+  background:linear-gradient(145deg,#fff8c8,#d79b24);
+  border:1px solid #b77a12;
+  box-shadow:0 5px 0 #98610d,0 0 21px rgba(239,184,47,.75),inset 0 2px 0 rgba(255,255,255,.85);
+}
+.refined-light .info-stat.featured .digital{
+  color:#218c45!important;
+  font-size:48px!important;
+  font-weight:900!important;
+  text-shadow:0 2px 0 #fff,0 0 11px rgba(52,187,91,.55),0 0 24px rgba(231,184,55,.45)!important;
+}
+.refined-light .info-stat.featured .info-label b{
+  color:#5b3d0c!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.9);
+}
+@media(max-width:650px){
+  .refined-light .info-header.logo-only{height:325px!important;min-height:325px!important;margin:-6px auto 0!important}
+  .refined-light .info-header.logo-only .info-logo-wrap{height:325px!important}
+  .refined-light .info-header.logo-only .info-logo.bigger{height:318px!important;transform:scale(1.40)!important}
+  .refined-light .info-stat.featured .digital{font-size:43px!important}
+}
+
+/* رفع التقرير من بدايته واستغلال المساحة العلوية */
+.refined-light.infographic-card{
+  padding-top:4px!important;
+}
+.refined-light .info-header.logo-only{
+  margin-top:-14px!important;
+}
+@media(max-width:650px){
+  .refined-light.infographic-card{padding-top:2px!important}
+  .refined-light .info-header.logo-only{margin-top:-18px!important}
+}
+
+/* FINAL23 — زر حفظ صغير وتثبيت لوحة الالتقاط */
+.preview-download{
+  width:154px!important;
+  min-width:154px!important;
+  max-width:154px!important;
+  min-height:38px!important;
+  height:38px!important;
+  padding:6px 10px!important;
+  border-radius:11px!important;
+  font-size:13px!important;
+  box-shadow:0 4px 0 #68430f,0 8px 13px rgba(104,67,15,.20),inset 0 1px 0 rgba(255,255,255,.62)!important;
+}
+.export-stage .refined-light.infographic-card{
+  display:block!important;
+  position:relative!important;
+  box-sizing:border-box!important;
+  flex:none!important;
+  width:1120px!important;
+  min-width:1120px!important;
+  max-width:1120px!important;
+  transform:none!important;
+  zoom:1!important;
 }
