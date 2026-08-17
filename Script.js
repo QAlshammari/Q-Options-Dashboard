@@ -360,6 +360,24 @@ function topTrades(data,count=5){
   return [...data].filter(t=>t.sell!==null||t.profit!==0).sort((a,b)=>b.profit-a.profit).slice(0,count);
 }
 
+function buildPublicTrades(data,count=10){
+  const closed=[...data].filter(t=>t.sell!==null||t.profit!==0);
+  if(closed.length<=count) return closed;
+  const wins=closed.filter(t=>t.profit>0).sort((a,b)=>b.profit-a.profit);
+  const losses=closed.filter(t=>t.profit<0).sort((a,b)=>a.profit-b.profit);
+  const neutral=closed.filter(t=>t.profit===0);
+  const selected=[];
+  const pushUnique=item=>{ if(item && !selected.includes(item)) selected.push(item); };
+  const lossSlots=Math.min(2, losses.length, Math.max(1, count>=8?2:1));
+  const winSlots=Math.min(wins.length, count-lossSlots);
+  wins.slice(0,winSlots).forEach(pushUnique);
+  losses.slice(0,lossSlots).forEach(pushUnique);
+  for(const item of neutral){ if(selected.length>=count) break; pushUnique(item); }
+  const rest=[...closed].sort((a,b)=>Math.abs(b.profit)-Math.abs(a.profit));
+  for(const item of rest){ if(selected.length>=count) break; pushUnique(item); }
+  return selected.slice(0,count).sort((a,b)=>(a.date||'').localeCompare(b.date||'') || String(a.symbol).localeCompare(String(b.symbol)));
+}
+
 function logoSrc(){
   const img=$('mainLogo');
   return img?.currentSrc || img?.src || 'QQ.PNG';
@@ -386,16 +404,17 @@ function tradeStatusMeta(trade){
 }
 
 function buildPdfTemplate(){
-  return buildShareTemplate(10);
+  return buildShareTemplate(10, "pdfCapture");
 }
 
-function buildShareTemplate(maxRows=10){
+function buildShareTemplate(maxRows=10, captureId="shareCapture"){
   const filtered=getFilteredTrades();
-  const s=calculateStats(filtered);
-  const rowsData=topTrades(filtered,maxRows);
+  const publicData=buildPublicTrades(filtered,maxRows);
+  const s=calculateStats(publicData);
+  const rowsData=publicData;
   const periodText=`${$('fromDate').value || '—'} - ${$('toDate').value || '—'}`;
   const winPct = s.closed.length ? (s.wins.length / s.closed.length * 100) : 0;
-  const neutralCount = Math.max(0, filtered.length - s.wins.length - s.losses.length);
+  const neutralCount = Math.max(0, publicData.length - s.wins.length - s.losses.length);
   const rows = rowsData.length ? rowsData.map(t=>{
     const option=tradeOptionLabel(t);
     const st=tradeStatusMeta(t);
@@ -403,17 +422,17 @@ function buildShareTemplate(maxRows=10){
       <tr>
         <td class="symbol-cell"><div class="symbol-stack"><span>${escapeHtml(t.symbol)}</span></div></td>
         <td><span class="info-chip ${option==='CALL'?'call':'put'}">${option}</span></td>
-        <td>${escapeHtml(t.strike)}</td>
-        <td dir="ltr">${money(t.buy)}</td>
-        <td dir="ltr">${t.sell===null?'—':money(t.sell)}</td>
-        <td class="info-profit ${t.profit>=0?'pos':'neg'}">${t.sell===null&&t.profit===0?'—':money(t.profit)}</td>
-        <td class="info-pct ${t.pct>=0?'pos':'neg'}">${t.sell===null&&t.profit===0?'—':pct(t.pct)}</td>
+        <td class="digital small">${escapeHtml(t.strike)}</td>
+        <td dir="ltr" class="digital small">${money(t.buy)}</td>
+        <td dir="ltr" class="digital small">${t.sell===null?'—':money(t.sell)}</td>
+        <td class="info-profit ${t.profit>=0?'pos':'neg'} digital small">${t.sell===null&&t.profit===0?'—':money(t.profit)}</td>
+        <td class="info-pct ${t.pct>=0?'pos':'neg'} digital small">${t.sell===null&&t.profit===0?'—':pct(t.pct)}</td>
         <td><span class="info-status ${st.cls}"><span class="info-status-icon">${st.icon}</span><span>${st.labelAr}<br><small>${st.labelEn}</small></span></span></td>
       </tr>`;
   }).join('') : `<tr><td colspan="8">لا توجد صفقات ضمن الفترة المحددة</td></tr>`;
 
   return `
-    <div class="infographic-card" id="shareCapture">
+    <div class="infographic-card" id="${captureId}">
       <div class="info-top-swoosh"></div>
       <div class="info-bottom-swoosh"></div>
 
@@ -424,7 +443,7 @@ function buildShareTemplate(maxRows=10){
           <div class="info-report-en">WEEKLY REPORT</div>
           <div class="info-report-ar">التقرير الأسبوعي</div>
           <div class="info-period">
-            <div class="period-item"><span class="period-badge">📅</span><div><div>${periodText}</div><div class="period-meta">Trading Period  فترة التداول</div></div></div>
+            <div class="period-item"><span class="period-badge">📅</span><div><div class="digital small">${periodText}</div><div class="period-meta">Trading Period  فترة التداول</div></div></div>
             <div class="period-item"><span class="period-badge">✈</span><div><div dir="ltr">@Qalshammari</div><div class="period-meta">Telegram Channel  قناة التليجرام</div></div></div>
           </div>
         </div>
@@ -434,10 +453,10 @@ function buildShareTemplate(maxRows=10){
       <div class="info-stats">
         <div class="info-stat">
           <div class="info-stat-top"><span class="info-icon layers">▤</span><div class="info-label"><b>إجمالي الصفقات</b><small>TOTAL TRADES</small></div></div>
-          <div class="digital number">${filtered.length}</div>
+          <div class="digital number">${publicData.length}</div>
         </div>
         <div class="info-stat featured">
-          <div class="info-stat-top"><div class="info-label"><b>TOTAL RETURN</b><small>إجمالي العائد</small></div></div>
+          <div class="info-stat-top"><div class="info-label"><b>إجمالي العائد</b><small>TOTAL RETURN</small></div></div>
           <div class="digital green">${pct(s.returnP)}</div>
         </div>
         <div class="info-stat">
@@ -455,17 +474,17 @@ function buildShareTemplate(maxRows=10){
       </div>
 
       <div class="infographic-table-panel">
-        <div class="info-table-head"><h3>أهم الصفقات</h3><span class="info-badge">${rowsData.length} TOP TRADES</span></div>
+        <div class="info-table-head"><h3>أهم الصفقات</h3></div>
         <table class="info-table">
           <thead>
             <tr>
               <th>الرمز<br><small>SYMBOL</small></th>
               <th>الخيار<br><small>OPTION</small></th>
-              <th>التنفيذ<br><small>STRIKE</small></th>
+              <th>الضربة<br><small>STRIKE</small></th>
               <th>سعر الشراء<br><small>BUY</small></th>
               <th>سعر البيع<br><small>SELL</small></th>
-              <th>الأرباح<br><small>PROFIT</small></th>
-              <th>النسبة<br><small>%</small></th>
+              <th>الربح<br><small>PROFIT $</small></th>
+              <th>الربح %<br><small>PROFIT %</small></th>
               <th>الحالة<br><small>STATUS</small></th>
             </tr>
           </thead>
@@ -475,16 +494,16 @@ function buildShareTemplate(maxRows=10){
 
       <div class="info-bottom">
         <div class="info-box">
-          <h4>توزيع نتائج الصفقات<small>Trade Distribution</small></h4>
+          <h4>توزيع نتائج الصفقات<small>TRADE DISTRIBUTION</small></h4>
           <div class="donut-layout">
             <div style="position:relative;width:170px;height:170px;display:grid;place-items:center">
               <div class="donut-chart" style="--pct:${winPct.toFixed(2)}"></div>
               <div class="donut-core"><b>${winPct.toFixed(0)}%</b><span>رابح</span></div>
             </div>
             <div class="donut-legend">
-              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot green"></span> رابحة</span><b>${s.wins.length} (${s.closed.length?((s.wins.length/s.closed.length)*100).toFixed(0):0}%)</b></div>
-              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot red"></span> خاسرة</span><b>${s.losses.length} (${s.closed.length?((s.losses.length/s.closed.length)*100).toFixed(0):0}%)</b></div>
-              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot gray"></span> محايدة</span><b>${neutralCount} (${filtered.length?((neutralCount/filtered.length)*100).toFixed(0):0}%)</b></div>
+              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot green"></span> رابحة</span><b>${s.wins.length} (${publicData.length?((s.wins.length/publicData.length)*100).toFixed(0):0}%)</b></div>
+              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot red"></span> خاسرة</span><b>${s.losses.length} (${publicData.length?((s.losses.length/publicData.length)*100).toFixed(0):0}%)</b></div>
+              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot gray"></span> محايدة</span><b>${neutralCount} (${publicData.length?((neutralCount/publicData.length)*100).toFixed(0):0}%)</b></div>
             </div>
           </div>
         </div>
@@ -492,7 +511,7 @@ function buildShareTemplate(maxRows=10){
         <div class="info-box">
           <h4>إحصائيات سريعة<small>QUICK STATISTICS</small></h4>
           <div class="quick-list">
-            <div class="quick-row"><span class="name"><span class="mini blue">≣</span> إجمالي الصفقات</span><span class="value">${filtered.length}</span></div>
+            <div class="quick-row"><span class="name"><span class="mini blue">≣</span> إجمالي الصفقات</span><span class="value">${publicData.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini green">✓</span> الصفقات الرابحة</span><span class="value green">${s.wins.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini red">✕</span> الصفقات الخاسرة</span><span class="value red">${s.losses.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini gray">◐</span> المحايدة</span><span class="value">${neutralCount}</span></div>
@@ -501,7 +520,7 @@ function buildShareTemplate(maxRows=10){
         </div>
 
         <div class="info-box">
-          <h4>TOTAL RETURN<small>إجمالي العائد</small></h4>
+          <h4>إجمالي العائد<small>TOTAL RETURN</small></h4>
           <div class="return-ring-wrap">
             <div class="return-ring">
               <div class="return-ring-arrow">↗</div>
@@ -516,7 +535,7 @@ function buildShareTemplate(maxRows=10){
       </div>
 
       <div class="info-contact">للتواصل عبر تليجرام <b dir="ltr">@Qalshammari</b></div>
-      <div class="info-disclaimer">هذا التقرير لأغراض تعليمية فقط وليس توصية استثمارية<br><b>This report is for educational purposes only and is not investment advice</b></div>
+      <div class="info-disclaimer">جميع الحقوق محفوظة © Q Options 2026</div>
     </div>`;
 }
 
@@ -591,24 +610,44 @@ async function exportPdf(){
   }
 }
 
+function showPreview(url, filename){
+  const modal=$('previewModal');
+  const img=$('previewImage');
+  const dl=$('previewDownload');
+  img.src=url;
+  dl.href=url;
+  dl.download=filename;
+  modal.hidden=false;
+}
+
+function hidePreview(){
+  const modal=$('previewModal');
+  const img=$('previewImage');
+  const prev=img.dataset.objectUrl;
+  modal.hidden=true;
+  img.src='';
+  if(prev){ URL.revokeObjectURL(prev); delete img.dataset.objectUrl; }
+}
+
 async function exportHighlightsImage(){
   if(!window.html2canvas){showToast('مكتبة تصدير الصورة لم يتم تحميلها');return}
   setExportBusy(true);showToast('جاري تجهيز صورة أهم الصفقات…');
   try{
     const stage=$('exportStage');
-    stage.innerHTML=buildShareTemplate();
+    stage.innerHTML=buildShareTemplate(10, 'shareCapture');
     const target=$('shareCapture');
     await waitForImages(target);
-    await new Promise(r=>setTimeout(r,120));
+    await new Promise(r=>setTimeout(r,180));
     const canvas=await html2canvas(target,{scale:2,useCORS:true,backgroundColor:'#f8f1e5',logging:false});
     const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',1));
     if(!blob) throw new Error('PNG generation failed');
     const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;a.download=`Q-Options-Top-Trades-${safeFileRange()}.png`;
-    document.body.appendChild(a);a.click();a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),1500);
-    showToast('تم تجهيز صورة أهم الصفقات');
+    const filename=`Q-Options-Top-Trades-${safeFileRange()}.png`;
+    const previewImg=$('previewImage');
+    if(previewImg.dataset.objectUrl){ URL.revokeObjectURL(previewImg.dataset.objectUrl); }
+    previewImg.dataset.objectUrl=url;
+    showPreview(url, filename);
+    showToast('تم فتح معاينة أهم الصفقات');
   }catch(err){
     console.error(err);showToast('تعذر تصدير الصورة');
   }finally{
@@ -629,6 +668,8 @@ $('excelFile').addEventListener('change',e=>{const f=e.target.files[0];if(f) han
 $('demoBtn').addEventListener('click',()=>{setCurrentWeekRange();trades=buildDemoTrades();render();showToast('تم تحميل بيانات تجريبية للأسبوع الحالي')});
 $('pdfBtn').addEventListener('click',exportPdf);
 $('imageBtn').addEventListener('click',exportHighlightsImage);
+$('previewClose')?.addEventListener('click',hidePreview);
+$('previewModal')?.addEventListener('click',e=>{ if(e.target.id==='previewModal') hidePreview(); });
 $('fromDate').addEventListener('change',render);
 $('toDate').addEventListener('change',render);
 
