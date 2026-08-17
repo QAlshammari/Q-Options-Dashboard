@@ -399,9 +399,9 @@ function tradeOptionLabel(trade){
 }
 
 function tradeStatusMeta(trade){
-  if(trade.sell===null && trade.profit===0) return {cls:'open',labelAr:'مفتوحة',labelEn:'OPEN',icon:'◐'};
-  if(trade.profit < 0) return {cls:'loss',labelAr:'خاسرة',labelEn:'LOSS',icon:'✕'};
-  return {cls:'win',labelAr:'رابح',labelEn:'WIN',icon:'✓'};
+  if(trade.sell===null && trade.profit===0) return {cls:'stopped',labelAr:'موقوفة'};
+  if(trade.profit < 0) return {cls:'loss',labelAr:'خاسرة'};
+  return {cls:'win',labelAr:'رابحة'};
 }
 
 function buildPdfTemplate(){
@@ -419,11 +419,12 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
   const rows = rowsData.length ? rowsData.map(t=>{
     const option=tradeOptionLabel(t);
     const st=tradeStatusMeta(t);
-    const statusAr = st.cls==='loss' ? 'خاسرة' : st.cls==='open' ? 'مفتوحة' : 'رابح';
+    const statusAr = st.labelAr;
+    const optionAr = option==='CALL' ? 'شراء' : 'بيع';
     return `
       <tr>
         <td class="symbol-cell"><div class="symbol-stack"><span>${escapeHtml(t.symbol)}</span></div></td>
-        <td><span class="info-chip ${option==='CALL'?'call':'put'}">${option}</span></td>
+        <td><span class="info-chip ${option==='CALL'?'call':'put'}">${optionAr}</span></td>
         <td>${escapeHtml(t.strike)}</td>
         <td dir="ltr">${money(t.buy)}</td>
         <td dir="ltr">${t.sell===null?'—':money(t.sell)}</td>
@@ -440,6 +441,12 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
 
       <div class="info-header compact logo-only">
         <div class="info-logo-wrap wide"><img src="${logoSrc()}" class="info-logo bigger" alt="Q Options"></div>
+      </div>
+
+      <div class="trade-page-title">
+        <div class="trade-eyebrow">PERFORMANCE DASHBOARD</div>
+        <div class="trade-title-en">TRADES REPORT</div>
+        <div class="trade-title-ar">تقرير الصفقات</div>
       </div>
 
       <div class="info-dates-under-logo">
@@ -474,14 +481,14 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
         <table class="info-table roomy">
           <thead>
             <tr>
-              <th>الرمز<br><small>SYMBOL</small></th>
-              <th>الخيار<br><small>OPTION</small></th>
-              <th>الضربة<br><small>STRIKE</small></th>
-              <th>سعر الشراء<br><small>BUY</small></th>
-              <th>سعر البيع<br><small>SELL</small></th>
-              <th>الربح<br><small>PROFIT $</small></th>
-              <th>الربح %<br><small>PROFIT %</small></th>
-              <th>الحالة<br><small>STATUS</small></th>
+              <th>الرمز</th>
+              <th>الخيار</th>
+              <th>الاسترايك</th>
+              <th>سعر الشراء</th>
+              <th>سعر البيع</th>
+              <th>الربح</th>
+              <th>النسبة</th>
+              <th>الحالة</th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>
@@ -714,7 +721,7 @@ async function saveOrShareTopTrades(e){
   }
 
   const btn=$('previewDownload');
-  const oldText=btn?.textContent || 'حفظ / مشاركة الصورة';
+  const oldText=btn?.textContent || 'حفظ الصورة';
   if(btn){btn.disabled=true;btn.textContent='جاري تجهيز الصورة…'}
   showToast('جاري تجهيز الصورة عالية الدقة…');
 
@@ -740,12 +747,14 @@ async function saveOrShareTopTrades(e){
       scrollY:0
     });
 
-    const dataUrl=canvas.toDataURL('image/png',0.98);
+    if(!canvas.width || !canvas.height) throw new Error('تعذر إنشاء مساحة الصورة');
+    const dataUrl=canvas.toDataURL('image/png');
     const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',0.98));
     if(!dataUrl) throw new Error('PNG generation failed');
 
     const filename=`Q-Options-Top-Trades-${safeFileRange()}.png`;
     topTradesExportState={dataUrl,blob,filename};
+    if(!blob) throw new Error('تعذر إنشاء ملف الصورة');
     await shareOrDownloadBlob(blob,dataUrl,filename,iosWindow);
     showToast('تم تجهيز الصورة');
   }catch(err){
