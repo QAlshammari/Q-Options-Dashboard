@@ -456,10 +456,10 @@ function tradeOptionLabel(trade){
 function tradeStatusMeta(trade){
   const outcome=tradeOutcome(trade);
   if(outcome==='stopped') return {cls:'stopped',labelAr:'موقوفة'};
-  if(outcome==='loss') return {cls:'loss',labelAr:'خاسرة'};
+  if(outcome==='loss') return {cls:'loss',labelAr:'خسارة'};
   if(outcome==='open') return {cls:'open',labelAr:'مفتوحة'};
   if(outcome==='flat') return {cls:'flat',labelAr:'متعادل'};
-  return {cls:'win',labelAr:'رابحة'};
+  return {cls:'win',labelAr:'ربح'};
 }
 
 function buildPdfTemplate(){
@@ -470,7 +470,7 @@ function buildPdfTemplate(){
 function buildShareTemplate(maxRows=10, captureId="shareCapture"){
   const filtered=getFilteredTrades();
   const s=calculateStats(filtered);
-  const rowsData=topTrades(filtered,maxRows);
+  const rowsData=[...filtered].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || String(a.symbol).localeCompare(String(b.symbol)));
   const periodText=`${$('fromDate').value || '—'}  →  ${$('toDate').value || '—'}`;
   const winPct = s.closed.length ? (s.wins.length / s.closed.length * 100) : 0;
   const stoppedCount = s.stopped.length;
@@ -478,11 +478,11 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
     const option=tradeOptionLabel(t);
     const st=tradeStatusMeta(t);
     const statusAr = st.labelAr;
-    const optionAr = option==='CALL' ? 'شراء' : 'بيع';
+    const optionAr = option==='CALL' ? 'Call' : 'Put';
     return `
       <tr>
         <td class="symbol-cell"><div class="symbol-stack"><span>${escapeHtml(t.symbol)}</span></div></td>
-        <td><span class="info-chip ${option==='CALL'?'call':'put'}" style="display:inline;background:transparent;border:0;border-radius:0;box-shadow:none;padding:0;font-size:27px;font-weight:900;color:${option==='CALL'?'#278c43':'#dc3f36'}">${optionAr}</span></td>
+        <td dir="ltr"><span class="info-chip ${option==='CALL'?'call':'put'}" style="display:inline;background:transparent;border:0;border-radius:0;box-shadow:none;padding:0;font-size:27px;font-weight:900;color:${option==='CALL'?'#278c43':'#dc3f36'}">${optionAr}</span></td>
         <td>${escapeHtml(t.strike)}</td>
         <td dir="ltr">${money(t.buy)}</td>
         <td dir="ltr">${t.sell===null?'—':money(t.sell)}</td>
@@ -533,6 +533,11 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
           <h4>إجمالي العائد</h4>
           <div class="return-ring-wrap">
             <div class="return-ring">
+              <svg class="return-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
+                <defs><linearGradient id="returnGold-${captureId}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0a8"/><stop offset=".48" stop-color="#d4a13d"/><stop offset="1" stop-color="#8b5b14"/></linearGradient></defs>
+                <circle class="ring-track" cx="60" cy="60" r="48" pathLength="100"/>
+                <circle class="ring-value" cx="60" cy="60" r="48" pathLength="100" stroke="url(#returnGold-${captureId})" stroke-dasharray="${Math.max(0,Math.min(100,s.returnP)).toFixed(2)} 100"/>
+              </svg>
               <div class="return-ring-arrow">↗</div>
               <div class="return-ring-content">
                 <div class="digital">${pct(s.returnP)}</div>
@@ -557,7 +562,11 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
           <h4>توزيع نتائج الصفقات</h4>
           <div class="donut-layout">
             <div style="position:relative;width:170px;height:170px;display:grid;place-items:center">
-              <div class="donut-chart" style="--pct:${winPct.toFixed(2)}"></div>
+              <svg class="donut-svg" viewBox="0 0 120 120" aria-hidden="true">
+                <defs><linearGradient id="winGreen-${captureId}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9be1ac"/><stop offset="1" stop-color="#27884c"/></linearGradient></defs>
+                <circle class="donut-track" cx="60" cy="60" r="46" pathLength="100"/>
+                <circle class="donut-value" cx="60" cy="60" r="46" pathLength="100" stroke="url(#winGreen-${captureId})" stroke-dasharray="${winPct.toFixed(2)} 100"/>
+              </svg>
               <div class="donut-core"><b>${winPct.toFixed(0)}%</b><span>رابح</span></div>
             </div>
             <div class="donut-legend">
@@ -569,13 +578,11 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
         </div>
       </div>
 
-      <div class="info-dates-before-table">
-        <span class="period-badge">📅</span>
-        <div class="date-clean">${periodText}</div>
-      </div>
-
       <div class="infographic-table-panel">
-        <div class="info-table-head centered"><h3>أهم الصفقات</h3></div>
+        <div class="info-table-head table-title-row">
+          <h3>جميع الصفقات</h3>
+          <div class="table-week-date"><span class="week-date-icon">📅</span><span>${periodText}</span></div>
+        </div>
         <table class="info-table roomy">
           <thead>
             <tr>
