@@ -1,163 +1,243 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Q Options Tracker - Weekly Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Q Options Tracker</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#02070b;--card:#071018;--card2:#050b11;--line:#29404f;
+  --text:#f7fbff;--muted:#9cb0bf;--blue:#10a8ff;--green:#34d058;
+  --red:#ff382f;--gold:#f3b30b;--purple:#8b4eea;
+}
+html,body{margin:0;background:#000;color:var(--text);font-family:Arial,"Tahoma",sans-serif}
+body{overflow-x:hidden}
+.viewport{width:100%;overflow:hidden}
+.stage{
+  width:1280px;margin:0 auto;padding:18px 18px 24px;
+  transform-origin:top center;
+  background:
+    radial-gradient(circle at 11% 0%,rgba(0,162,255,.11),transparent 28%),
+    radial-gradient(circle at 88% 10%,rgba(0,117,255,.06),transparent 25%),
+    linear-gradient(180deg,#02070b,#010407 70%,#02070b);
+}
+.top{
+  display:grid;grid-template-columns:300px 1fr 280px;align-items:center;gap:18px;margin-bottom:14px
+}
+.brand{display:flex;align-items:center;gap:13px;direction:ltr}
+.logo{
+ width:76px;height:76px;border-radius:50%;display:grid;place-items:center;
+ font-size:52px;font-weight:900;font-style:italic;color:#00111e;
+ background:linear-gradient(145deg,#1ee0ff,#006eff);
+ box-shadow:0 0 28px rgba(0,160,255,.38)
+}
+.brandtxt{line-height:1.05}
+.brandtxt b{font-size:27px}
+.brandtxt span{display:block;color:var(--blue);font-size:19px;letter-spacing:5px;font-weight:700;margin-top:8px}
+.heading{text-align:center}
+.heading h1{font-size:43px;letter-spacing:2px;margin:0}
+.heading h2{font-size:26px;color:var(--blue);margin:5px 0 10px}
+.range{display:inline-flex;align-items:center;gap:10px;border:1px solid #41596b;border-radius:6px;padding:6px 14px;background:#050a0f}
+.range input{background:none;border:0;color:#fff;font-size:15px;outline:none;color-scheme:dark}
+.range .arr{color:var(--blue);font-size:23px}
+.channel{border:1px solid #3b5264;border-radius:7px;text-align:center;padding:13px;background:rgba(6,13,20,.85)}
+.channel small{font-size:15px}
+.channel strong{display:block;font-size:20px;margin-top:8px;direction:ltr}
+.toolbar{display:flex;gap:9px;align-items:center;margin-bottom:10px}
+.toolbar button,.upload{
+  border:1px solid #285b7b;background:#07131d;color:#eaf8ff;border-radius:7px;padding:9px 13px;font-weight:700;cursor:pointer
+}
+.toolbar .note{color:#8fa4b4;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:8px}
+.card{background:linear-gradient(180deg,#071018,#040a0f);border:1px solid #304759;border-radius:7px;box-shadow:0 8px 24px rgba(0,0,0,.27)}
+.stat{height:112px;display:flex;align-items:center;justify-content:center;gap:10px;padding:10px}
+.ico{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:26px;font-weight:900}
+.ico.b{background:#07538e;color:#41bdff}.ico.g{background:#1b692d;color:#8eff9d}.ico.r{background:#821b19;color:#ff746f}.ico.y{background:#6a4c00;color:#ffd65a}.ico.p{background:#402082;color:#b595ff}
+.stat .t{text-align:center}.stat .t span{display:block;font-size:14px}.stat .t b{display:block;font-size:23px;direction:ltr;margin:3px 0}.stat .t small{color:var(--muted);font-size:12px;direction:ltr}
+.charts{display:grid;grid-template-columns:1.08fr 1.08fr .92fr;gap:8px;margin-bottom:8px}
+.panel{padding:12px}
+.paneltitle{display:flex;justify-content:space-between;align-items:center;height:28px}
+.paneltitle h3{margin:0;font-size:17px}.paneltitle h3 span{font-size:13px;color:var(--muted);font-weight:400}
+.badge{font-size:12px;color:#35b7ff;border:1px solid #0d6299;border-radius:4px;padding:3px 7px}
+canvas.chart{width:100%;height:258px;display:block}
+.details{display:grid;grid-template-columns:.75fr 1.25fr 1.12fr;gap:8px;margin-bottom:8px}
+.best,.metrics,.summary{height:218px;padding:13px 16px}
+.best h3,.metrics h3,.summary h3{margin:0 0 8px;font-size:17px}
+.best{text-align:center}.best h3{text-align:right}
+.medal{font-size:42px;color:var(--gold);text-shadow:0 0 15px rgba(255,188,0,.5);margin-top:8px}
+.best .sym{font-size:18px;font-weight:700;direction:ltr}.best .money{color:var(--green);font-size:31px;font-weight:800;direction:ltr;margin-top:13px}.best .percent{font-size:22px;color:var(--green);font-weight:700;direction:ltr}
+.row{height:29px;border-bottom:1px solid #243645;display:flex;align-items:center;justify-content:space-between;font-size:14px}
+.row:last-child{border-bottom:0}.row b{direction:ltr}
+.pos{color:var(--green)!important}.neg{color:var(--red)!important}
+.tablebox{padding:7px 8px;margin-bottom:8px}
+.tablehead{display:flex;justify-content:space-between;align-items:center;padding:0 5px 5px}.tablehead h3{margin:0;font-size:19px}.tablehead span{font-size:12px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;text-align:center;font-size:12px}
+th{background:linear-gradient(180deg,#0a3e7d,#072955);padding:6px;border:1px solid #24537e}
+td{padding:4px 6px;border:1px solid #243746;height:26px}
+tbody tr:nth-child(even){background:rgba(10,24,35,.35)}
+footer{height:66px;border:1px solid #304759;border-radius:7px;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;padding:0 20px;color:#159eea}
+footer .left{direction:ltr;font-weight:800}footer .center{text-align:center}footer .right{text-align:left;direction:ltr}
+.smallq{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(145deg,#1edfff,#006eff);color:#00111e;margin-right:7px;font-size:23px}
+@media print{
+  @page{size:A4 landscape;margin:5mm}
+  body{background:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .toolbar{display:none}
+  .stage{transform:none!important;width:1280px!important;margin:0!important;padding:8px}
+}
+</style>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="brand">
-        <div class="q-logo">Q</div>
-        <div>
-          <strong>Q OPTIONS</strong>
-          <span>TRACKER</span>
-        </div>
-      </div>
+<div class="viewport" id="viewport">
+<div class="stage" id="stage">
 
-      <div class="title-block">
-        <h1>WEEKLY REPORT</h1>
-        <h2>التقرير الأسبوعي</h2>
-        <div class="date-range">
-          <span>📅</span>
-          <input id="fromDate" type="date">
-          <span class="arrow">←</span>
-          <input id="toDate" type="date">
-        </div>
-      </div>
-
-      <div class="telegram-card">
-        <small>قناة التوصيات</small>
-        <strong>✈ @Q_options</strong>
-      </div>
-    </header>
-
-    <section class="toolbar no-print">
-      <label class="upload-btn">
-        <input id="excelFile" type="file" accept=".xlsx,.xls,.csv" hidden>
-        <span>📊</span> رفع ملف Excel
-      </label>
-      <button id="demoBtn">↻ بيانات تجريبية</button>
-      <button id="printBtn">🖨 تصدير / طباعة PDF</button>
-      <span class="hint">يدعم Excel وCSV — ويتم تحديث الداشبورد تلقائيًا</span>
-    </section>
-
-    <main>
-      <section class="stats-grid">
-        <article class="stat-card">
-          <div class="icon blue">⌁</div>
-          <div><span>إجمالي الصفقات</span><strong id="totalTrades">0</strong><small>Total Trades</small></div>
-        </article>
-        <article class="stat-card">
-          <div class="icon green">$</div>
-          <div><span>إجمالي الربح</span><strong id="totalProfit">$0.00</strong><small>Total Profit</small></div>
-        </article>
-        <article class="stat-card">
-          <div class="icon purple">▥</div>
-          <div><span>نسبة العائد</span><strong id="returnPct">0%</strong><small>Return %</small></div>
-        </article>
-        <article class="stat-card">
-          <div class="icon green">✓</div>
-          <div><span>صفقات رابحة</span><strong id="wins">0</strong><small>Wins</small></div>
-        </article>
-        <article class="stat-card">
-          <div class="icon red">✕</div>
-          <div><span>صفقات خاسرة</span><strong id="losses">0</strong><small>Losses</small></div>
-        </article>
-        <article class="stat-card">
-          <div class="icon gold">★</div>
-          <div><span>نسبة النجاح</span><strong id="winRate">0%</strong><small>Win Rate</small></div>
-        </article>
-      </section>
-
-      <section class="charts-grid">
-        <article class="panel chart-panel">
-          <div class="panel-title">
-            <h3>منحنى الأداء التراكمي <span>(Equity Curve)</span></h3>
-            <span class="pill" id="equityFinal">$0.00</span>
-          </div>
-          <div class="canvas-wrap"><canvas id="equityChart"></canvas></div>
-        </article>
-
-        <article class="panel chart-panel">
-          <div class="panel-title"><h3>الأداء اليومي</h3></div>
-          <div class="canvas-wrap"><canvas id="dailyChart"></canvas></div>
-        </article>
-
-        <article class="panel chart-panel">
-          <div class="panel-title"><h3>توزيع الربح / خسارة</h3></div>
-          <div class="canvas-wrap donut-wrap"><canvas id="winLossChart"></canvas></div>
-        </article>
-      </section>
-
-      <section class="details-grid">
-        <article class="panel best-card">
-          <h3>أفضل صفقة</h3>
-          <div class="medal">★</div>
-          <strong id="bestSymbol">—</strong>
-          <div class="big-profit" id="bestProfit">+$0.00</div>
-          <div class="big-percent" id="bestPct">0%</div>
-        </article>
-
-        <article class="panel metrics-panel">
-          <h3>مؤشرات الأداء</h3>
-          <div class="metric-row"><span>متوسط الربح للصفقة</span><b id="avgWin">$0.00</b></div>
-          <div class="metric-row"><span>متوسط الخسارة للصفقة</span><b id="avgLoss">$0.00</b></div>
-          <div class="metric-row"><span>Profit Factor</span><b id="profitFactor">0.00</b></div>
-          <div class="metric-row"><span>Expectancy</span><b id="expectancy">$0.00</b></div>
-          <div class="metric-row"><span>Max Drawdown</span><b id="maxDrawdown">$0.00</b></div>
-          <div class="metric-row"><span>Sharpe Ratio</span><b id="sharpe">0.00</b></div>
-        </article>
-
-        <article class="panel summary-panel">
-          <h3>ملخص الأسبوع</h3>
-          <div class="metric-row"><span>إجمالي الربح</span><b id="summaryGross">$0.00</b></div>
-          <div class="metric-row"><span>إجمالي الخسارة</span><b id="summaryLoss">$0.00</b></div>
-          <div class="metric-row"><span>صافي الربح</span><b id="summaryNet">$0.00</b></div>
-          <div class="metric-row"><span>أعلى ربح يومي</span><b id="bestDay">$0.00</b></div>
-          <div class="metric-row"><span>أعلى خسارة يومية</span><b id="worstDay">$0.00</b></div>
-        </article>
-      </section>
-
-      <section class="panel trades-panel">
-        <div class="panel-title table-heading">
-          <h3>صفقات هذا الأسبوع</h3>
-          <span id="rowsCount">0 صفقة</span>
-        </div>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>اسم الشركة</th>
-                <th>الاسترايك</th>
-                <th>سعر الشراء</th>
-                <th>سعر البيع</th>
-                <th>الربح</th>
-                <th>النسبة</th>
-                <th>الملاحظات</th>
-              </tr>
-            </thead>
-            <tbody id="tradesBody"></tbody>
-          </table>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <div class="footer-brand"><span class="mini-q">Q</span> Q OPTIONS TRACKER</div>
-      <div>Stay Disciplined. Trust the Process.</div>
-      <div id="footerDate"></div>
-    </footer>
+<header class="top">
+  <div class="brand">
+    <div class="logo">Q</div>
+    <div class="brandtxt"><b>Q OPTIONS</b><span>TRACKER</span></div>
   </div>
+  <div class="heading">
+    <h1>WEEKLY REPORT</h1><h2>التقرير الأسبوعي</h2>
+    <div class="range"><span>📅</span><input id="from" type="date"><span class="arr">←</span><input id="to" type="date"></div>
+  </div>
+  <div class="channel"><small>قناة التوصيات</small><strong>✈ @Q_options</strong></div>
+</header>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="app.js"></script>
+<div class="toolbar">
+  <label class="upload">📊 رفع ملف Excel<input id="file" type="file" accept=".xlsx,.xls,.csv" hidden></label>
+  <button id="demo">↻ بيانات تجريبية</button>
+  <button id="print">🖨 تصدير / طباعة PDF</button>
+  <span class="note">Excel / CSV — يتم تحديث الداشبورد تلقائياً</span>
+</div>
+
+<section class="stats">
+  <div class="card stat"><div class="ico b">⌁</div><div class="t"><span>إجمالي الصفقات</span><b id="nTrades">17</b><small>Total Trades</small></div></div>
+  <div class="card stat"><div class="ico g">$</div><div class="t"><span>إجمالي الربح</span><b class="pos" id="net">$3,842.75</b><small>Total Profit</small></div></div>
+  <div class="card stat"><div class="ico p">▥</div><div class="t"><span>نسبة العائد</span><b id="ret">+28.47%</b><small>Return %</small></div></div>
+  <div class="card stat"><div class="ico g">✓</div><div class="t"><span>صفقات رابحة</span><b id="wins">12</b><small>Wins</small></div></div>
+  <div class="card stat"><div class="ico r">✕</div><div class="t"><span>صفقات خاسرة</span><b id="losses">5</b><small>Losses</small></div></div>
+  <div class="card stat"><div class="ico y">★</div><div class="t"><span>نسبة النجاح</span><b id="wr">70.59%</b><small>Win Rate</small></div></div>
+</section>
+
+<section class="charts">
+  <div class="card panel"><div class="paneltitle"><h3>منحنى الأداء التراكمي <span>(Equity Curve)</span></h3><span class="badge" id="eqBadge">$3,842.75</span></div><canvas class="chart" id="equity"></canvas></div>
+  <div class="card panel"><div class="paneltitle"><h3>الأداء اليومي</h3></div><canvas class="chart" id="daily"></canvas></div>
+  <div class="card panel"><div class="paneltitle"><h3>توزيع الربح / خسارة</h3></div><canvas class="chart" id="donut"></canvas></div>
+</section>
+
+<section class="details">
+  <div class="card best"><h3>أفضل صفقة</h3><div class="medal">★</div><div class="sym" id="bestSym">NVDA CALL 1000</div><div class="money" id="bestMoney">+$640.00</div><div class="percent" id="bestPct">+51.20%</div></div>
+  <div class="card metrics"><h3>مؤشرات الأداء</h3>
+    <div class="row"><span>متوسط الربح للصفقة</span><b class="pos" id="avgWin">$226.04</b></div>
+    <div class="row"><span>متوسط الخسارة للصفقة</span><b class="neg" id="avgLoss">-$192.31</b></div>
+    <div class="row"><span>Profit Factor</span><b id="pf">1.65</b></div>
+    <div class="row"><span>Expectancy</span><b class="pos" id="exp">$128.62</b></div>
+    <div class="row"><span>Max Drawdown</span><b class="neg" id="mdd">-$1,245.60</b></div>
+    <div class="row"><span>Sharpe Ratio</span><b id="sharpe">1.87</b></div>
+  </div>
+  <div class="card summary"><h3>ملخص الأسبوع</h3>
+    <div class="row"><span>إجمالي الربح</span><b class="pos" id="gross">$3,842.75</b></div>
+    <div class="row"><span>إجمالي الخسارة</span><b class="neg" id="grossLoss">-$1,230.00</b></div>
+    <div class="row"><span>صافي الربح</span><b class="pos" id="summaryNet">$2,612.75</b></div>
+    <div class="row"><span>أعلى ربح يومي</span><b class="pos" id="bestDay">$1,225.00</b></div>
+    <div class="row"><span>أعلى خسارة يومية</span><b class="neg" id="worstDay">-$610.00</b></div>
+  </div>
+</section>
+
+<section class="card tablebox">
+  <div class="tablehead"><h3>صفقات هذا الأسبوع</h3><span id="countLabel">17 صفقة</span></div>
+  <table><thead><tr><th>#</th><th>اسم الشركة</th><th>الاسترايك</th><th>سعر الشراء</th><th>سعر البيع</th><th>الربح</th><th>النسبة</th><th>الملاحظات</th></tr></thead><tbody id="tbody"></tbody></table>
+</section>
+
+<footer><div class="left"><span class="smallq">Q</span>Q OPTIONS TRACKER</div><div class="center">Stay Disciplined. Trust the Process.</div><div class="right" id="footDate"></div></footer>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+const demoData=[
+{date:'2025-05-18',symbol:'NVDA',strike:'1000',buy:12.50,sell:18.90,profit:640,pct:51.20,notes:'Breakout play'},
+{date:'2025-05-19',symbol:'SPY',strike:'532',buy:6.30,sell:10.80,profit:450,pct:71.43,notes:'Bull trend follow'},
+{date:'2025-05-19',symbol:'AAPL',strike:'195',buy:4.60,sell:6.90,profit:230,pct:50,notes:'Earnings play'},
+{date:'2025-05-20',symbol:'QQQ',strike:'445',buy:3.20,sell:4.90,profit:170,pct:53.13,notes:'Momentum'},
+{date:'2025-05-20',symbol:'META',strike:'510',buy:7.80,sell:7.00,profit:-80,pct:-10.26,notes:'Rejection'},
+{date:'2025-05-21',symbol:'AMD',strike:'150',buy:5.10,sell:1.20,profit:-390,pct:-76.47,notes:'Weak guidance'},
+{date:'2025-05-21',symbol:'TSLA',strike:'170',buy:8.20,sell:2.10,profit:-610,pct:-74.39,notes:'Stop hit'},
+{date:'2025-05-22',symbol:'COIN',strike:'240',buy:3.40,sell:2.80,profit:-60,pct:-17.65,notes:'News impact'},
+{date:'2025-05-22',symbol:'INTC',strike:'30',buy:1.20,sell:.80,profit:-40,pct:-33.33,notes:'Weak chart'},
+{date:'2025-05-22',symbol:'PLTR',strike:'20',buy:1.70,sell:1.10,profit:-5.29,pct:-5.29,notes:'Rejection'},
+{date:'2025-05-23',symbol:'RIVN',strike:'12',buy:.90,sell:.50,profit:-40.49,pct:-44.44,notes:'Stop hit'},
+{date:'2025-05-23',symbol:'SNAP',strike:'10',buy:.40,sell:.40,profit:0,pct:0,notes:'Trend down'},
+{date:'2025-05-23',symbol:'SOFI',strike:'7',buy:.30,sell:.30,profit:-7.14,pct:-57.14,notes:'Stop hit'},
+{date:'2025-05-24',symbol:'AMZN',strike:'190',buy:4.10,sell:6.60,profit:250,pct:60.98,notes:'Breakout'},
+{date:'2025-05-24',symbol:'MSFT',strike:'420',buy:5.40,sell:7.90,profit:250,pct:46.30,notes:'Trend'},
+{date:'2025-05-24',symbol:'GOOGL',strike:'175',buy:3.80,sell:5.10,profit:130,pct:34.21,notes:'Continuation'},
+{date:'2025-05-24',symbol:'NFLX',strike:'980',buy:9.20,sell:null,profit:0,pct:0,notes:'مفتوحة'}
+];
+let data=[...demoData];
+const $=x=>document.getElementById(x);
+function money(n){return (n<0?'-$':'$')+Math.abs(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function percent(n){return (n>0?'+':'')+(n||0).toFixed(2)+'%'}
+function fit(){
+  const s=$('stage'), v=$('viewport');
+  const scale=Math.min(1,(window.innerWidth-8)/1280);
+  s.style.transform=`scale(${scale})`;
+  v.style.height=(s.offsetHeight*scale)+'px';
+}
+window.addEventListener('resize',fit);
+
+function drawLine(canvas, vals){
+ const dpr=devicePixelRatio||1,w=canvas.clientWidth,h=canvas.clientHeight;canvas.width=w*dpr;canvas.height=h*dpr;const c=canvas.getContext('2d');c.scale(dpr,dpr);c.clearRect(0,0,w,h);
+ const pad={l:48,r:14,t:18,b:30}; const mn=Math.min(0,...vals),mx=Math.max(1,...vals),span=mx-mn||1;
+ c.strokeStyle='rgba(113,144,165,.22)';c.lineWidth=1;c.font='11px Arial';c.fillStyle='#9cb0bf';c.textAlign='right';
+ for(let i=0;i<5;i++){let y=pad.t+(h-pad.t-pad.b)*i/4;c.beginPath();c.moveTo(pad.l,y);c.lineTo(w-pad.r,y);c.stroke();let val=mx-span*i/4;c.fillText('$'+Math.round(val),pad.l-6,y+4)}
+ c.strokeStyle='#11a8ff';c.lineWidth=2.5;c.beginPath();
+ vals.forEach((v,i)=>{let x=pad.l+(w-pad.l-pad.r)*(i/(Math.max(1,vals.length-1)));let y=pad.t+(h-pad.t-pad.b)*(mx-v)/span;i?c.lineTo(x,y):c.moveTo(x,y)});c.stroke();
+}
+function drawBars(canvas, vals, labels){
+ const dpr=devicePixelRatio||1,w=canvas.clientWidth,h=canvas.clientHeight;canvas.width=w*dpr;canvas.height=h*dpr;const c=canvas.getContext('2d');c.scale(dpr,dpr);c.clearRect(0,0,w,h);
+ const pad={l:48,r:12,t:20,b:35};const mn=Math.min(0,...vals),mx=Math.max(1,...vals),span=mx-mn||1;const zero=pad.t+(h-pad.t-pad.b)*(mx/span);
+ c.strokeStyle='rgba(113,144,165,.22)';c.font='10px Arial';c.fillStyle='#9cb0bf';c.textAlign='center';
+ c.beginPath();c.moveTo(pad.l,zero);c.lineTo(w-pad.r,zero);c.stroke();
+ const bw=(w-pad.l-pad.r)/Math.max(1,vals.length)*.52;
+ vals.forEach((v,i)=>{let x=pad.l+(w-pad.l-pad.r)*(i+.5)/vals.length;let y=pad.t+(h-pad.t-pad.b)*(mx-v)/span;c.fillStyle=v>=0?'#2dbb3c':'#ef2f29';c.fillRect(x-bw/2,Math.min(y,zero),bw,Math.abs(zero-y));c.fillStyle='#d8e3ec';c.fillText(labels[i]?.slice(5)||'',x,h-12)})
+}
+function drawDonut(canvas,wins,losses){
+ const dpr=devicePixelRatio||1,w=canvas.clientWidth,h=canvas.clientHeight;canvas.width=w*dpr;canvas.height=h*dpr;const c=canvas.getContext('2d');c.scale(dpr,dpr);c.clearRect(0,0,w,h);
+ const total=wins+losses||1,cx=w*.43,cy=h*.53,r=Math.min(w,h)*.28,lw=r*.42; let a=-Math.PI/2;
+ [[wins,'#2dbc3f'],[losses,'#f1332d']].forEach(([v,col])=>{let e=a+Math.PI*2*v/total;c.beginPath();c.strokeStyle=col;c.lineWidth=lw;c.arc(cx,cy,r,a,e);c.stroke();a=e});
+ c.fillStyle='#fff';c.font='bold 30px Arial';c.textAlign='center';c.fillText(wins+losses,cx,cy+7);c.font='12px Arial';c.fillStyle='#9cb0bf';c.fillText('Total',cx,cy+26);
+ c.textAlign='right';c.font='14px Arial';c.fillStyle='#34d058';c.fillText(`أرباح ${wins}`,w-20,h*.43);c.fillStyle='#ff3b35';c.fillText(`خسائر ${losses}`,w-20,h*.60);
+}
+function renderTable(rows){
+ $('tbody').innerHTML=rows.map((t,i)=>`<tr><td>${i+1}</td><td dir="ltr">${t.symbol}</td><td>${t.strike}</td><td dir="ltr">$${(+t.buy).toFixed(2)}</td><td dir="ltr">${t.sell==null?'—':'$'+(+t.sell).toFixed(2)}</td><td class="${t.profit>0?'pos':t.profit<0?'neg':''}" dir="ltr">${t.sell==null&&t.profit===0?'<span style="color:#ffd21b">مفتوحة</span>':money(t.profit)}</td><td class="${t.pct>0?'pos':t.pct<0?'neg':''}" dir="ltr">${t.sell==null&&t.profit===0?'—':percent(t.pct)}</td><td>${t.notes||'—'}</td></tr>`).join('')
+}
+function render(){
+ const f=$('from').value,t=$('to').value;const rows=data.filter(x=>(!f||x.date>=f)&&(!t||x.date<=t));
+ const closed=rows.filter(x=>x.sell!=null||x.profit!==0), wins=closed.filter(x=>x.profit>0), losses=closed.filter(x=>x.profit<0);
+ const gross=wins.reduce((s,x)=>s+x.profit,0), loss=losses.reduce((s,x)=>s+x.profit,0), net=gross+loss;
+ const cost=closed.reduce((s,x)=>s+x.buy*100,0),ret=cost?net/cost*100:0,wr=closed.length?wins.length/closed.length*100:0;
+ $('nTrades').textContent=rows.length;$('net').textContent=money(net);$('ret').textContent=percent(ret);$('wins').textContent=wins.length;$('losses').textContent=losses.length;$('wr').textContent=wr.toFixed(2)+'%';
+ $('gross').textContent=money(gross);$('grossLoss').textContent=money(loss);$('summaryNet').textContent=money(net);
+ $('avgWin').textContent=money(wins.length?gross/wins.length:0);$('avgLoss').textContent=money(losses.length?loss/losses.length:0);$('pf').textContent=loss?(gross/Math.abs(loss)).toFixed(2):'∞';$('exp').textContent=money(closed.length?net/closed.length:0);
+ let eq=0,peak=0,mdd=0,curve=[];[...closed].sort((a,b)=>a.date.localeCompare(b.date)).forEach(x=>{eq+=x.profit;curve.push(eq);peak=Math.max(peak,eq);mdd=Math.min(mdd,eq-peak)});$('mdd').textContent=money(mdd);$('eqBadge').textContent=money(net);
+ const rets=closed.map(x=>x.pct/100),mean=rets.length?rets.reduce((a,b)=>a+b,0)/rets.length:0,variance=rets.length>1?rets.reduce((s,x)=>s+(x-mean)**2,0)/(rets.length-1):0;$('sharpe').textContent=variance?(mean/Math.sqrt(variance)*Math.sqrt(252)).toFixed(2):'0.00';
+ const best=[...closed].sort((a,b)=>b.profit-a.profit)[0];if(best){$('bestSym').textContent=best.symbol+' '+best.strike;$('bestMoney').textContent='+'+money(best.profit).replace('-','');$('bestPct').textContent=percent(best.pct)}
+ const by={};closed.forEach(x=>by[x.date]=(by[x.date]||0)+x.profit);const days=Object.keys(by).sort(),dvals=days.map(d=>by[d]);$('bestDay').textContent=money(dvals.length?Math.max(...dvals):0);$('worstDay').textContent=money(dvals.length?Math.min(...dvals):0);
+ $('countLabel').textContent=rows.length+' صفقة';renderTable(rows);drawLine($('equity'),curve.length?curve:[0]);drawBars($('daily'),dvals.length?dvals:[0],days.length?days:['']);drawDonut($('donut'),wins.length,losses.length);setTimeout(fit,30)
+}
+function setDates(){const ds=data.map(x=>x.date).filter(Boolean).sort();if(ds.length){$('from').value=ds[0];$('to').value=ds[ds.length-1]}}
+function val(r,names){for(const k in r){if(names.includes(String(k).trim().toLowerCase()))return r[k]}return''}
+function num(v){const n=Number(String(v??'').replace(/[$,%\s,]/g,''));return isNaN(n)?0:n}
+function normalize(rows){return rows.map(r=>{let buy=num(val(r,['buy','buy price','entry','سعر الشراء','الدخول'])),sellRaw=val(r,['sell','sell price','exit','سعر البيع','الخروج']),sell=sellRaw===''?null:num(sellRaw),profitRaw=val(r,['profit','p/l','pnl','الربح','صافي الربح']),profit=profitRaw===''?(sell==null?0:(sell-buy)*100):num(profitRaw),pctRaw=val(r,['pct','percent','percentage','النسبة','profit %']);return{date:String(val(r,['date','التاريخ','تاريخ'])||'').slice(0,10),symbol:String(val(r,['symbol','ticker','company','اسم الشركة','الشركة','السهم'])||'—'),strike:String(val(r,['strike','الاسترايك','سترايك'])||'—'),buy,sell,profit,pct:pctRaw===''?(buy&&sell!=null?(sell-buy)/buy*100:0):num(pctRaw),notes:String(val(r,['notes','note','الملاحظات','ملاحظات'])||'')}}).filter(x=>x.symbol!=='—'||x.date)}
+$('file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;const ext=file.name.split('.').pop().toLowerCase();let rows=[];
+ if(ext==='csv'){const txt=await file.text(),lines=txt.replace(/^\uFEFF/,'').split(/\r?\n/).filter(Boolean),heads=lines[0].split(',');rows=lines.slice(1).map(l=>{const a=l.split(','),o={};heads.forEach((h,i)=>o[h]=a[i]??'');return o})}
+ else{if(!window.XLSX){alert('تعذر تحميل قارئ Excel. جرّب CSV أو تأكد من الاتصال بالإنترنت.');return}const buf=await file.arrayBuffer(),wb=XLSX.read(buf,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]];rows=XLSX.utils.sheet_to_json(ws,{defval:''})}
+ data=normalize(rows);if(!data.length){alert('لم أتعرف على أعمدة الصفقات في الملف.');data=[...demoData]}setDates();render()
+});
+$('demo').onclick=()=>{data=[...demoData];setDates();render()};$('print').onclick=()=>window.print();$('from').onchange=render;$('to').onchange=render;
+$('footDate').textContent=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' - '+new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+setDates();render();fit();
+</script>
 </body>
 </html>
