@@ -765,3 +765,6 @@ trades=buildDemoTrades();
 updateFooterClock();
 setInterval(updateFooterClock,60000);
 render();
+
+// Q OPTIONS BUILD v7.1 — cache-busted live preview
+console.log('Q OPTIONS BUILD v7.1 LIVE PREVIEW');
