@@ -593,3 +593,155 @@ body.preview-open{overflow:hidden!important}
   .preview-head small{font-size:11px!important}
   .preview-download{min-width:250px!important;padding:12px 18px!important;font-size:16px!important}
 }
+
+
+/* ===== FINAL LIGHT CREAM + TOP TRADES REFINEMENT ===== */
+:root{
+  --cream:#fffdf8;
+  --cream-2:#fcf8ef;
+  --paper:#fffefd;
+  --paper-2:#fffdf9;
+  --paper-3:#fdf8ef;
+  --line:#eadfce;
+  --line-strong:#e3d2b8;
+}
+body{
+  background:
+    radial-gradient(circle at 14% 0%,rgba(217,180,109,.07),transparent 29%),
+    radial-gradient(circle at 88% 15%,rgba(255,255,255,.95),transparent 27%),
+    linear-gradient(135deg,#fffefc 0%,#fdf9f2 48%,#fffefc 100%);
+}
+.action-btn,.preview-download,.preview-close{
+  box-shadow:0 8px 0 #b8832d,0 15px 26px rgba(171,123,38,.22),inset 0 1px 0 rgba(255,255,255,.5)!important;
+}
+.preview-dialog{background:linear-gradient(180deg,#fffefb,#f9f3ea);border-color:#e4cfab}
+.preview-close{background:linear-gradient(180deg,#5d4420,#3f2d19)!important}
+.preview-download{min-width:300px;font-size:20px;font-weight:800;border-radius:18px}
+
+.refined-light.infographic-card{
+  width:1120px;
+  min-height:1570px;
+  padding:24px 24px 22px;
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 20% 6%, rgba(238,210,151,.10), transparent 24%),
+    linear-gradient(160deg,#fffefb 0%,#fbf7ef 48%,#fffdfa 100%);
+  border:1px solid #e4d3b6;
+}
+.refined-light .info-top-swoosh,.refined-light .info-bottom-swoosh{opacity:.55}
+.refined-light .info-header.compact{
+  grid-template-columns:1.18fr 1fr;
+  min-height:245px;
+  gap:16px;
+  align-items:center;
+}
+.refined-light .info-logo-wrap.wide{justify-content:flex-start;padding-right:8px}
+.refined-light .info-logo.bigger{width:540px;height:240px;filter:drop-shadow(0 12px 18px rgba(101,69,22,.10))}
+.refined-light .info-title.clean{padding-inline:0 6px;align-items:flex-start}
+.refined-light .info-brand.simple{font-size:76px;letter-spacing:.5px;color:#2f241a}
+.refined-light .info-brand-sub.simple{font-size:26px;letter-spacing:1.6px;color:#a3772c}
+.refined-light .info-report-en{font-size:58px;margin-top:10px}
+.refined-light .info-report-ar{font-size:34px;margin-top:6px}
+.refined-light .info-dates-under-logo{
+  display:flex;justify-content:center;align-items:center;
+  margin:2px auto 14px; width:min(760px,100%);
+  background:rgba(255,253,249,.96); border:1px solid #e4d1b0; border-radius:20px; padding:12px 18px;
+  box-shadow:0 10px 20px rgba(111,83,34,.07);
+}
+.refined-light .period-item.solo{justify-content:center;font-size:19px}
+.refined-light .period-meta{text-align:center}
+.refined-light .digital.smallish{font-size:26px;font-weight:700;color:#3b2d21}
+.refined-light .info-stats.refined-order{grid-template-columns:1.15fr .9fr .9fr 1.15fr .9fr;gap:10px}
+.refined-light .info-stat{min-height:136px;padding:12px 12px;background:rgba(255,253,248,.98)}
+.refined-light .info-stat .digital.number{font-size:58px!important}
+.refined-light .info-stat .digital.green{font-size:50px!important}
+.refined-light .info-stat .digital.red{font-size:50px!important}
+.refined-light .info-stat .digital.money,.refined-light .bigmoney{font-size:42px!important}
+.refined-light .info-stat-top{margin-bottom:4px}
+.refined-light .info-label b{font-size:15px}
+.refined-light .info-table-head.centered{justify-content:center}
+.refined-light .info-table-head h3{font-size:36px}
+.refined-light .info-table.roomy thead th{font-size:16px;padding:14px 6px}
+.refined-light .info-table.roomy tbody td{padding:14px 6px;font-size:18px}
+.refined-light .info-table .symbol-cell{font-size:26px}
+.refined-light .info-chip{min-width:72px;font-size:17px;padding:6px 10px}
+.refined-light .info-status{min-width:108px;justify-content:center;font-size:20px;padding:12px 8px;font-weight:900}
+.refined-light .info-status-icon,.refined-light .info-status small{display:none!important}
+.refined-light .info-bottom{grid-template-columns:1.08fr 1fr 1fr;gap:12px;margin-top:14px}
+.refined-light .info-box{min-height:240px;padding:18px;background:rgba(255,253,248,.98)}
+.refined-light .info-box h4{font-size:28px}
+.refined-light .return-ring{width:232px;height:232px}
+.refined-light .return-ring-content .digital{font-size:48px!important}
+.refined-light .quick-row .value{font-size:26px!important}
+.refined-light .info-contact.footer-only{
+  margin-top:16px; padding-top:14px; border-top:1px solid rgba(191,151,82,.35);
+  text-align:center; font-size:19px; color:#6f5936; font-weight:700;
+}
+.refined-light .info-contact.footer-only b{font-size:22px;color:#9f742c}
+.refined-light .info-disclaimer{display:none}
+
+.preview-modal[hidden]{display:none!important}
+
+
+/* ===== Logo made larger, transparent, and spread nicely across the top ===== */
+.hero-header{
+  grid-template-columns:1fr!important;
+  width:min(1380px,100%)!important;
+  gap:4px!important;
+  margin:0 auto 18px!important;
+}
+.hero-brand{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.hero-logo{
+  width:min(920px,98vw)!important;
+  height:clamp(250px,33vw,420px)!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  background:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  filter:drop-shadow(0 16px 20px rgba(164,118,38,.14))!important;
+}
+.title-block{
+  margin-top:-8px;
+}
+.refined-light .info-header.compact{
+  grid-template-columns:1fr!important;
+  min-height:auto!important;
+  gap:4px!important;
+}
+.refined-light .info-logo-wrap.wide{
+  justify-content:center!important;
+  width:100%;
+  padding:0!important;
+}
+.refined-light .info-logo.bigger{
+  width:min(760px,96%)!important;
+  height:280px!important;
+  object-fit:contain!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  filter:drop-shadow(0 12px 18px rgba(101,69,22,.10))!important;
+}
+.refined-light .info-title.clean{
+  align-items:center!important;
+  text-align:center!important;
+}
+.refined-light .info-dates-under-logo{
+  margin-top:8px!important;
+}
+@media(max-width:650px){
+  .hero-logo{
+    width:min(760px,100vw)!important;
+    height:250px!important;
+  }
+  .refined-light .info-logo.bigger{
+    width:min(620px,98%)!important;
+    height:220px!important;
+  }
+}
