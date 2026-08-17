@@ -15,7 +15,7 @@ const demoTrades = [
   {date:'2025-05-22',symbol:'RIVN',strike:'12',buy:.90,sell:.50,profit:-40.49,pct:-44.44,notes:'Stop hit'},
   {date:'2025-05-23',symbol:'SNAP',strike:'10',buy:.40,sell:.40,profit:0,pct:0,notes:'Trend down'},
   {date:'2025-05-23',symbol:'SOFI',strike:'7',buy:.30,sell:.30,profit:-7.14,pct:-57.14,notes:'Stop hit'},
-  {date:'2025-05-24',symbol:'NFLX',strike:'980',buy:9.20,sell:null,profit:0,pct:0,notes:'ÙÙØªÙØ­Ø©'},
+  {date:'2025-05-24',symbol:'NFLX',strike:'980',buy:9.20,sell:null,profit:0,pct:0,notes:'مفتوحة'},
   {date:'2025-05-24',symbol:'AMZN',strike:'190',buy:4.10,sell:6.60,profit:250,pct:60.98,notes:'Breakout'},
   {date:'2025-05-24',symbol:'MSFT',strike:'420',buy:5.40,sell:7.90,profit:250,pct:46.30,notes:'Trend'},
   {date:'2025-05-24',symbol:'GOOGL',strike:'175',buy:3.80,sell:5.10,profit:130,pct:34.21,notes:'Continuation'},
@@ -50,19 +50,19 @@ function getVal(row, aliases){
 }
 function normalizeRows(rows){
   return rows.map(r => {
-    const date = parseDate(getVal(r,['date','Ø§ÙØªØ§Ø±ÙØ®','ØªØ§Ø±ÙØ®']));
-    const symbol = getVal(r,['symbol','ticker','company','Ø§Ø³Ù Ø§ÙØ´Ø±ÙØ©','Ø§ÙØ´Ø±ÙØ©','Ø§ÙØ³ÙÙ']) || 'â';
-    const strike = getVal(r,['strike','Ø§ÙØ§Ø³ØªØ±Ø§ÙÙ','Ø³ØªØ±Ø§ÙÙ']) || 'â';
-    const buy = num(getVal(r,['buy','buy price','entry','Ø³Ø¹Ø± Ø§ÙØ´Ø±Ø§Ø¡','Ø§ÙØ¯Ø®ÙÙ']));
-    let sellRaw = getVal(r,['sell','sell price','exit','Ø³Ø¹Ø± Ø§ÙØ¨ÙØ¹','Ø§ÙØ®Ø±ÙØ¬']);
+    const date = parseDate(getVal(r,['date','التاريخ','تاريخ']));
+    const symbol = getVal(r,['symbol','ticker','company','اسم الشركة','الشركة','السهم']) || '—';
+    const strike = getVal(r,['strike','الاسترايك','سترايك']) || '—';
+    const buy = num(getVal(r,['buy','buy price','entry','سعر الشراء','الدخول']));
+    let sellRaw = getVal(r,['sell','sell price','exit','سعر البيع','الخروج']);
     const sell = sellRaw === '' ? null : num(sellRaw);
-    let profitRaw = getVal(r,['profit','p/l','pnl','Ø§ÙØ±Ø¨Ø­','Ø§ÙØ±Ø¨Ø­ ÙØ§ÙØ®Ø³Ø§Ø±Ø©','ØµØ§ÙÙ Ø§ÙØ±Ø¨Ø­']);
+    let profitRaw = getVal(r,['profit','p/l','pnl','الربح','الربح والخسارة','صافي الربح']);
     let profit = profitRaw === '' ? ((sell !== null ? sell - buy : 0) * 100) : num(profitRaw);
-    let pctRaw = getVal(r,['pct','percent','percentage','Ø§ÙÙØ³Ø¨Ø©','Ø§ÙÙØ³Ø¨Ø© %','profit %']);
+    let pctRaw = getVal(r,['pct','percent','percentage','النسبة','النسبة %','profit %']);
     let p = pctRaw === '' ? (buy ? ((sell ?? buy)-buy)/buy*100 : 0) : num(pctRaw);
-    const notes = getVal(r,['notes','note','Ø§ÙÙÙØ§Ø­Ø¸Ø§Øª','ÙÙØ§Ø­Ø¸Ø§Øª']) || '';
+    const notes = getVal(r,['notes','note','الملاحظات','ملاحظات']) || '';
     return {date,symbol:String(symbol),strike:String(strike),buy,sell,profit,pct:p,notes:String(notes)};
-  }).filter(x => x.symbol !== 'â' || x.date);
+  }).filter(x => x.symbol !== '—' || x.date);
 }
 function colorize(el, value){
   el.classList.remove('positive','negative','neutral');
@@ -98,13 +98,13 @@ function render(){
   colorize($('winRate'),winRate);
 
   const best = [...closed].sort((a,b)=>b.profit-a.profit)[0];
-  $('bestSymbol').textContent = best ? `${best.symbol} ${best.strike}` : 'â';
+  $('bestSymbol').textContent = best ? `${best.symbol} ${best.strike}` : '—';
   $('bestProfit').textContent = best ? `+${money(best.profit)}`.replace('+$','$') : '$0.00';
   $('bestPct').textContent = best ? pct(best.pct) : '0%';
 
   $('avgWin').textContent = money(avgWin); colorize($('avgWin'),avgWin);
   $('avgLoss').textContent = money(avgLoss); colorize($('avgLoss'),avgLoss);
-  $('profitFactor').textContent = pf === Infinity ? 'â' : pf.toFixed(2);
+  $('profitFactor').textContent = pf === Infinity ? '∞' : pf.toFixed(2);
   $('expectancy').textContent = money(expectancy); colorize($('expectancy'),expectancy);
 
   let peak = 0, eq = 0, maxDD = 0;
@@ -133,7 +133,7 @@ function render(){
   renderTable(filtered);
   renderCharts(ordered, byDay, wins.length, losses.length);
   $('equityFinal').textContent = money(net);
-  $('rowsCount').textContent = `${filtered.length} ØµÙÙØ©`;
+  $('rowsCount').textContent = `${filtered.length} صفقة`;
 }
 
 function renderTable(data){
@@ -143,18 +143,18 @@ function renderTable(data){
       <td dir="ltr">${t.symbol}</td>
       <td>${t.strike}</td>
       <td dir="ltr">${money(t.buy).replace('$','')}</td>
-      <td dir="ltr">${t.sell === null ? 'â' : money(t.sell).replace('$','')}</td>
-      <td class="${t.profit>0?'profit':t.profit<0?'loss':''}">${t.sell===null && t.profit===0 ? '<span style="color:#ffd11a">ÙÙØªÙØ­Ø©</span>' : money(t.profit)}</td>
-      <td class="${t.pct>0?'profit':t.pct<0?'loss':''}">${t.sell===null && t.profit===0 ? 'â' : pct(t.pct)}</td>
-      <td>${t.notes || 'â'}</td>
+      <td dir="ltr">${t.sell === null ? '—' : money(t.sell).replace('$','')}</td>
+      <td class="${t.profit>0?'profit':t.profit<0?'loss':''}">${t.sell===null && t.profit===0 ? '<span style="color:#ffd11a">مفتوحة</span>' : money(t.profit)}</td>
+      <td class="${t.pct>0?'profit':t.pct<0?'loss':''}">${t.sell===null && t.profit===0 ? '—' : pct(t.pct)}</td>
+      <td>${t.notes || '—'}</td>
     </tr>
   `).join('');
 }
 
 function chartDefaults(){
-  Chart.defaults.color = '#c5d1db';
+  Chart.defaults.color = '#6f604f';
   Chart.defaults.font.family = 'Cairo';
-  Chart.defaults.borderColor = 'rgba(96,123,145,.22)';
+  Chart.defaults.borderColor = 'rgba(163,137,99,.20)';
 }
 function renderCharts(ordered, byDay, winCount, lossCount){
   if (!window.Chart) return;
@@ -169,17 +169,17 @@ function renderCharts(ordered, byDay, winCount, lossCount){
 
   equityChart = new Chart($('equityChart'),{
     type:'line',
-    data:{labels:eqLabels,datasets:[{data:eqData,borderColor:'#13a9ff',backgroundColor:'rgba(19,169,255,.12)',fill:true,tension:.28,pointRadius:2,borderWidth:2}]},
+    data:{labels:eqLabels,datasets:[{data:eqData,borderColor:'#b88a3b',backgroundColor:'rgba(184,138,59,.14)',fill:true,tension:.28,pointRadius:2,borderWidth:2}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxRotation:0,autoSkip:true}},y:{ticks:{callback:v=>'$'+v}}}}
   });
   dailyChart = new Chart($('dailyChart'),{
     type:'bar',
-    data:{labels:days,datasets:[{data:vals,backgroundColor:vals.map(v=>v>=0?'#2fbb3d':'#f02b28'),borderWidth:0}]},
+    data:{labels:days,datasets:[{data:vals,backgroundColor:vals.map(v=>v>=0?'#4d9664':'#c45b52'),borderWidth:0}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v}}}}
   });
   winLossChart = new Chart($('winLossChart'),{
     type:'doughnut',
-    data:{labels:['Ø£Ø±Ø¨Ø§Ø­','Ø®Ø³Ø§Ø¦Ø±'],datasets:[{data:[winCount,lossCount],backgroundColor:['#2ab83c','#f02b28'],borderWidth:0}]},
+    data:{labels:['أرباح','خسائر'],datasets:[{data:[winCount,lossCount],backgroundColor:['#4d9664','#c45b52'],borderWidth:0}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'right',rtl:true,labels:{boxWidth:13}}}}
   });
 }
@@ -198,7 +198,7 @@ async function handleFile(file){
     trades = normalizeRows(rows);
   }
   if (!trades.length) {
-    alert('ÙÙ Ø£Ø¬Ø¯ ØµÙÙÙ ØµÙÙØ§Øª ØµØ§ÙØ­Ø©. ØªØ£ÙØ¯ ÙÙ Ø£Ø³ÙØ§Ø¡ Ø§ÙØ£Ø¹ÙØ¯Ø© Ø«Ù Ø¬Ø±ÙØ¨ ÙØ±Ø© Ø£Ø®Ø±Ù.');
+    alert('لم أجد صفوف صفقات صالحة. تأكد من أسماء الأعمدة ثم جرّب مرة أخرى.');
     return;
   }
   setRangeFromTrades();
