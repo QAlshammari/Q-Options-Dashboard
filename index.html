@@ -188,10 +188,15 @@
   <div id="previewModal" class="preview-modal no-print" hidden>
     <div class="preview-dialog">
       <button type="button" class="preview-close" id="previewClose" aria-label="إغلاق">×</button>
-      <div class="preview-head"><b>معاينة أهم الصفقات</b><small>يمكنك حفظ الصورة أو مشاركتها</small></div>
-      <div class="preview-body"><img id="previewImage" alt="Top Trades Preview"></div>
+      <div class="preview-head">
+        <b>معاينة أهم الصفقات</b>
+        <small>المعاينة تظهر فورًا — الحفظ يحولها إلى صورة عالية الدقة</small>
+      </div>
+      <div class="preview-body" id="previewBody">
+        <div id="previewContent" class="preview-live-content"></div>
+      </div>
       <div class="preview-actions">
-        <a id="previewDownload" class="preview-download" download="Q-Options-Top-Trades.png">تنزيل الصورة</a>
+        <button id="previewDownload" class="preview-download" type="button">حفظ / مشاركة الصورة</button>
       </div>
     </div>
   </div>
