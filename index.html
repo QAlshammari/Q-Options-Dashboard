@@ -185,6 +185,17 @@
     </footer>
   </div>
 
+  <div id="previewModal" class="preview-modal no-print" hidden>
+    <div class="preview-dialog">
+      <button type="button" class="preview-close" id="previewClose" aria-label="إغلاق">×</button>
+      <div class="preview-head"><b>معاينة أهم الصفقات</b><small>يمكنك حفظ الصورة أو مشاركتها</small></div>
+      <div class="preview-body"><img id="previewImage" alt="Top Trades Preview"></div>
+      <div class="preview-actions">
+        <a id="previewDownload" class="preview-download" download="Q-Options-Top-Trades.png">تنزيل الصورة</a>
+      </div>
+    </div>
+  </div>
+
   <!-- منطقة تصدير مخفية يتم بناؤها بالجافاسكربت -->
   <div id="exportStage" class="export-stage" aria-hidden="true"></div>
   <div id="toast" class="toast no-print" role="status"></div>
