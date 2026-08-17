@@ -3,109 +3,208 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f6f0e6" />
   <title>Q Options Tracker - Weekly Dashboard</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="Style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- اسم الملف مطابق تمامًا لملف GitHub -->
+  <link rel="stylesheet" href="Style.css">
 </head>
 <body>
+  <div class="page-glow page-glow-1"></div>
+  <div class="page-glow page-glow-2"></div>
+
   <div class="app-shell">
+
+    <!-- ========================= HEADER ========================= -->
     <header class="topbar">
-      <div class="brand">
-        <div class="q-logo">Q</div>
-        <div>
+
+      <div class="brand-card">
+        <div class="brand-logo-wrap">
+          <img src="QA.PNG" alt="Q Options Logo" class="brand-logo">
+        </div>
+        <div class="brand-copy">
           <strong>Q OPTIONS</strong>
           <span>TRACKER</span>
         </div>
       </div>
 
       <div class="title-block">
+        <div class="eyebrow">PERFORMANCE DASHBOARD</div>
         <h1>WEEKLY REPORT</h1>
         <h2>التقرير الأسبوعي</h2>
+
         <div class="date-range">
-          <span>📅</span>
-          <input id="fromDate" type="date">
+          <span class="date-icon">◷</span>
+          <div class="date-field">
+            <small>من</small>
+            <input id="fromDate" type="date" aria-label="من تاريخ">
+          </div>
           <span class="arrow">←</span>
-          <input id="toDate" type="date">
+          <div class="date-field">
+            <small>إلى</small>
+            <input id="toDate" type="date" aria-label="إلى تاريخ">
+          </div>
         </div>
       </div>
 
       <div class="telegram-card">
-        <small>قناة التوصيات</small>
-        <strong>✈ @Q_options</strong>
+        <span class="telegram-icon">✈</span>
+        <div>
+          <small>قناة التوصيات</small>
+          <strong>@Q_options</strong>
+        </div>
       </div>
     </header>
 
-    <section class="toolbar no-print">
-      <label class="upload-btn">
-        <input id="excelFile" type="file" accept=".xlsx,.xls,.csv" hidden>
-        <span>📊</span> رفع ملف Excel
-      </label>
-      <button id="demoBtn">↻ بيانات تجريبية</button>
-      <button id="printBtn">🖨 تصدير / طباعة PDF</button>
-      <span class="hint">يدعم Excel وCSV — ويتم تحديث الداشبورد تلقائيًا</span>
+    <!-- ========================= ACTIONS ========================= -->
+    <section class="actions-wrap no-print">
+      <div class="toolbar">
+
+        <label class="action-btn action-primary upload-btn" for="excelFile">
+          <input id="excelFile" type="file" accept=".xlsx,.xls,.csv" hidden>
+          <span class="action-icon">▦</span>
+          <span class="action-text">
+            <b>رفع ملف Excel</b>
+            <small>Excel / CSV</small>
+          </span>
+        </label>
+
+        <button id="demoBtn" class="action-btn" type="button">
+          <span class="action-icon">↻</span>
+          <span class="action-text">
+            <b>بيانات تجريبية</b>
+            <small>استعادة المثال</small>
+          </span>
+        </button>
+
+        <button id="printBtn" class="action-btn action-dark" type="button">
+          <span class="action-icon">▣</span>
+          <span class="action-text">
+            <b>تصدير / طباعة PDF</b>
+            <small>تقرير جاهز للطباعة</small>
+          </span>
+        </button>
+
+      </div>
+      <div class="toolbar-hint">
+        <span class="hint-dot"></span>
+        يدعم Excel وCSV ويتم تحديث جميع المؤشرات والرسوم تلقائيًا
+      </div>
     </section>
 
     <main>
+      <!-- ========================= STATS ========================= -->
       <section class="stats-grid">
         <article class="stat-card">
-          <div class="icon blue">⌁</div>
-          <div><span>إجمالي الصفقات</span><strong id="totalTrades">0</strong><small>Total Trades</small></div>
+          <div class="icon gold-soft">⌁</div>
+          <div class="stat-copy">
+            <span>إجمالي الصفقات</span>
+            <strong id="totalTrades">0</strong>
+            <small>Total Trades</small>
+          </div>
         </article>
+
         <article class="stat-card">
           <div class="icon green">$</div>
-          <div><span>إجمالي الربح</span><strong id="totalProfit">$0.00</strong><small>Total Profit</small></div>
+          <div class="stat-copy">
+            <span>إجمالي الربح</span>
+            <strong id="totalProfit">$0.00</strong>
+            <small>Total Profit</small>
+          </div>
         </article>
+
         <article class="stat-card">
-          <div class="icon purple">▥</div>
-          <div><span>نسبة العائد</span><strong id="returnPct">0%</strong><small>Return %</small></div>
+          <div class="icon bronze">%</div>
+          <div class="stat-copy">
+            <span>نسبة العائد</span>
+            <strong id="returnPct">0%</strong>
+            <small>Return %</small>
+          </div>
         </article>
+
         <article class="stat-card">
           <div class="icon green">✓</div>
-          <div><span>صفقات رابحة</span><strong id="wins">0</strong><small>Wins</small></div>
+          <div class="stat-copy">
+            <span>صفقات رابحة</span>
+            <strong id="wins">0</strong>
+            <small>Wins</small>
+          </div>
         </article>
+
         <article class="stat-card">
           <div class="icon red">✕</div>
-          <div><span>صفقات خاسرة</span><strong id="losses">0</strong><small>Losses</small></div>
+          <div class="stat-copy">
+            <span>صفقات خاسرة</span>
+            <strong id="losses">0</strong>
+            <small>Losses</small>
+          </div>
         </article>
-        <article class="stat-card">
+
+        <article class="stat-card featured-stat">
           <div class="icon gold">★</div>
-          <div><span>نسبة النجاح</span><strong id="winRate">0%</strong><small>Win Rate</small></div>
+          <div class="stat-copy">
+            <span>نسبة النجاح</span>
+            <strong id="winRate">0%</strong>
+            <small>Win Rate</small>
+          </div>
         </article>
       </section>
 
+      <!-- ========================= CHARTS ========================= -->
       <section class="charts-grid">
         <article class="panel chart-panel">
           <div class="panel-title">
-            <h3>منحنى الأداء التراكمي <span>(Equity Curve)</span></h3>
+            <div>
+              <span class="section-kicker">PERFORMANCE</span>
+              <h3>منحنى الأداء التراكمي <span>(Equity Curve)</span></h3>
+            </div>
             <span class="pill" id="equityFinal">$0.00</span>
           </div>
           <div class="canvas-wrap"><canvas id="equityChart"></canvas></div>
         </article>
 
         <article class="panel chart-panel">
-          <div class="panel-title"><h3>الأداء اليومي</h3></div>
+          <div class="panel-title">
+            <div>
+              <span class="section-kicker">DAILY RESULTS</span>
+              <h3>الأداء اليومي</h3>
+            </div>
+          </div>
           <div class="canvas-wrap"><canvas id="dailyChart"></canvas></div>
         </article>
 
         <article class="panel chart-panel">
-          <div class="panel-title"><h3>توزيع الربح / خسارة</h3></div>
+          <div class="panel-title">
+            <div>
+              <span class="section-kicker">WIN / LOSS</span>
+              <h3>توزيع الربح / الخسارة</h3>
+            </div>
+          </div>
           <div class="canvas-wrap donut-wrap"><canvas id="winLossChart"></canvas></div>
         </article>
       </section>
 
+      <!-- ========================= DETAILS ========================= -->
       <section class="details-grid">
         <article class="panel best-card">
           <h3>أفضل صفقة</h3>
-          <div class="medal">★</div>
+          <div class="medal-ring">
+            <div class="medal">★</div>
+          </div>
           <strong id="bestSymbol">—</strong>
           <div class="big-profit" id="bestProfit">+$0.00</div>
           <div class="big-percent" id="bestPct">0%</div>
         </article>
 
         <article class="panel metrics-panel">
-          <h3>مؤشرات الأداء</h3>
+          <div class="detail-title">
+            <span class="section-kicker">METRICS</span>
+            <h3>مؤشرات الأداء</h3>
+          </div>
           <div class="metric-row"><span>متوسط الربح للصفقة</span><b id="avgWin">$0.00</b></div>
           <div class="metric-row"><span>متوسط الخسارة للصفقة</span><b id="avgLoss">$0.00</b></div>
           <div class="metric-row"><span>Profit Factor</span><b id="profitFactor">0.00</b></div>
@@ -115,7 +214,10 @@
         </article>
 
         <article class="panel summary-panel">
-          <h3>ملخص الأسبوع</h3>
+          <div class="detail-title">
+            <span class="section-kicker">WEEKLY SUMMARY</span>
+            <h3>ملخص الأسبوع</h3>
+          </div>
           <div class="metric-row"><span>إجمالي الربح</span><b id="summaryGross">$0.00</b></div>
           <div class="metric-row"><span>إجمالي الخسارة</span><b id="summaryLoss">$0.00</b></div>
           <div class="metric-row"><span>صافي الربح</span><b id="summaryNet">$0.00</b></div>
@@ -124,11 +226,16 @@
         </article>
       </section>
 
+      <!-- ========================= TRADES TABLE ========================= -->
       <section class="panel trades-panel">
         <div class="panel-title table-heading">
-          <h3>صفقات هذا الأسبوع</h3>
-          <span id="rowsCount">0 صفقة</span>
+          <div>
+            <span class="section-kicker">TRADES</span>
+            <h3>صفقات هذا الأسبوع</h3>
+          </div>
+          <span class="rows-badge" id="rowsCount">0 صفقة</span>
         </div>
+
         <div class="table-scroll">
           <table>
             <thead>
@@ -149,15 +256,21 @@
       </section>
     </main>
 
+    <!-- ========================= FOOTER ========================= -->
     <footer>
-      <div class="footer-brand"><span class="mini-q">Q</span> Q OPTIONS TRACKER</div>
-      <div>Stay Disciplined. Trust the Process.</div>
+      <div class="footer-brand">
+        <img src="QA.PNG" alt="Q Options Logo" class="mini-logo">
+        <span>Q OPTIONS TRACKER</span>
+      </div>
+      <div class="footer-motto">Stay Disciplined. Trust the Process.</div>
       <div id="footerDate"></div>
     </footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="Script.js"></script>
+
+  <!-- اسم الملف مطابق تمامًا لملف GitHub -->
+  <script src="Script.js"></script>
 </body>
 </html>
