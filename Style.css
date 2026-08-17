@@ -1,18 +1,18 @@
 :root{
-  --cream:#f7f0e3;
-  --cream-2:#eee2cf;
-  --paper:#fffdf8;
-  --paper-2:#fbf6ed;
-  --paper-3:#f5ecde;
+  --cream:#fcf8f1;
+  --cream-2:#f6efe3;
+  --paper:#fffefb;
+  --paper-2:#fdf9f2;
+  --paper-3:#faf4ea;
   --gold:#b88a3b;
   --gold-dark:#7d5a20;
   --gold-light:#e8c983;
-  --gold-soft:#f3e3bd;
+  --gold-soft:#f7ead0;
   --brown:#382b20;
   --brown-2:#6a5949;
   --muted:#978775;
-  --line:#dfd0ba;
-  --line-strong:#cdb58e;
+  --line:#eadfce;
+  --line-strong:#dcc8a9;
   --green:#3f8b59;
   --green-soft:#e9f4ec;
   --red:#bb534b;
@@ -30,15 +30,15 @@ body{
   font-family:"Cairo",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   color:var(--brown);
   background:
-    radial-gradient(circle at 14% 0%,rgba(217,180,109,.20),transparent 29%),
+    radial-gradient(circle at 14% 0%,rgba(217,180,109,.10),transparent 29%),
     radial-gradient(circle at 88% 15%,rgba(255,255,255,.90),transparent 27%),
-    linear-gradient(135deg,#faf6ef 0%,#f2e9da 48%,#fcf9f3 100%);
+    linear-gradient(135deg,#fffdf9 0%,#faf4eb 48%,#fffefb 100%);
 }
 button,input{font:inherit}
 button{-webkit-tap-highlight-color:transparent}
 
 .page-glow{position:fixed;pointer-events:none;border-radius:50%;filter:blur(8px);z-index:0}
-.glow-one{width:440px;height:440px;top:-260px;right:-120px;background:rgba(210,166,84,.15)}
+.glow-one{width:440px;height:440px;top:-260px;right:-120px;background:rgba(210,166,84,.08)}
 .glow-two{width:370px;height:370px;bottom:-220px;left:-130px;background:rgba(255,255,255,.82)}
 
 .app-shell{position:relative;z-index:1;width:min(1480px,100%);margin:auto;padding:24px}
@@ -93,12 +93,12 @@ button{-webkit-tap-highlight-color:transparent}
 .arrow{color:var(--gold);font-size:23px;font-weight:900}
 
 /* ========================= 3D ACTION BAR ========================= */
-.actions-wrap{
+ .actions-wrap{
   margin:0 auto 22px;
   padding:15px;
-  border:1px solid rgba(192,160,110,.44);
+  border:1px solid rgba(192,160,110,.30);
   border-radius:23px;
-  background:rgba(255,253,248,.70);
+  background:rgba(255,254,250,.84);
   box-shadow:0 12px 32px rgba(89,65,36,.07),inset 0 1px 0 rgba(255,255,255,.95);
   backdrop-filter:blur(10px);
 }
@@ -523,4 +523,12 @@ footer{min-height:58px;display:grid;grid-template-columns:1fr 1fr 1fr;align-item
   .summary-panel .metric-row b{font-size:15px!important}
   .metrics-panel .metric-row,
   .summary-panel .metric-row{font-size:13px!important}
+}
+
+/* =========================================================
+   PREVIEW MODAL FIX — iOS / Safari
+   The hidden attribute must win over .preview-modal display:grid.
+   ========================================================= */
+.preview-modal[hidden]{
+  display:none !important;
 }
