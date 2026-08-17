@@ -34,23 +34,23 @@ function addDays(iso,days){
 function buildDemoTrades(){
   const {from} = currentWeekRange();
   return [
-    {date:addDays(from,0),symbol:'NVDA',strike:'1000',buy:12.50,sell:18.90,profit:640,pct:51.20,notes:'Breakout play'},
-    {date:addDays(from,0),symbol:'SPY',strike:'532',buy:6.30,sell:10.80,profit:450,pct:71.43,notes:'Bull trend follow'},
-    {date:addDays(from,1),symbol:'AAPL',strike:'195',buy:4.60,sell:6.90,profit:230,pct:50.00,notes:'Earnings play'},
-    {date:addDays(from,1),symbol:'QQQ',strike:'445',buy:3.20,sell:4.90,profit:170,pct:53.13,notes:'Momentum'},
-    {date:addDays(from,1),symbol:'META',strike:'510',buy:7.80,sell:7.00,profit:-80,pct:-10.26,notes:'Rejection'},
-    {date:addDays(from,2),symbol:'TSLA',strike:'170',buy:8.20,sell:2.10,profit:-610,pct:-74.39,notes:'Stop hit'},
-    {date:addDays(from,2),symbol:'AMD',strike:'150',buy:5.10,sell:1.20,profit:-390,pct:-76.47,notes:'Weak guidance'},
-    {date:addDays(from,2),symbol:'COIN',strike:'240',buy:3.40,sell:2.80,profit:-60,pct:-17.65,notes:'News impact'},
-    {date:addDays(from,3),symbol:'INTC',strike:'30',buy:1.20,sell:.80,profit:-40,pct:-33.33,notes:'Weak chart'},
-    {date:addDays(from,3),symbol:'PLTR',strike:'20',buy:1.70,sell:1.10,profit:-5.29,pct:-5.29,notes:'Rejection'},
-    {date:addDays(from,3),symbol:'RIVN',strike:'12',buy:.90,sell:.50,profit:-40.49,pct:-44.44,notes:'Stop hit'},
-    {date:addDays(from,4),symbol:'SNAP',strike:'10',buy:.40,sell:.40,profit:0,pct:0,notes:'Flat'},
-    {date:addDays(from,4),symbol:'SOFI',strike:'7',buy:.30,sell:.30,profit:-7.14,pct:-57.14,notes:'Stop hit'},
-    {date:addDays(from,4),symbol:'NFLX',strike:'980',buy:9.20,sell:null,profit:0,pct:0,notes:'مفتوحة'},
-    {date:addDays(from,4),symbol:'AMZN',strike:'190',buy:4.10,sell:6.60,profit:250,pct:60.98,notes:'Breakout'},
-    {date:addDays(from,4),symbol:'MSFT',strike:'420',buy:5.40,sell:7.90,profit:250,pct:46.30,notes:'Trend'},
-    {date:addDays(from,4),symbol:'GOOGL',strike:'175',buy:3.80,sell:5.10,profit:130,pct:34.21,notes:'Continuation'}
+    {date:addDays(from,0),symbol:'NVDA',option:'CALL',strike:'1000',buy:12.50,sell:18.90,profit:640,pct:51.20,notes:'Breakout play'},
+    {date:addDays(from,0),symbol:'SPY',option:'CALL',strike:'532',buy:6.30,sell:10.80,profit:450,pct:71.43,notes:'Bull trend follow'},
+    {date:addDays(from,1),symbol:'AAPL',option:'CALL',strike:'195',buy:4.60,sell:6.90,profit:230,pct:50.00,notes:'Earnings play'},
+    {date:addDays(from,1),symbol:'QQQ',option:'CALL',strike:'445',buy:3.20,sell:4.90,profit:170,pct:53.13,notes:'Momentum'},
+    {date:addDays(from,1),symbol:'META',option:'PUT',strike:'510',buy:7.80,sell:7.00,profit:-80,pct:-10.26,notes:'Rejection'},
+    {date:addDays(from,2),symbol:'TSLA',option:'PUT',strike:'170',buy:8.20,sell:2.10,profit:-610,pct:-74.39,notes:'Stop hit'},
+    {date:addDays(from,2),symbol:'AMD',option:'CALL',strike:'150',buy:5.10,sell:1.20,profit:-390,pct:-76.47,notes:'Weak guidance'},
+    {date:addDays(from,2),symbol:'COIN',option:'CALL',strike:'240',buy:3.40,sell:2.80,profit:-60,pct:-17.65,notes:'News impact'},
+    {date:addDays(from,3),symbol:'INTC',option:'PUT',strike:'30',buy:1.20,sell:.80,profit:-40,pct:-33.33,notes:'Weak chart'},
+    {date:addDays(from,3),symbol:'PLTR',option:'CALL',strike:'20',buy:1.70,sell:1.10,profit:-5.29,pct:-5.29,notes:'Rejection'},
+    {date:addDays(from,3),symbol:'RIVN',option:'PUT',strike:'12',buy:.90,sell:.50,profit:-40.49,pct:-44.44,notes:'Stop hit'},
+    {date:addDays(from,4),symbol:'SNAP',option:'PUT',strike:'10',buy:.40,sell:.40,profit:0,pct:0,notes:'Flat'},
+    {date:addDays(from,4),symbol:'SOFI',option:'CALL',strike:'7',buy:.30,sell:.30,profit:-7.14,pct:-57.14,notes:'Stop hit'},
+    {date:addDays(from,4),symbol:'NFLX',option:'CALL',strike:'980',buy:9.20,sell:null,profit:0,pct:0,notes:'مفتوحة'},
+    {date:addDays(from,4),symbol:'AMZN',option:'CALL',strike:'190',buy:4.10,sell:6.60,profit:250,pct:60.98,notes:'Breakout'},
+    {date:addDays(from,4),symbol:'MSFT',option:'CALL',strike:'420',buy:5.40,sell:7.90,profit:250,pct:46.30,notes:'Trend'},
+    {date:addDays(from,4),symbol:'GOOGL',option:'CALL',strike:'175',buy:3.80,sell:5.10,profit:130,pct:34.21,notes:'Continuation'}
   ];
 }
 
@@ -128,6 +128,7 @@ function normalizeRows(rows){
 
     const date = parseDate(pick(['date','trade date','التاريخ','تاريخ','تاريخ الصفقة'],0));
     const symbol = pick(['symbol','ticker','company','stock','اسم الشركة','اسم السهم','الشركة','السهم','الرمز'],1) || '—';
+    const option = String(pick(['option','type','contract type','نوع الخيار','الخيار','نوع العقد'],8) || '').trim().toUpperCase();
     const strike = pick(['strike','strike price','الاسترايك','سترايك','سعر الاسترايك'],2) || '—';
     const buy = num(pick(['buy','buy price','entry','entry price','سعر الشراء','سعر الدخول','الدخول'],3));
     const sellRaw = pick(['sell','sell price','exit','exit price','سعر البيع','سعر الخروج','الخروج'],4);
@@ -142,7 +143,7 @@ function normalizeRows(rows){
       : num(pctRaw);
     const notes = pick(['notes','note','remarks','الملاحظات','ملاحظات','ملاحظة'],7) || '';
 
-    return {date,symbol:String(symbol).trim(),strike:String(strike).trim(),buy,sell,profit,pct:p,notes:String(notes).trim()};
+    return {date,symbol:String(symbol).trim(),option,strike:String(strike).trim(),buy,sell,profit,pct:p,notes:String(notes).trim()};
   }).filter(x => x.symbol !== '—' || x.date);
 }
 
@@ -361,76 +362,162 @@ function topTrades(data,count=5){
 
 function logoSrc(){
   const img=$('mainLogo');
-  return img?.currentSrc || img?.src || 'QA.PNG';
+  return img?.currentSrc || img?.src || 'QQ.PNG';
 }
 
 function chartImage(chart){
   try{return chart?.toBase64Image('image/png',1) || ''}catch{return ''}
 }
 
+
+function tradeOptionLabel(trade){
+  const explicit=String(trade.option||'').toUpperCase();
+  if(explicit==='CALL' || explicit==='PUT') return explicit;
+  const notes=(trade.notes||'').toLowerCase();
+  if(notes.includes('put')) return 'PUT';
+  if(notes.includes('call')) return 'CALL';
+  return trade.pct >= 0 ? 'CALL' : 'PUT';
+}
+
+function tradeStatusMeta(trade){
+  if(trade.sell===null && trade.profit===0) return {cls:'open',labelAr:'مفتوحة',labelEn:'OPEN',icon:'◐'};
+  if(trade.profit < 0) return {cls:'loss',labelAr:'خاسرة',labelEn:'LOSS',icon:'✕'};
+  return {cls:'win',labelAr:'رابح',labelEn:'WIN',icon:'✓'};
+}
+
 function buildPdfTemplate(){
-  const filtered=getFilteredTrades();
-  const s=calculateStats(filtered);
-  const top=topTrades(filtered,10);
-  const rows=top.length?top.map((t,i)=>`
-    <tr><td>${i+1}</td><td dir="ltr">${escapeHtml(t.symbol)}</td><td>${escapeHtml(t.strike)}</td><td dir="ltr">${money(t.profit)}</td><td dir="ltr">${pct(t.pct)}</td><td>${escapeHtml(t.notes||'—')}</td></tr>`).join(''):
-    '<tr><td colspan="6">لا توجد صفقات ضمن الفترة المحددة</td></tr>';
-
-  return `
-    <div class="export-card" id="pdfCapture">
-      <div class="export-head">
-        <img src="${logoSrc()}" class="export-logo" alt="Q Options">
-        <div class="export-title"><h2>التقرير الأسبوعي</h2><p>Q OPTIONS • WEEKLY REPORT</p><div class="export-date">${formatRange()}</div></div>
-      </div>
-      <div class="export-stats">
-        <div class="export-stat"><span>إجمالي الصفقات</span><b>${filtered.length}</b></div>
-        <div class="export-stat"><span>صافي الربح</span><b style="color:${s.net>=0?'#3f8b59':'#bb534b'}">${money(s.net)}</b></div>
-        <div class="export-stat"><span>نسبة النجاح</span><b>${s.winRate.toFixed(2)}%</b></div>
-        <div class="export-stat"><span>نسبة العائد</span><b>${pct(s.returnP)}</b></div>
-      </div>
-      <div class="export-section"><h3>الرسوم الرئيسية</h3><div class="export-charts">
-        <div class="export-chart"><img src="${chartImage(equityChart)}" alt="Equity Curve"></div>
-        <div class="export-chart"><img src="${chartImage(dailyChart)}" alt="Daily Results"></div>
-      </div></div>
-      <div class="export-section"><h3>أهم الصفقات</h3><table class="export-table"><thead><tr><th>#</th><th>الشركة</th><th>الاسترايك</th><th>الربح</th><th>النسبة</th><th>ملاحظات</th></tr></thead><tbody>${rows}</tbody></table></div>
-      <div class="export-footer"><span>Q OPTIONS TRACKER</span><span>للتواصل وقناة التوصيات <b>@Q_options</b></span></div>
-    </div>`;
+  return buildShareTemplate(10);
 }
 
-function buildShareTemplate(){
+function buildShareTemplate(maxRows=10){
   const filtered=getFilteredTrades();
   const s=calculateStats(filtered);
-  const top=topTrades(filtered,5);
-  const rows=top.length?top.map(t=>`
-    <div class="share-trade">
-      <span class="symbol">${escapeHtml(t.symbol)}</span>
-      <span class="strike">Strike ${escapeHtml(t.strike)}</span>
-      <span class="profit" style="color:${t.profit>=0?'#3f8b59':'#bb534b'}">${money(t.profit)}</span>
-      <span class="percent" style="color:${t.pct>=0?'#3f8b59':'#bb534b'}">${pct(t.pct)}</span>
-    </div>`).join(''):'<div class="share-trade"><span class="symbol">لا توجد صفقات</span></div>';
+  const rowsData=topTrades(filtered,maxRows);
+  const periodText=`${$('fromDate').value || '—'} - ${$('toDate').value || '—'}`;
+  const winPct = s.closed.length ? (s.wins.length / s.closed.length * 100) : 0;
+  const neutralCount = Math.max(0, filtered.length - s.wins.length - s.losses.length);
+  const rows = rowsData.length ? rowsData.map(t=>{
+    const option=tradeOptionLabel(t);
+    const st=tradeStatusMeta(t);
+    return `
+      <tr>
+        <td class="symbol-cell"><div class="symbol-stack"><span>${escapeHtml(t.symbol)}</span></div></td>
+        <td><span class="info-chip ${option==='CALL'?'call':'put'}">${option}</span></td>
+        <td>${escapeHtml(t.strike)}</td>
+        <td dir="ltr">${money(t.buy)}</td>
+        <td dir="ltr">${t.sell===null?'—':money(t.sell)}</td>
+        <td class="info-profit ${t.profit>=0?'pos':'neg'}">${t.sell===null&&t.profit===0?'—':money(t.profit)}</td>
+        <td class="info-pct ${t.pct>=0?'pos':'neg'}">${t.sell===null&&t.profit===0?'—':pct(t.pct)}</td>
+        <td><span class="info-status ${st.cls}"><span class="info-status-icon">${st.icon}</span><span>${st.labelAr}<br><small>${st.labelEn}</small></span></span></td>
+      </tr>`;
+  }).join('') : `<tr><td colspan="8">لا توجد صفقات ضمن الفترة المحددة</td></tr>`;
 
   return `
-    <div class="share-card" id="shareCapture">
-      <div class="share-header">
-        <img src="${logoSrc()}" class="share-logo" alt="Q Options">
-        <h2>أهم صفقات الأسبوع</h2>
-        <p>WEEKLY HIGHLIGHTS</p>
-        <div class="share-date">${formatRange()}</div>
-      </div>
-      <div class="share-kpis">
-        <div class="share-kpi"><span>صافي الربح</span><b style="color:${s.net>=0?'#3f8b59':'#bb534b'}">${money(s.net)}</b></div>
-        <div class="share-kpi"><span>نسبة النجاح</span><b>${s.winRate.toFixed(2)}%</b></div>
-        <div class="share-kpi"><span>إجمالي الصفقات</span><b>${filtered.length}</b></div>
-      </div>
-      <div class="share-trades"><h3>TOP TRADES</h3>${rows}</div>
-      <div class="share-best"><small>أفضل صفقة</small><strong>${s.best?`${escapeHtml(s.best.symbol)} ${escapeHtml(s.best.strike)} • ${money(s.best.profit)} • ${pct(s.best.pct)}`:'—'}</strong></div>
-      <div class="share-footer">Q OPTIONS TRACKER • للتواصل <b>@Q_options</b></div>
-    </div>`;
-}
+    <div class="infographic-card" id="shareCapture">
+      <div class="info-top-swoosh"></div>
+      <div class="info-bottom-swoosh"></div>
 
-async function waitForImages(root){
-  const images=[...root.querySelectorAll('img')];
-  await Promise.all(images.map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.onload=resolve;img.onerror=resolve})));
+      <div class="info-header">
+        <div class="info-title">
+          <div class="info-brand"><span class="q">Q</span>OPTIONS</div>
+          <div class="info-brand-sub">US MARKET STOCKS</div>
+          <div class="info-report-en">WEEKLY REPORT</div>
+          <div class="info-report-ar">التقرير الأسبوعي</div>
+          <div class="info-period">
+            <div class="period-item"><span class="period-badge">📅</span><div><div>${periodText}</div><div class="period-meta">Trading Period  فترة التداول</div></div></div>
+            <div class="period-item"><span class="period-badge">✈</span><div><div dir="ltr">@Qalshammari</div><div class="period-meta">Telegram Channel  قناة التليجرام</div></div></div>
+          </div>
+        </div>
+        <div class="info-logo-wrap"><img src="${logoSrc()}" class="info-logo" alt="Q Options"></div>
+      </div>
+
+      <div class="info-stats">
+        <div class="info-stat">
+          <div class="info-stat-top"><span class="info-icon layers">▤</span><div class="info-label"><b>إجمالي الصفقات</b><small>TOTAL TRADES</small></div></div>
+          <div class="digital number">${filtered.length}</div>
+        </div>
+        <div class="info-stat featured">
+          <div class="info-stat-top"><div class="info-label"><b>TOTAL RETURN</b><small>إجمالي العائد</small></div></div>
+          <div class="digital green">${pct(s.returnP)}</div>
+        </div>
+        <div class="info-stat">
+          <div class="info-stat-top"><span class="info-icon win">✓</span><div class="info-label"><b>الصفقات الرابحة</b><small>WINNING TRADES</small></div></div>
+          <div class="digital green">${s.wins.length}</div>
+        </div>
+        <div class="info-stat">
+          <div class="info-stat-top"><span class="info-icon loss">✕</span><div class="info-label"><b>الصفقات الخاسرة</b><small>LOSING TRADES</small></div></div>
+          <div class="digital red">${s.losses.length}</div>
+        </div>
+        <div class="info-stat">
+          <div class="info-stat-top"><span class="info-icon cash">$</span><div class="info-label"><b>إجمالي الأرباح</b><small>TOTAL PROFIT</small></div></div>
+          <div class="digital money">${money(s.net)}</div>
+        </div>
+      </div>
+
+      <div class="infographic-table-panel">
+        <div class="info-table-head"><h3>أهم الصفقات</h3><span class="info-badge">${rowsData.length} TOP TRADES</span></div>
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>الرمز<br><small>SYMBOL</small></th>
+              <th>الخيار<br><small>OPTION</small></th>
+              <th>التنفيذ<br><small>STRIKE</small></th>
+              <th>سعر الشراء<br><small>BUY</small></th>
+              <th>سعر البيع<br><small>SELL</small></th>
+              <th>الأرباح<br><small>PROFIT</small></th>
+              <th>النسبة<br><small>%</small></th>
+              <th>الحالة<br><small>STATUS</small></th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+
+      <div class="info-bottom">
+        <div class="info-box">
+          <h4>توزيع نتائج الصفقات<small>Trade Distribution</small></h4>
+          <div class="donut-layout">
+            <div style="position:relative;width:170px;height:170px;display:grid;place-items:center">
+              <div class="donut-chart" style="--pct:${winPct.toFixed(2)}"></div>
+              <div class="donut-core"><b>${winPct.toFixed(0)}%</b><span>رابح</span></div>
+            </div>
+            <div class="donut-legend">
+              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot green"></span> رابحة</span><b>${s.wins.length} (${s.closed.length?((s.wins.length/s.closed.length)*100).toFixed(0):0}%)</b></div>
+              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot red"></span> خاسرة</span><b>${s.losses.length} (${s.closed.length?((s.losses.length/s.closed.length)*100).toFixed(0):0}%)</b></div>
+              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot gray"></span> محايدة</span><b>${neutralCount} (${filtered.length?((neutralCount/filtered.length)*100).toFixed(0):0}%)</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <h4>إحصائيات سريعة<small>QUICK STATISTICS</small></h4>
+          <div class="quick-list">
+            <div class="quick-row"><span class="name"><span class="mini blue">≣</span> إجمالي الصفقات</span><span class="value">${filtered.length}</span></div>
+            <div class="quick-row"><span class="name"><span class="mini green">✓</span> الصفقات الرابحة</span><span class="value green">${s.wins.length}</span></div>
+            <div class="quick-row"><span class="name"><span class="mini red">✕</span> الصفقات الخاسرة</span><span class="value red">${s.losses.length}</span></div>
+            <div class="quick-row"><span class="name"><span class="mini gray">◐</span> المحايدة</span><span class="value">${neutralCount}</span></div>
+            <div class="quick-row"><span class="name"><span class="mini gold">$</span> إجمالي الأرباح</span><span class="value green">${money(s.net)}</span></div>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <h4>TOTAL RETURN<small>إجمالي العائد</small></h4>
+          <div class="return-ring-wrap">
+            <div class="return-ring">
+              <div class="return-ring-arrow">↗</div>
+              <div class="return-ring-content">
+                <div class="en">TOTAL RETURN</div>
+                <div class="digital">${pct(s.returnP)}</div>
+                <div class="ar">إجمالي العائد</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-contact">للتواصل عبر تليجرام <b dir="ltr">@Qalshammari</b></div>
+      <div class="info-disclaimer">هذا التقرير لأغراض تعليمية فقط وليس توصية استثمارية<br><b>This report is for educational purposes only and is not investment advice</b></div>
+    </div>`;
 }
 
 function setExportBusy(busy){
