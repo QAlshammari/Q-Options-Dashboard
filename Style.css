@@ -818,3 +818,100 @@ body{
   .refined-light .info-header.logo-only{min-height:230px!important}
   .refined-light .info-header.logo-only .info-logo.bigger{height:225px!important;width:98%!important}
 }
+
+/* ===== صفحة الصفقات: رأس مطابق للمرجع، جدول عربي، وحالات نصية ===== */
+.refined-light .info-header.logo-only{
+  min-height:300px!important;
+}
+.refined-light .info-header.logo-only .info-logo.bigger{
+  width:min(1020px,100%)!important;
+  height:300px!important;
+}
+.trade-page-title{
+  position:relative;
+  z-index:2;
+  margin:-6px auto 22px;
+  text-align:center;
+  color:#2d2119;
+}
+.trade-eyebrow{
+  color:#9a6f2b;
+  font-family:"Orbitron","Courier New",monospace;
+  font-size:17px;
+  font-weight:800;
+  letter-spacing:5px;
+}
+.trade-title-en{
+  margin-top:9px;
+  font-family:"Orbitron","Courier New",monospace;
+  font-size:57px;
+  font-weight:900;
+  line-height:1.08;
+  letter-spacing:1px;
+}
+.trade-title-ar{
+  margin-top:12px;
+  color:#9a6f2b;
+  font-size:35px;
+  font-weight:900;
+}
+.refined-light .info-table.roomy thead th{
+  font-size:20px!important;
+  line-height:1.35!important;
+}
+.refined-light .info-table.roomy tbody td{
+  font-size:23px!important;
+  font-weight:900!important;
+  padding:17px 7px!important;
+}
+.refined-light .info-table .symbol-cell{
+  font-size:29px!important;
+}
+.refined-light .info-chip{
+  min-width:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  font-size:22px!important;
+}
+.refined-light .info-status{
+  display:inline!important;
+  min-width:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  font-size:23px!important;
+  font-weight:900!important;
+}
+.refined-light .info-status.win{background:transparent!important;color:#278c43!important}
+.refined-light .info-status.loss{background:transparent!important;color:#dc3f36!important}
+.refined-light .info-status.stopped{background:transparent!important;color:#20aeca!important}
+.preview-close,.preview-download{
+  position:relative;
+  overflow:hidden;
+  border:1px solid #b98633!important;
+  background:linear-gradient(180deg,#f4d795 0%,#b98129 48%,#805617 100%)!important;
+  color:#fff!important;
+  text-shadow:0 1px 1px rgba(55,31,5,.5);
+  box-shadow:0 8px 0 #68430f,0 14px 25px rgba(104,67,15,.28),inset 0 2px 0 rgba(255,255,255,.65)!important;
+}
+.preview-close::before,.preview-download::before{
+  content:"";
+  position:absolute;
+  inset:2px 8% auto;
+  height:42%;
+  border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.55),transparent);
+  pointer-events:none;
+}
+@media(max-width:650px){
+  .refined-light .info-header.logo-only{min-height:255px!important}
+  .refined-light .info-header.logo-only .info-logo.bigger{height:250px!important}
+  .trade-page-title{margin:-5px auto 18px}
+  .trade-eyebrow{font-size:14px;letter-spacing:4px}
+  .trade-title-en{font-size:48px}
+  .trade-title-ar{font-size:31px}
+}
