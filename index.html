@@ -1,78 +1,163 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>لوحة الصفقات - Q OPTIONS</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Q Options Tracker - Weekly Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
-  <div class="dashboard">
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="q-logo">Q</div>
+        <div>
+          <strong>Q OPTIONS</strong>
+          <span>TRACKER</span>
+        </div>
+      </div>
 
-    <header class="header">
-      <div class="logo">🐂</div>
-      <div class="title">
-        <h1>Q OPTIONS – US MARKET STOCKS</h1>
-        <p>لوحة إدخال الصفقات والتحليل</p>
+      <div class="title-block">
+        <h1>WEEKLY REPORT</h1>
+        <h2>التقرير الأسبوعي</h2>
+        <div class="date-range">
+          <span>📅</span>
+          <input id="fromDate" type="date">
+          <span class="arrow">←</span>
+          <input id="toDate" type="date">
+        </div>
+      </div>
+
+      <div class="telegram-card">
+        <small>قناة التوصيات</small>
+        <strong>✈ @Q_options</strong>
       </div>
     </header>
 
-    <div class="form-container">
-      <h3>إدخال صفقة جديدة</h3>
-
-      <form id="tradeForm">
-        <div class="form-row">
-          <input type="text" id="symbol" placeholder="Symbol (NVDA)" required>
-          <select id="option">
-            <option value="CALL">CALL</option>
-            <option value="PUT">PUT</option>
-          </select>
-          <input type="number" id="strike" placeholder="Strike" required>
-        </div>
-
-        <div class="form-row">
-          <input type="number" step="0.01" id="buy" placeholder="Buy Price" required>
-          <input type="number" step="0.01" id="sell" placeholder="Sell Price" required>
-          <select id="status">
-            <option value="win">Winning</option>
-            <option value="loss">Losing</option>
-          </select>
-        </div>
-
-        <button type="submit" class="gold-btn">إضافة الصفقة</button>
-      </form>
-    </div>
-
-    <section class="table-container">
-      <h3>الصفقات المدخلة</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Symbol</th><th>Option</th><th>Strike</th>
-            <th>Buy</th><th>Sell</th><th>Profit</th>
-            <th>%</th><th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="tradeTableBody"></tbody>
-      </table>
+    <section class="toolbar no-print">
+      <label class="upload-btn">
+        <input id="excelFile" type="file" accept=".xlsx,.xls,.csv" hidden>
+        <span>📊</span> رفع ملف Excel
+      </label>
+      <button id="demoBtn">↻ بيانات تجريبية</button>
+      <button id="printBtn">🖨 تصدير / طباعة PDF</button>
+      <span class="hint">يدعم Excel وCSV — ويتم تحديث الداشبورد تلقائيًا</span>
     </section>
 
-    <section class="charts">
-      <div class="chart-card">
-        <h3>نسبة الصفقات الرابحة والخاسرة</h3>
-        <canvas id="winLossChart"></canvas>
-      </div>
+    <main>
+      <section class="stats-grid">
+        <article class="stat-card">
+          <div class="icon blue">⌁</div>
+          <div><span>إجمالي الصفقات</span><strong id="totalTrades">0</strong><small>Total Trades</small></div>
+        </article>
+        <article class="stat-card">
+          <div class="icon green">$</div>
+          <div><span>إجمالي الربح</span><strong id="totalProfit">$0.00</strong><small>Total Profit</small></div>
+        </article>
+        <article class="stat-card">
+          <div class="icon purple">▥</div>
+          <div><span>نسبة العائد</span><strong id="returnPct">0%</strong><small>Return %</small></div>
+        </article>
+        <article class="stat-card">
+          <div class="icon green">✓</div>
+          <div><span>صفقات رابحة</span><strong id="wins">0</strong><small>Wins</small></div>
+        </article>
+        <article class="stat-card">
+          <div class="icon red">✕</div>
+          <div><span>صفقات خاسرة</span><strong id="losses">0</strong><small>Losses</small></div>
+        </article>
+        <article class="stat-card">
+          <div class="icon gold">★</div>
+          <div><span>نسبة النجاح</span><strong id="winRate">0%</strong><small>Win Rate</small></div>
+        </article>
+      </section>
 
-      <div class="chart-card">
-        <h3>الأرباح حسب الصفقة</h3>
-        <canvas id="profitChart"></canvas>
-      </div>
-    </section>
+      <section class="charts-grid">
+        <article class="panel chart-panel">
+          <div class="panel-title">
+            <h3>منحنى الأداء التراكمي <span>(Equity Curve)</span></h3>
+            <span class="pill" id="equityFinal">$0.00</span>
+          </div>
+          <div class="canvas-wrap"><canvas id="equityChart"></canvas></div>
+        </article>
 
+        <article class="panel chart-panel">
+          <div class="panel-title"><h3>الأداء اليومي</h3></div>
+          <div class="canvas-wrap"><canvas id="dailyChart"></canvas></div>
+        </article>
+
+        <article class="panel chart-panel">
+          <div class="panel-title"><h3>توزيع الربح / خسارة</h3></div>
+          <div class="canvas-wrap donut-wrap"><canvas id="winLossChart"></canvas></div>
+        </article>
+      </section>
+
+      <section class="details-grid">
+        <article class="panel best-card">
+          <h3>أفضل صفقة</h3>
+          <div class="medal">★</div>
+          <strong id="bestSymbol">—</strong>
+          <div class="big-profit" id="bestProfit">+$0.00</div>
+          <div class="big-percent" id="bestPct">0%</div>
+        </article>
+
+        <article class="panel metrics-panel">
+          <h3>مؤشرات الأداء</h3>
+          <div class="metric-row"><span>متوسط الربح للصفقة</span><b id="avgWin">$0.00</b></div>
+          <div class="metric-row"><span>متوسط الخسارة للصفقة</span><b id="avgLoss">$0.00</b></div>
+          <div class="metric-row"><span>Profit Factor</span><b id="profitFactor">0.00</b></div>
+          <div class="metric-row"><span>Expectancy</span><b id="expectancy">$0.00</b></div>
+          <div class="metric-row"><span>Max Drawdown</span><b id="maxDrawdown">$0.00</b></div>
+          <div class="metric-row"><span>Sharpe Ratio</span><b id="sharpe">0.00</b></div>
+        </article>
+
+        <article class="panel summary-panel">
+          <h3>ملخص الأسبوع</h3>
+          <div class="metric-row"><span>إجمالي الربح</span><b id="summaryGross">$0.00</b></div>
+          <div class="metric-row"><span>إجمالي الخسارة</span><b id="summaryLoss">$0.00</b></div>
+          <div class="metric-row"><span>صافي الربح</span><b id="summaryNet">$0.00</b></div>
+          <div class="metric-row"><span>أعلى ربح يومي</span><b id="bestDay">$0.00</b></div>
+          <div class="metric-row"><span>أعلى خسارة يومية</span><b id="worstDay">$0.00</b></div>
+        </article>
+      </section>
+
+      <section class="panel trades-panel">
+        <div class="panel-title table-heading">
+          <h3>صفقات هذا الأسبوع</h3>
+          <span id="rowsCount">0 صفقة</span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>اسم الشركة</th>
+                <th>الاسترايك</th>
+                <th>سعر الشراء</th>
+                <th>سعر البيع</th>
+                <th>الربح</th>
+                <th>النسبة</th>
+                <th>الملاحظات</th>
+              </tr>
+            </thead>
+            <tbody id="tradesBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-brand"><span class="mini-q">Q</span> Q OPTIONS TRACKER</div>
+      <div>Stay Disciplined. Trust the Process.</div>
+      <div id="footerDate"></div>
+    </footer>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="script.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
