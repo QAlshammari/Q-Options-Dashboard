@@ -475,6 +475,10 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
   const periodText=`${$('fromDate').value || '—'}  →  ${$('toDate').value || '—'}`;
   const winPct = s.counted.length ? (s.wins.length / s.counted.length * 100) : 0;
   const stoppedCount = s.stopped.length;
+  const lossPct = s.counted.length ? (s.losses.length / s.counted.length * 100) : 0;
+  const stoppedPct = s.counted.length ? (stoppedCount / s.counted.length * 100) : 0;
+  const returnChartPct = Math.max(0,Math.min(100,Math.abs(s.returnP)));
+  const returnChartColor = s.returnP < 0 ? '#e34b41' : '#2f9b50';
   const rows = rowsData.length ? rowsData.map(t=>{
     const option=tradeOptionLabel(t);
     const st=tradeStatusMeta(t);
@@ -535,8 +539,10 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
           <div class="return-ring-wrap">
             <div class="return-ring">
               <svg class="return-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
-                <circle class="ring-track" cx="60" cy="60" r="48" pathLength="100"/>
-                <circle class="ring-value" cx="60" cy="60" r="48" pathLength="100" stroke="#bd8525" stroke-dasharray="${Math.max(0,Math.min(100,s.returnP)).toFixed(2)} 100"/>
+                <circle class="ring-depth" cx="60" cy="63" r="47" pathLength="100"/>
+                <circle class="ring-track" cx="60" cy="60" r="47" pathLength="100"/>
+                <circle class="ring-gold" cx="60" cy="60" r="47" pathLength="100" stroke-dasharray="100 0"/>
+                <circle class="ring-value" cx="60" cy="60" r="47" pathLength="100" stroke="${returnChartColor}" stroke-dasharray="${returnChartPct.toFixed(2)} ${(100-returnChartPct).toFixed(2)}"/>
               </svg>
               <div class="return-ring-arrow">↗</div>
               <div class="return-ring-content">
@@ -563,8 +569,11 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
           <div class="donut-layout">
             <div style="position:relative;width:170px;height:170px;display:grid;place-items:center">
               <svg class="donut-svg" viewBox="0 0 120 120" aria-hidden="true">
-                <circle class="donut-track" cx="60" cy="60" r="46" pathLength="100"/>
-                <circle class="donut-value" cx="60" cy="60" r="46" pathLength="100" stroke="#2f9b50" stroke-dasharray="${winPct.toFixed(2)} 100"/>
+                <circle class="donut-depth" cx="60" cy="63" r="45" pathLength="100"/>
+                <circle class="donut-track" cx="60" cy="60" r="45" pathLength="100"/>
+                <circle class="donut-segment donut-win" cx="60" cy="60" r="45" pathLength="100" stroke="#2f9b50" stroke-dasharray="${winPct.toFixed(2)} ${(100-winPct).toFixed(2)}" stroke-dashoffset="0"/>
+                <circle class="donut-segment donut-loss" cx="60" cy="60" r="45" pathLength="100" stroke="#e34b41" stroke-dasharray="${lossPct.toFixed(2)} ${(100-lossPct).toFixed(2)}" stroke-dashoffset="-${winPct.toFixed(2)}"/>
+                <circle class="donut-segment donut-stopped" cx="60" cy="60" r="45" pathLength="100" stroke="#20aeca" stroke-dasharray="${stoppedPct.toFixed(2)} ${(100-stoppedPct).toFixed(2)}" stroke-dashoffset="-${(winPct+lossPct).toFixed(2)}"/>
               </svg>
               <div class="donut-core"><b>${winPct.toFixed(0)}%</b><span>رابح</span></div>
             </div>
