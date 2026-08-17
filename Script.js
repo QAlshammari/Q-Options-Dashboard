@@ -174,13 +174,14 @@ function calculateStats(data){
   const wins = closed.filter(t => tradeOutcome(t) === 'win');
   const stopped = closed.filter(t => tradeOutcome(t) === 'stopped');
   const losses = closed.filter(t => tradeOutcome(t) === 'loss');
+  const counted = closed.filter(t => ['win','loss','stopped'].includes(tradeOutcome(t)));
   const negativeTrades = [...losses,...stopped];
   const grossWin = wins.reduce((s,t)=>s+t.profit,0);
   const grossLoss = negativeTrades.reduce((s,t)=>s+t.profit,0);
   const net = closed.reduce((s,t)=>s+t.profit,0);
   const totalCost = closed.reduce((s,t)=>s+(Math.abs(t.buy)*100),0);
   const returnP = totalCost ? net/totalCost*100 : 0;
-  const winRate = closed.length ? wins.length/closed.length*100 : 0;
+  const winRate = counted.length ? wins.length/counted.length*100 : 0;
   const avgWin = wins.length ? grossWin/wins.length : 0;
   const avgLoss = negativeTrades.length ? grossLoss/negativeTrades.length : 0;
   const pf = grossLoss ? grossWin/Math.abs(grossLoss) : (grossWin ? Infinity : 0);
@@ -202,7 +203,7 @@ function calculateStats(data){
   const worstDay=dayVals.length ? Math.min(...dayVals) : 0;
   const best=[...closed].sort((a,b)=>b.profit-a.profit)[0] || null;
 
-  return {closed,wins,stopped,losses,grossWin,grossLoss,net,totalCost,returnP,winRate,avgWin,avgLoss,pf,expectancy,maxDD,sharpe,ordered,byDay,bestDay,worstDay,best};
+  return {closed,counted,wins,stopped,losses,grossWin,grossLoss,net,totalCost,returnP,winRate,avgWin,avgLoss,pf,expectancy,maxDD,sharpe,ordered,byDay,bestDay,worstDay,best};
 }
 
 function render(){
@@ -470,9 +471,9 @@ function buildPdfTemplate(){
 function buildShareTemplate(maxRows=10, captureId="shareCapture"){
   const filtered=getFilteredTrades();
   const s=calculateStats(filtered);
-  const rowsData=[...filtered].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || String(a.symbol).localeCompare(String(b.symbol)));
+  const rowsData=[...s.counted].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || String(a.symbol).localeCompare(String(b.symbol)));
   const periodText=`${$('fromDate').value || '—'}  →  ${$('toDate').value || '—'}`;
-  const winPct = s.closed.length ? (s.wins.length / s.closed.length * 100) : 0;
+  const winPct = s.counted.length ? (s.wins.length / s.counted.length * 100) : 0;
   const stoppedCount = s.stopped.length;
   const rows = rowsData.length ? rowsData.map(t=>{
     const option=tradeOptionLabel(t);
@@ -524,7 +525,7 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
         </div>
         <div class="info-stat">
           <div class="info-stat-top"><span class="info-icon layers">▤</span><div class="info-label"><b>إجمالي الصفقات</b></div></div>
-          <div class="digital number">${filtered.length}</div>
+          <div class="digital number">${s.counted.length}</div>
         </div>
       </div>
 
@@ -534,9 +535,8 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
           <div class="return-ring-wrap">
             <div class="return-ring">
               <svg class="return-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
-                <defs><linearGradient id="returnGold-${captureId}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0a8"/><stop offset=".48" stop-color="#d4a13d"/><stop offset="1" stop-color="#8b5b14"/></linearGradient></defs>
                 <circle class="ring-track" cx="60" cy="60" r="48" pathLength="100"/>
-                <circle class="ring-value" cx="60" cy="60" r="48" pathLength="100" stroke="url(#returnGold-${captureId})" stroke-dasharray="${Math.max(0,Math.min(100,s.returnP)).toFixed(2)} 100"/>
+                <circle class="ring-value" cx="60" cy="60" r="48" pathLength="100" stroke="#bd8525" stroke-dasharray="${Math.max(0,Math.min(100,s.returnP)).toFixed(2)} 100"/>
               </svg>
               <div class="return-ring-arrow">↗</div>
               <div class="return-ring-content">
@@ -550,7 +550,7 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
         <div class="info-box">
           <h4>إحصائيات سريعة</h4>
           <div class="quick-list">
-            <div class="quick-row"><span class="name"><span class="mini blue">≣</span> إجمالي الصفقات</span><span class="value">${filtered.length}</span></div>
+            <div class="quick-row"><span class="name"><span class="mini blue">≣</span> إجمالي الصفقات</span><span class="value">${s.counted.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini green">✓</span> الصفقات الرابحة</span><span class="value green">${s.wins.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini red">✕</span> الصفقات الخاسرة</span><span class="value red">${s.losses.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini cyan">Ⅱ</span> الصفقات الموقوفة</span><span class="value cyan">${stoppedCount}</span></div>
@@ -563,9 +563,8 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
           <div class="donut-layout">
             <div style="position:relative;width:170px;height:170px;display:grid;place-items:center">
               <svg class="donut-svg" viewBox="0 0 120 120" aria-hidden="true">
-                <defs><linearGradient id="winGreen-${captureId}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9be1ac"/><stop offset="1" stop-color="#27884c"/></linearGradient></defs>
                 <circle class="donut-track" cx="60" cy="60" r="46" pathLength="100"/>
-                <circle class="donut-value" cx="60" cy="60" r="46" pathLength="100" stroke="url(#winGreen-${captureId})" stroke-dasharray="${winPct.toFixed(2)} 100"/>
+                <circle class="donut-value" cx="60" cy="60" r="46" pathLength="100" stroke="#2f9b50" stroke-dasharray="${winPct.toFixed(2)} 100"/>
               </svg>
               <div class="donut-core"><b>${winPct.toFixed(0)}%</b><span>رابح</span></div>
             </div>
