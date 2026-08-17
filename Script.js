@@ -566,22 +566,10 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
 
         <div class="info-box">
           <h4>توزيع نتائج الصفقات</h4>
-          <div class="donut-layout">
-            <div style="position:relative;width:170px;height:170px;display:grid;place-items:center">
-              <svg class="donut-svg" viewBox="0 0 120 120" aria-hidden="true">
-                <circle class="donut-depth" cx="60" cy="63" r="45" pathLength="100"/>
-                <circle class="donut-track" cx="60" cy="60" r="45" pathLength="100"/>
-                <circle class="donut-segment donut-win" cx="60" cy="60" r="45" pathLength="100" stroke="#2f9b50" stroke-dasharray="${winPct.toFixed(2)} ${(100-winPct).toFixed(2)}" stroke-dashoffset="0"/>
-                <circle class="donut-segment donut-loss" cx="60" cy="60" r="45" pathLength="100" stroke="#e34b41" stroke-dasharray="${lossPct.toFixed(2)} ${(100-lossPct).toFixed(2)}" stroke-dashoffset="-${winPct.toFixed(2)}"/>
-                <circle class="donut-segment donut-stopped" cx="60" cy="60" r="45" pathLength="100" stroke="#20aeca" stroke-dasharray="${stoppedPct.toFixed(2)} ${(100-stoppedPct).toFixed(2)}" stroke-dashoffset="-${(winPct+lossPct).toFixed(2)}"/>
-              </svg>
-              <div class="donut-core"><b>${winPct.toFixed(0)}%</b><span>رابح</span></div>
-            </div>
-            <div class="donut-legend">
-              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot green"></span> رابحة</span><b>${s.wins.length}</b></div>
-              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot red"></span> خاسرة</span><b>${s.losses.length}</b></div>
-              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot cyan"></span> موقوفة</span><b>${stoppedCount}</b></div>
-            </div>
+          <div class="result-bars">
+            <div class="result-bar-row win"><div class="result-bar-head"><span>رابحة</span><b>${s.wins.length}</b></div><div class="result-bar-track"><i style="width:${winPct.toFixed(2)}%"></i></div></div>
+            <div class="result-bar-row loss"><div class="result-bar-head"><span>خاسرة</span><b>${s.losses.length}</b></div><div class="result-bar-track"><i style="width:${lossPct.toFixed(2)}%"></i></div></div>
+            <div class="result-bar-row stopped"><div class="result-bar-head"><span>موقوفة</span><b>${stoppedCount}</b></div><div class="result-bar-track"><i style="width:${stoppedPct.toFixed(2)}%"></i></div></div>
           </div>
         </div>
       </div>
