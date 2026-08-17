@@ -1820,3 +1820,155 @@ body{
   .table-week-date{font-size:14px;min-height:42px;padding:6px 10px}
   .week-date-icon{width:27px;height:27px}
 }
+
+/* =========================================================
+   FINAL28 — صناديق ملخص الصفقات مثل فخامة الرئيسية
+   ========================================================= */
+.refined-light .info-stats.refined-order{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-auto-rows:118px!important;
+  gap:10px!important;
+  perspective:none!important;
+}
+.refined-light .info-stat,
+.refined-light .info-stat:nth-child(1),
+.refined-light .info-stat:nth-child(2),
+.refined-light .info-stat:nth-child(3),
+.refined-light .info-stat:nth-child(4),
+.refined-light .info-stat:nth-child(5),
+.refined-light .info-stat:nth-child(6){
+  height:118px!important;
+  min-height:118px!important;
+  padding:8px 11px 10px!important;
+  transform:none!important;
+  overflow:hidden!important;
+  border:1px solid #dfc27f!important;
+  border-bottom:7px solid #a56d17!important;
+  border-radius:17px!important;
+  background:linear-gradient(180deg,#fffef9 0%,#fff9e9 48%,#e9bd62 100%)!important;
+  box-shadow:0 9px 18px rgba(117,75,18,.16),inset 0 2px 0 #fff!important;
+}
+.refined-light .info-stat::before{
+  display:block!important;
+  z-index:0!important;
+  inset:2px 8% auto!important;
+  height:38%!important;
+  border-radius:14px 14px 55% 55%!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,0))!important;
+}
+.refined-light .info-stat>*{position:relative;z-index:1}
+.refined-light .info-stat:nth-child(2){
+  border-bottom-color:#b83f35!important;
+  box-shadow:0 9px 18px rgba(208,63,51,.18),0 0 16px rgba(231,74,61,.10),inset 0 2px 0 #fff!important;
+}
+.refined-light .info-stat:nth-child(3){
+  border-bottom-color:#2f8b50!important;
+  box-shadow:0 9px 18px rgba(42,146,78,.18),0 0 16px rgba(57,180,94,.10),inset 0 2px 0 #fff!important;
+}
+.refined-light .info-stat:nth-child(4){
+  border-bottom-color:#168fa5!important;
+  box-shadow:0 9px 18px rgba(27,157,181,.18),0 0 16px rgba(39,186,211,.11),inset 0 2px 0 #fff!important;
+}
+.refined-light .info-stat.featured{
+  animation:none!important;
+  border:1px solid #d7aa3c!important;
+  border-bottom:7px solid #9d6512!important;
+  background:linear-gradient(180deg,#fffef7 0%,#fff0a8 54%,#d6a037 100%)!important;
+  box-shadow:0 10px 20px rgba(190,130,29,.24),0 0 19px rgba(232,181,62,.18),inset 0 2px 0 #fff!important;
+}
+.refined-light .info-stat.featured::after{display:none!important}
+.refined-light .info-stat .info-icon{
+  width:32px!important;
+  height:32px!important;
+  border-radius:10px!important;
+  transform:none!important;
+  box-shadow:0 4px 0 rgba(83,52,12,.24),0 0 12px currentColor,inset 0 2px 0 rgba(255,255,255,.75)!important;
+}
+.refined-light .info-stat-top{margin-bottom:1px!important}
+.refined-light .info-label b{font-size:16px!important}
+.refined-light .info-stat .digital.number,
+.refined-light .info-stat .digital.green,
+.refined-light .info-stat .digital.red,
+.refined-light .info-stat .digital.cyan{font-size:38px!important}
+.refined-light .info-stat .digital.money{font-size:34px!important}
+.refined-light .info-stat.featured .digital{font-size:40px!important;text-shadow:0 1px 0 #fff,0 0 9px rgba(54,170,81,.34)!important}
+
+/* المستطيلات بنفس العائلة البصرية ومن دون شطب العناوين */
+.refined-light .info-box{
+  transform:none!important;
+  overflow:hidden!important;
+  border:1px solid #ddc081!important;
+  border-bottom:8px solid #a56f20!important;
+  background:linear-gradient(180deg,#fffef9,#fff8e9 58%,#e8c67e)!important;
+  box-shadow:0 11px 20px rgba(111,72,20,.15),inset 0 2px 0 #fff!important;
+}
+.refined-light .info-box::before{
+  display:block!important;
+  z-index:0!important;
+  inset:2px 8% auto!important;
+  height:28%!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.75),transparent)!important;
+}
+.refined-light .info-box>*{position:relative!important;z-index:1!important}
+.refined-light .info-box h4{color:#3a2918!important;opacity:1!important;text-decoration:none!important}
+.donut-svg,.return-ring-svg{display:block!important;visibility:visible!important;opacity:1!important}
+
+/* حفظ ثابت: نفس الشكل دون مؤثرات تشوه Safari */
+.capture-mode .info-stat,
+.capture-mode .info-stat:nth-child(1),
+.capture-mode .info-stat:nth-child(2),
+.capture-mode .info-stat:nth-child(3),
+.capture-mode .info-stat:nth-child(4),
+.capture-mode .info-stat:nth-child(5),
+.capture-mode .info-stat:nth-child(6){
+  background:#fff7df!important;
+  border:2px solid #dfc482!important;
+  border-bottom:7px solid #a77220!important;
+  box-shadow:none!important;
+}
+.capture-mode .info-stat:nth-child(2){border-bottom-color:#b94036!important}
+.capture-mode .info-stat:nth-child(3){border-bottom-color:#328c51!important}
+.capture-mode .info-stat:nth-child(4){border-bottom-color:#198fa5!important}
+.capture-mode .info-stat::before{display:none!important}
+.capture-mode .info-box{background:#fff8e8!important;box-shadow:none!important}
+.capture-mode .info-box::before{display:none!important}
+@media(max-width:650px){
+  .refined-light .info-stats.refined-order{grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:108px!important;gap:8px!important}
+  .refined-light .info-stat,
+  .refined-light .info-stat:nth-child(n){height:108px!important;min-height:108px!important;padding:7px 8px!important}
+  .refined-light .info-label b{font-size:14px!important}
+  .refined-light .info-stat .digital.number,
+  .refined-light .info-stat .digital.green,
+  .refined-light .info-stat .digital.red,
+  .refined-light .info-stat .digital.cyan{font-size:34px!important}
+  .refined-light .info-stat .digital.money{font-size:30px!important}
+}
+/* FINAL29 — بروز ذهبي ناعم لقسم جميع الصفقات داخل الصورة المحفوظة */
+.refined-light .infographic-table-panel{
+  position:relative;
+  isolation:isolate;
+  border:0!important;
+  border-radius:24px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(255,250,239,.96))!important;
+  box-shadow:0 7px 0 rgba(177,119,27,.32),0 16px 30px rgba(118,75,17,.15),inset 0 2px 0 rgba(255,255,255,.98),inset 0 -8px 18px rgba(214,164,70,.08)!important;
+}
+.refined-light .infographic-table-panel::before{
+  content:"";
+  position:absolute;
+  inset:7px 9px 11px;
+  z-index:-1;
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(255,255,255,.68),rgba(226,178,85,.08));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+  pointer-events:none;
+}
+.capture-mode .infographic-table-panel{
+  border:0!important;
+  background:#fffaf0!important;
+  box-shadow:0 7px 0 #d4aa62,0 15px 26px rgba(112,72,18,.17),inset 0 2px 0 #fff!important;
+}
+.capture-mode .infographic-table-panel::before{
+  display:block!important;
+  background:#fffdf8!important;
+  box-shadow:inset 0 1px 0 #fff!important;
+}
