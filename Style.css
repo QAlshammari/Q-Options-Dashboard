@@ -198,6 +198,53 @@ footer{min-height:58px;display:grid;grid-template-columns:1fr 1fr 1fr;align-item
   .trades-panel{padding:7px}.table-heading h3{font-size:16px}table{font-size:10px}
   footer{grid-template-columns:1fr;text-align:center;padding:14px 6px 3px;gap:4px;font-size:9px}.footer-contact{text-align:center}footer>div:last-child{text-align:center}
 }
+.saved-image-wrap{width:100%;text-align:center}
+.saved-image-hint{
+  margin:4px auto 10px;
+  padding:10px 12px;
+  border:1px solid #dfc28a;
+  border-radius:12px;
+  background:#fff7e6;
+  color:#604319;
+  font-size:14px;
+  font-weight:800;
+}
+.saved-trades-image{
+  display:block;
+  width:100%;
+  height:auto;
+  margin:0 auto;
+  border-radius:14px;
+  box-shadow:0 10px 28px rgba(70,47,16,.18);
+  -webkit-touch-callout:default;
+  user-select:auto;
+}
+
+/* جميع نصوص مربعات صفحة الصفقات عربية وواضحة */
+.refined-light .info-label b{
+  display:block!important;
+  font-size:21px!important;
+  line-height:1.35!important;
+  font-weight:900!important;
+}
+.refined-light .info-label small,
+.refined-light .info-box h4 small{
+  display:none!important;
+}
+.refined-light .info-box h4{
+  font-size:32px!important;
+  line-height:1.3!important;
+  font-weight:900!important;
+}
+.refined-light .period-meta{
+  font-size:20px!important;
+  font-weight:900!important;
+}
+.refined-light .quick-row .name,
+.refined-light .donut-legend{
+  font-size:22px!important;
+  font-weight:900!important;
+}
 
 @media(max-width:390px){
   .hero-logo{height:215px}.title-block h1{font-size:31px}.title-block h2{font-size:19px}.date-range input{max-width:115px;font-size:10px}.action-btn{min-height:74px}.stat-card{flex-direction:column}.stat-copy strong{font-size:17px}
@@ -821,11 +868,35 @@ body{
 
 /* ===== صفحة الصفقات: رأس مطابق للمرجع، جدول عربي، وحالات نصية ===== */
 .refined-light .info-header.logo-only{
-  min-height:300px!important;
+  display:flex!important;
+  grid-template-columns:none!important;
+  width:100%!important;
+  height:410px!important;
+  min-height:410px!important;
+  margin:0 auto!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+}
+.refined-light .info-header.logo-only .info-logo-wrap{
+  display:flex!important;
+  width:100%!important;
+  padding:0!important;
+  align-items:center!important;
+  justify-content:center!important;
+  height:410px!important;
+  overflow:hidden!important;
 }
 .refined-light .info-header.logo-only .info-logo.bigger{
-  width:min(1020px,100%)!important;
-  height:300px!important;
+  display:block!important;
+  width:1060px!important;
+  max-width:100%!important;
+  height:390px!important;
+  margin:0 auto!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  transform:scale(2.15)!important;
+  transform-origin:center center!important;
 }
 .trade-page-title{
   position:relative;
@@ -873,7 +944,10 @@ body{
   border:0!important;
   border-radius:0!important;
   background:transparent!important;
-  font-size:22px!important;
+  box-shadow:none!important;
+  font-size:27px!important;
+  font-weight:900!important;
+  line-height:1.2!important;
 }
 .refined-light .info-status{
   display:inline!important;
@@ -883,8 +957,9 @@ body{
   border-radius:0!important;
   background:transparent!important;
   box-shadow:none!important;
-  font-size:23px!important;
+  font-size:27px!important;
   font-weight:900!important;
+  line-height:1.2!important;
 }
 .refined-light .info-status.win{background:transparent!important;color:#278c43!important}
 .refined-light .info-status.loss{background:transparent!important;color:#dc3f36!important}
@@ -908,8 +983,9 @@ body{
   pointer-events:none;
 }
 @media(max-width:650px){
-  .refined-light .info-header.logo-only{min-height:255px!important}
-  .refined-light .info-header.logo-only .info-logo.bigger{height:250px!important}
+  .refined-light .info-header.logo-only{height:385px!important;min-height:385px!important}
+  .refined-light .info-header.logo-only .info-logo-wrap{height:385px!important}
+  .refined-light .info-header.logo-only .info-logo.bigger{width:1060px!important;max-width:100%!important;height:360px!important;transform:scale(2.15)!important}
   .trade-page-title{margin:-5px auto 18px}
   .trade-eyebrow{font-size:14px;letter-spacing:4px}
   .trade-title-en{font-size:48px}
