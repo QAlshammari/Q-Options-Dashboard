@@ -8,7 +8,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Orbitron:wght@500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="Style.css">
 </head>
 <body>
@@ -19,7 +19,7 @@
     <!-- ========================= HEADER ========================= -->
     <header class="hero-header">
       <div class="hero-brand">
-        <img src="QA.PNG" alt="Q Options Logo" class="hero-logo" id="mainLogo">
+        <img src="QQ.PNG" alt="Q Options Logo" class="hero-logo" id="mainLogo">
       </div>
 
       <div class="title-block">
@@ -61,9 +61,9 @@
           <span class="action-text"><b>تصدير تقرير PDF</b><small>نسخة احترافية جاهزة</small></span>
         </button>
 
-        <button id="imageBtn" class="action-btn action-image" type="button">
+        <button id="imageBtn" class="action-btn action-image public-action" type="button" aria-label="عرض وتصدير أهم الصفقات للجمهور">
           <span class="action-icon">▧</span>
-          <span class="action-text"><b>صورة أهم الصفقات</b><small>PNG عالية الدقة</small></span>
+          <span class="action-text"><b>أهم الصفقات</b><small>عرض / تصدير للجمهور</small></span>
         </button>
       </div>
 
@@ -78,32 +78,32 @@
       <section class="stats-grid">
         <article class="stat-card">
           <div class="icon gold-soft">⌁</div>
-          <div class="stat-copy"><span>إجمالي الصفقات</span><strong id="totalTrades">0</strong><small>Total Trades</small></div>
+          <div class="stat-copy"><span>إجمالي الصفقات</span><strong id="totalTrades" class="digital-main">0</strong><small>Total Trades</small></div>
         </article>
 
         <article class="stat-card">
           <div class="icon green">$</div>
-          <div class="stat-copy"><span>إجمالي الربح</span><strong id="totalProfit">$0.00</strong><small>Total Profit</small></div>
+          <div class="stat-copy"><span>إجمالي الربح</span><strong id="totalProfit" class="digital-main">$0.00</strong><small>Total Profit</small></div>
         </article>
 
         <article class="stat-card">
           <div class="icon bronze">%</div>
-          <div class="stat-copy"><span>نسبة العائد</span><strong id="returnPct">0%</strong><small>Return %</small></div>
+          <div class="stat-copy"><span>نسبة العائد</span><strong id="returnPct" class="digital-main">0%</strong><small>Return %</small></div>
         </article>
 
         <article class="stat-card">
           <div class="icon green">✓</div>
-          <div class="stat-copy"><span>صفقات رابحة</span><strong id="wins">0</strong><small>Wins</small></div>
+          <div class="stat-copy"><span>صفقات رابحة</span><strong id="wins" class="digital-main">0</strong><small>Wins</small></div>
         </article>
 
         <article class="stat-card">
           <div class="icon red">✕</div>
-          <div class="stat-copy"><span>صفقات خاسرة</span><strong id="losses">0</strong><small>Losses</small></div>
+          <div class="stat-copy"><span>صفقات خاسرة</span><strong id="losses" class="digital-main">0</strong><small>Losses</small></div>
         </article>
 
         <article class="stat-card featured-stat">
           <div class="icon gold">★</div>
-          <div class="stat-copy"><span>نسبة النجاح</span><strong id="winRate">0%</strong><small>Win Rate</small></div>
+          <div class="stat-copy"><span>نسبة النجاح</span><strong id="winRate" class="digital-main">0%</strong><small>Win Rate</small></div>
         </article>
       </section>
 
@@ -112,7 +112,7 @@
         <article class="panel chart-panel">
           <div class="panel-title">
             <div><span class="section-kicker">PERFORMANCE</span><h3>منحنى الأداء التراكمي <span>(Equity Curve)</span></h3></div>
-            <span class="pill" id="equityFinal">$0.00</span>
+            <span class="pill digital-main" id="equityFinal">$0.00</span>
           </div>
           <div class="canvas-wrap"><canvas id="equityChart"></canvas></div>
         </article>
@@ -134,8 +134,8 @@
           <h3>أفضل صفقة</h3>
           <div class="medal-ring"><div class="medal">★</div></div>
           <strong id="bestSymbol">—</strong>
-          <div class="big-profit" id="bestProfit">$0.00</div>
-          <div class="big-percent" id="bestPct">0%</div>
+          <div class="big-profit digital-main" id="bestProfit">$0.00</div>
+          <div class="big-percent digital-main" id="bestPct">0%</div>
         </article>
 
         <article class="panel metrics-panel">
@@ -180,7 +180,7 @@
     <!-- التواصل أصبح نصاً بسيطاً أسفل الصفحة -->
     <footer>
       <div class="footer-brand">Q OPTIONS TRACKER</div>
-      <div class="footer-contact">للتواصل وقناة التوصيات <b dir="ltr">@Q_options</b></div>
+      <div class="footer-contact">للتواصل عبر تليجرام <b dir="ltr">@Qalshammari</b></div>
       <div id="footerDate"></div>
     </footer>
   </div>
