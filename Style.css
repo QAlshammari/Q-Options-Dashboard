@@ -1972,3 +1972,198 @@ body{
   background:#fffdf8!important;
   box-shadow:inset 0 1px 0 #fff!important;
 }
+
+/* FINAL30 — رسوم SVG ثلاثية الأبعاد وثابتة في الحفظ */
+.refined-light .donut-layout{
+  grid-template-columns:180px minmax(0,1fr)!important;
+  align-items:center!important;
+  min-height:190px;
+  overflow:visible!important;
+}
+.return-ring-svg,.donut-svg{
+  overflow:visible!important;
+  shape-rendering:geometricPrecision;
+}
+.return-ring-svg .ring-depth{
+  fill:none;
+  stroke:#a56e17;
+  stroke-width:15;
+  opacity:.42;
+}
+.return-ring-svg .ring-track{
+  fill:#fffdf8;
+  stroke:#ead7ad;
+  stroke-width:15;
+}
+.return-ring-svg .ring-gold{
+  fill:none;
+  stroke:#d8ae58;
+  stroke-width:15;
+  opacity:.62;
+}
+.return-ring-svg .ring-value{
+  fill:none;
+  stroke-width:15;
+  stroke-linecap:round;
+}
+.donut-svg .donut-depth{
+  fill:none;
+  stroke:#95651d;
+  stroke-width:18;
+  opacity:.28;
+}
+.donut-svg .donut-track{
+  fill:#fffdf8;
+  stroke:#eadfc9;
+  stroke-width:18;
+}
+.donut-svg .donut-segment{
+  fill:none;
+  stroke-width:18;
+  stroke-linecap:butt;
+}
+.refined-light .donut-core{
+  width:105px!important;
+  height:105px!important;
+  background:#fffaf0!important;
+  border:1px solid rgba(204,154,65,.24)!important;
+  box-shadow:0 7px 13px rgba(105,70,18,.13),inset 0 2px 0 #fff!important;
+}
+.capture-mode .return-ring-svg,.capture-mode .donut-svg{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  filter:none!important;
+  transform:rotate(-90deg)!important;
+}
+.capture-mode .return-ring,
+.capture-mode .donut-layout,
+.capture-mode .donut-core{
+  overflow:visible!important;
+  filter:none!important;
+}
+
+/* FINAL31 — تخفيف الزحام، إصلاح قص الرسم، وبروز التقرير */
+.refined-light.infographic-card{
+  border:0!important;
+  border-radius:28px!important;
+  box-shadow:0 12px 0 rgba(151,99,22,.34),0 28px 55px rgba(79,50,13,.24),inset 0 2px 0 #fff,inset 0 0 0 2px rgba(211,169,88,.16)!important;
+}
+.refined-light .info-stats.refined-order{
+  grid-auto-rows:106px!important;
+  gap:9px!important;
+}
+.refined-light .info-stat,
+.refined-light .info-stat:nth-child(n){
+  height:106px!important;
+  min-height:106px!important;
+  padding:7px 10px 8px!important;
+  background:linear-gradient(180deg,#fffef9 0%,#fff9ea 58%,#eccb88 100%)!important;
+}
+.refined-light .info-stat .info-icon{width:29px!important;height:29px!important;font-size:15px!important}
+.refined-light .info-label b{font-size:14px!important}
+.refined-light .info-stat .digital.number,
+.refined-light .info-stat .digital.green,
+.refined-light .info-stat .digital.red,
+.refined-light .info-stat .digital.cyan{font-size:34px!important}
+.refined-light .info-stat .digital.money{font-size:30px!important}
+.refined-light .info-stat.featured .digital{font-size:36px!important}
+
+.refined-light .info-bottom{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  gap:10px!important;
+}
+.refined-light .info-box,
+.refined-light .info-box:nth-child(n){
+  height:236px!important;
+  min-height:236px!important;
+  padding:13px 14px 12px!important;
+  overflow:visible!important;
+  border:1px solid #dfc689!important;
+  border-bottom:7px solid #a97424!important;
+  border-radius:20px!important;
+  background:linear-gradient(180deg,#fffefb 0%,#fffaf0 70%,#ecd19a 100%)!important;
+  box-shadow:0 10px 18px rgba(109,70,17,.14),inset 0 2px 0 #fff!important;
+}
+.refined-light .info-box::before{height:20%!important;opacity:.55!important}
+.refined-light .info-box h4{
+  position:relative!important;
+  z-index:5!important;
+  margin:0 0 7px!important;
+  font-size:24px!important;
+  line-height:1.25!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+}
+.refined-light .return-ring{width:158px!important;height:158px!important}
+.refined-light .return-ring-wrap{min-height:175px!important;height:175px!important}
+.refined-light .return-ring-arrow{top:7px!important;right:1px!important;font-size:27px!important}
+.refined-light .return-ring-content .digital{font-size:34px!important}
+.refined-light .return-ring-content .ar{font-size:14px!important}
+.refined-light .quick-list{margin-top:2px!important}
+.refined-light .quick-row{min-height:32px!important;padding:3px 0!important}
+.refined-light .quick-row .name{font-size:14px!important}
+.refined-light .quick-row .value{font-size:19px!important}
+
+/* بطاقة التوزيع: العبارات أعلى والرسم الأصغر أسفلها */
+.refined-light .info-box:nth-child(3) .donut-layout{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  grid-template-rows:auto 132px!important;
+  gap:5px!important;
+  min-height:0!important;
+  margin-top:0!important;
+  justify-items:center!important;
+  overflow:visible!important;
+}
+.refined-light .info-box:nth-child(3) .donut-legend{
+  grid-row:1!important;
+  display:flex!important;
+  width:100%!important;
+  align-items:center!important;
+  justify-content:space-evenly!important;
+  gap:4px!important;
+  font-size:12px!important;
+}
+.refined-light .info-box:nth-child(3) .legend-row{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:2px!important;
+  padding:0!important;
+  border:0!important;
+}
+.refined-light .info-box:nth-child(3) .donut-layout>div:first-child{
+  grid-row:2!important;
+  width:132px!important;
+  height:132px!important;
+}
+.refined-light .info-box:nth-child(3) .donut-svg{width:132px!important;height:132px!important}
+.refined-light .info-box:nth-child(3) .donut-core{width:78px!important;height:78px!important}
+.refined-light .info-box:nth-child(3) .donut-core b{font-size:23px!important}
+.refined-light .info-box:nth-child(3) .donut-core span{font-size:12px!important}
+
+.capture-mode.refined-light.infographic-card{
+  border:0!important;
+  box-shadow:0 12px 0 #b07b2b,0 25px 42px rgba(79,50,13,.24),inset 0 2px 0 #fff,inset 0 0 0 2px #ead4a8!important;
+}
+.capture-mode .info-stat,
+.capture-mode .info-stat:nth-child(n){background:#fff5da!important}
+.capture-mode .info-box,
+.capture-mode .info-box:nth-child(n){background:#fff8e8!important;overflow:visible!important}
+
+/* FINAL32 — أرقام إحصائيات سريعة بخط واضح بدل نمط الساعة الرقمية */
+.refined-light .quick-row .value,
+.capture-mode .quick-row .value{
+  font-family:Tahoma,Arial,"Helvetica Neue",sans-serif!important;
+  font-size:20px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  letter-spacing:0!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  font-feature-settings:"tnum" 1,"lnum" 1!important;
+  text-rendering:geometricPrecision;
+  text-shadow:0 1px 0 rgba(255,255,255,.9)!important;
+}
+.refined-light .quick-row:last-child .value,
+.capture-mode .quick-row:last-child .value{font-size:19px!important}
