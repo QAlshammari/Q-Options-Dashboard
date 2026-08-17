@@ -1679,6 +1679,90 @@ body{
   border-bottom-color:#a57328!important;
 }
 
+/* FINAL41 — تقريب الأرقام وإبراز الشرائط ودائرة العائد */
+.refined-light .quick-row,
+.capture-mode .quick-row{
+  display:flex!important;
+  justify-content:center!important;
+  direction:rtl!important;
+  gap:8px!important;
+}
+.refined-light .quick-row .name,
+.capture-mode .quick-row .name{
+  width:178px!important;
+  min-width:178px!important;
+  flex:none!important;
+  justify-content:flex-start!important;
+}
+.refined-light .quick-row .value,
+.capture-mode .quick-row .value{
+  width:57px!important;
+  min-width:57px!important;
+  text-align:center!important;
+  direction:ltr!important;
+}
+.result-bar-head{
+  justify-content:flex-start!important;
+  direction:rtl!important;
+  gap:12px!important;
+  padding:0 3px!important;
+}
+.result-bar-head span{min-width:72px!important;text-align:right!important}
+.result-bar-head b{min-width:30px!important;text-align:center!important}
+.result-bar-track{
+  height:16px!important;
+  overflow:visible!important;
+  border:1px solid #d9c59e!important;
+  border-bottom:4px solid #aa8650!important;
+  background:linear-gradient(180deg,#f5ecda,#d9c7a6)!important;
+  box-shadow:0 5px 8px rgba(83,55,17,.14),inset 0 3px 4px rgba(92,60,17,.18),inset 0 -1px 0 #fff!important;
+}
+.result-bar-track i{
+  position:relative!important;
+  top:-1px!important;
+  height:13px!important;
+  border:1px solid rgba(255,255,255,.55)!important;
+  border-bottom:3px solid rgba(69,43,8,.26)!important;
+  box-shadow:0 3px 5px rgba(76,48,11,.19),inset 0 3px 0 rgba(255,255,255,.45)!important;
+}
+.result-bar-row.win .result-bar-track i{background:linear-gradient(180deg,#71cf88,#299548)!important}
+.result-bar-row.loss .result-bar-track i{background:linear-gradient(180deg,#ff8a7f,#dc4037)!important}
+.result-bar-row.stopped .result-bar-track i{background:linear-gradient(180deg,#70d7e7,#1aa5bd)!important}
+
+.refined-light .return-ring,
+.capture-mode .return-ring{
+  width:158px!important;
+  height:158px!important;
+  border:3px solid #ead4a8!important;
+  border-bottom:9px solid #aa7626!important;
+  background:#fff!important;
+  box-shadow:0 10px 14px rgba(95,61,15,.20),inset 0 4px 0 #fff,inset 0 -9px 15px rgba(185,129,38,.12)!important;
+  transform:translateY(-3px)!important;
+}
+.refined-light .return-ring::before,
+.capture-mode .return-ring::before{
+  content:""!important;
+  position:absolute!important;
+  z-index:3!important;
+  top:11px!important;
+  left:28px!important;
+  width:62px!important;
+  height:20px!important;
+  border-radius:50%!important;
+  background:rgba(255,255,255,.78)!important;
+  transform:rotate(-15deg)!important;
+  pointer-events:none!important;
+}
+.refined-light .return-ring-svg .ring-depth,
+.capture-mode .return-ring-svg .ring-depth{stroke:#936019!important;stroke-width:17!important;opacity:.52!important}
+.refined-light .return-ring-svg .ring-track,
+.capture-mode .return-ring-svg .ring-track{stroke:#e7ce98!important;stroke-width:16!important}
+.refined-light .return-ring-svg .ring-gold,
+.capture-mode .return-ring-svg .ring-gold{stroke:#d8aa4e!important;stroke-width:16!important;opacity:.76!important}
+.refined-light .return-ring-svg .ring-value,
+.capture-mode .return-ring-svg .ring-value{stroke-width:17!important;filter:drop-shadow(0 3px 2px rgba(44,105,48,.24))}
+.capture-mode .return-ring-svg .ring-value{filter:none!important}
+
 /* FINAL24 — وضع حفظ ثابت لمنع تشوه Safari و html2canvas */
 .refined-light .info-header.logo-only .info-logo.bigger{
   transform:none!important;
