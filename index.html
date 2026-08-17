@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة الصفقات - Q OPTIONS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="dashboard">
+
+    <header class="header">
+      <div class="logo">🐂</div>
+      <div class="title">
+        <h1>Q OPTIONS – US MARKET STOCKS</h1>
+        <p>لوحة إدخال الصفقات والتحليل</p>
+      </div>
+    </header>
+
+    <div class="form-container">
+      <h3>إدخال صفقة جديدة</h3>
+
+      <form id="tradeForm">
+        <div class="form-row">
+          <input type="text" id="symbol" placeholder="Symbol (NVDA)" required>
+          <select id="option">
+            <option value="CALL">CALL</option>
+            <option value="PUT">PUT</option>
+          </select>
+          <input type="number" id="strike" placeholder="Strike" required>
+        </div>
+
+        <div class="form-row">
+          <input type="number" step="0.01" id="buy" placeholder="Buy Price" required>
+          <input type="number" step="0.01" id="sell" placeholder="Sell Price" required>
+          <select id="status">
+            <option value="win">Winning</option>
+            <option value="loss">Losing</option>
+          </select>
+        </div>
+
+        <button type="submit" class="gold-btn">إضافة الصفقة</button>
+      </form>
+    </div>
+
+    <section class="table-container">
+      <h3>الصفقات المدخلة</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th><th>Option</th><th>Strike</th>
+            <th>Buy</th><th>Sell</th><th>Profit</th>
+            <th>%</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tradeTableBody"></tbody>
+      </table>
+    </section>
+
+    <section class="charts">
+      <div class="chart-card">
+        <h3>نسبة الصفقات الرابحة والخاسرة</h3>
+        <canvas id="winLossChart"></canvas>
+      </div>
+
+      <div class="chart-card">
+        <h3>الأرباح حسب الصفقة</h3>
+        <canvas id="profitChart"></canvas>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+
+</body>
+</html>
