@@ -1469,3 +1469,136 @@ body{
   transform:none!important;
   zoom:1!important;
 }
+
+/* FINAL24 — وضع حفظ ثابت لمنع تشوه Safari و html2canvas */
+.refined-light .info-header.logo-only .info-logo.bigger{
+  transform:none!important;
+  width:100%!important;
+  max-width:100%!important;
+  height:330px!important;
+}
+.refined-light .info-header.logo-only,
+.refined-light .info-header.logo-only .info-logo-wrap{
+  height:338px!important;
+  min-height:338px!important;
+  overflow:visible!important;
+}
+.capture-mode,
+.capture-mode *{
+  animation:none!important;
+  transition:none!important;
+}
+.capture-mode .info-header.logo-only,
+.capture-mode .info-header.logo-only .info-logo-wrap{
+  height:330px!important;
+  min-height:330px!important;
+  overflow:visible!important;
+}
+.capture-mode .info-logo.bigger{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  height:320px!important;
+  margin:0 auto!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  filter:none!important;
+}
+.capture-mode .info-stat{
+  transform:none!important;
+  overflow:hidden!important;
+  filter:none!important;
+  box-shadow:0 5px 0 rgba(171,119,34,.34),0 10px 18px rgba(132,88,22,.13),inset 0 1px 0 #fff!important;
+}
+.capture-mode .info-stat::before,
+.capture-mode .info-stat::after{display:none!important}
+.capture-mode .info-icon,
+.capture-mode .mini,
+.capture-mode .period-badge{
+  transform:none!important;
+  filter:none!important;
+  text-shadow:none!important;
+  box-shadow:0 2px 5px rgba(91,63,25,.16)!important;
+}
+.capture-mode .info-stat.featured{
+  animation:none!important;
+  border:2px solid #d9a93c!important;
+  box-shadow:0 5px 0 #ad7a22,0 10px 18px rgba(181,129,38,.18),inset 0 1px 0 #fff!important;
+}
+.capture-mode .info-stat.featured .digital{
+  text-shadow:none!important;
+}
+.capture-mode .info-bottom,
+.capture-mode .info-box,
+.capture-mode .infographic-table-panel{
+  filter:none!important;
+}
+
+/* FINAL25 — الشعار كامل والتاريخ قبل الجدول */
+.refined-light.infographic-card{padding-top:0!important}
+.refined-light .info-header.logo-only,
+.refined-light .info-header.logo-only .info-logo-wrap{
+  height:390px!important;
+  min-height:390px!important;
+  margin-top:-8px!important;
+  overflow:visible!important;
+}
+.refined-light .info-header.logo-only .info-logo.bigger{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  height:380px!important;
+  margin:0 auto!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  filter:drop-shadow(0 9px 10px rgba(142,94,23,.12))!important;
+}
+.info-dates-before-table{
+  position:relative;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:max-content;
+  max-width:96%;
+  margin:13px auto 15px;
+  padding:4px 8px;
+  color:#4a3826;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+.info-dates-before-table .date-clean{
+  font-size:18px!important;
+  font-weight:800!important;
+}
+.info-dates-before-table .period-badge{
+  width:27px!important;
+  height:27px!important;
+  font-size:13px!important;
+}
+.capture-mode .info-header.logo-only,
+.capture-mode .info-header.logo-only .info-logo-wrap{
+  height:380px!important;
+  min-height:380px!important;
+  margin-top:0!important;
+}
+.capture-mode .info-logo.bigger{
+  height:372px!important;
+  transform:none!important;
+  filter:none!important;
+}
+@media(max-width:650px){
+  .refined-light .info-header.logo-only,
+  .refined-light .info-header.logo-only .info-logo-wrap{
+    height:365px!important;
+    min-height:365px!important;
+    margin-top:-10px!important;
+  }
+  .refined-light .info-header.logo-only .info-logo.bigger{height:357px!important;transform:none!important}
+  .info-dates-before-table{margin:10px auto 13px;padding:3px 6px}
+  .info-dates-before-table .date-clean{font-size:16px!important}
+}
