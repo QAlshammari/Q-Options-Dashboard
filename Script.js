@@ -250,6 +250,31 @@ function chartDefaults(){
   Chart.defaults.color='#6f604f';
   Chart.defaults.font.family='Cairo';
   Chart.defaults.borderColor='rgba(163,137,99,.20)';
+  if(!Chart.registry.plugins.get('qOptionsDepth')){
+    Chart.register({
+      id:'qOptionsDepth',
+      beforeDatasetDraw(chart){
+        const ctx=chart.ctx;
+        ctx.save();
+        ctx.shadowColor='rgba(116,72,13,.32)';
+        ctx.shadowBlur=14;
+        ctx.shadowOffsetX=0;
+        ctx.shadowOffsetY=8;
+      },
+      afterDatasetDraw(chart){chart.ctx.restore()}
+    });
+  }
+}
+
+function chartGradient(context,top,bottom){
+  const {chart}=context;
+  const area=chart.chartArea;
+  if(!area) return top;
+  const g=chart.ctx.createLinearGradient(0,area.top,0,area.bottom);
+  g.addColorStop(0,top);
+  g.addColorStop(.48,bottom);
+  g.addColorStop(1,'rgba(255,255,255,.08)');
+  return g;
 }
 
 function renderCharts(ordered,byDay,winCount,lossCount){
@@ -262,18 +287,18 @@ function renderCharts(ordered,byDay,winCount,lossCount){
   equityChart?.destroy();dailyChart?.destroy();winLossChart?.destroy();
   equityChart=new Chart($('equityChart'),{
     type:'line',
-    data:{labels:eqLabels,datasets:[{data:eqData,borderColor:'#b88a3b',backgroundColor:'rgba(184,138,59,.14)',fill:true,tension:.28,pointRadius:2,borderWidth:2}]},
+    data:{labels:eqLabels,datasets:[{data:eqData,borderColor:'#b57a18',backgroundColor:c=>chartGradient(c,'rgba(247,211,126,.72)','rgba(184,122,26,.20)'),fill:true,tension:.34,pointRadius:4,pointHoverRadius:7,pointBackgroundColor:'#fff4c9',pointBorderColor:'#b57a18',pointBorderWidth:3,borderWidth:4}]},
     options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxRotation:0,autoSkip:true}},y:{ticks:{callback:v=>'$'+v}}}}
   });
   dailyChart=new Chart($('dailyChart'),{
     type:'bar',
-    data:{labels:days,datasets:[{data:vals,backgroundColor:vals.map(v=>v>=0?'#4d9664':'#c45b52'),borderWidth:0,borderRadius:5}]},
+    data:{labels:days,datasets:[{data:vals,backgroundColor:c=>chartGradient(c,c.raw>=0?'#86d6a0':'#ff9b90',c.raw>=0?'#25844b':'#b9312c'),borderColor:vals.map(v=>v>=0?'#247443':'#a92e28'),borderWidth:2,borderRadius:10,borderSkipped:false,barPercentage:.68}]},
     options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v}}}}
   });
   winLossChart=new Chart($('winLossChart'),{
     type:'doughnut',
-    data:{labels:['أرباح','خسائر'],datasets:[{data:[winCount,lossCount],backgroundColor:['#4d9664','#c45b52'],borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,animation:false,cutout:'58%',plugins:{legend:{position:'right',rtl:true,labels:{boxWidth:13}}}}
+    data:{labels:['أرباح','خسائر'],datasets:[{data:[winCount,lossCount],backgroundColor:c=>chartGradient(c,c.dataIndex===0?'#9ee3af':'#ffaaa0',c.dataIndex===0?'#27854b':'#b92e2a'),borderColor:['#fff5d7','#fff0e8'],borderWidth:4,hoverOffset:10,spacing:3}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:false,cutout:'58%',rotation:-105,circumference:360,plugins:{legend:{position:'right',rtl:true,labels:{boxWidth:15,padding:18,font:{weight:'800'}}}}}
   });
 }
 
@@ -457,8 +482,8 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
       <div class="info-top-swoosh"></div>
       <div class="info-bottom-swoosh"></div>
 
-      <div class="info-header compact logo-only" style="display:flex;align-items:center;justify-content:center;width:100%;height:370px;min-height:370px;margin:0 auto;overflow:hidden;">
-        <div class="info-logo-wrap wide" style="display:flex;align-items:center;justify-content:center;width:100%;height:370px;padding:0;overflow:hidden;"><img src="${logoSrc()}" class="info-logo bigger" alt="Q Options" style="display:block;width:1060px;max-width:100%;height:360px;object-fit:contain;object-position:center;margin:0 auto;transform:scale(1.62);transform-origin:center center;"></div>
+      <div class="info-header compact logo-only" style="display:flex;align-items:center;justify-content:center;width:100%;height:355px;min-height:355px;margin:0 auto;overflow:visible;">
+        <div class="info-logo-wrap wide" style="display:flex;align-items:center;justify-content:center;width:100%;height:355px;padding:0;overflow:visible;"><img src="${logoSrc()}" class="info-logo bigger" alt="Q Options" style="display:block;width:1060px;max-width:100%;height:345px;object-fit:contain;object-position:center;margin:0 auto;transform:scale(1.40);transform-origin:center center;"></div>
       </div>
 
       <div class="info-dates-under-logo">
@@ -743,8 +768,31 @@ async function saveOrShareTopTrades(e){
     stage.innerHTML=buildShareTemplate(10,'shareCapture');
     const target=$('shareCapture');
     if(!target) throw new Error('لم يتم العثور على صفحة الصفقات');
+
+    // Safari كان يحسب عرض التقرير بعرض شاشة الهاتف رغم أن لوحة الحفظ أكبر.
+    // نثبت العرض على العنصر نفسه قبل أن يأخذ html2canvas القياسات.
+    stage.style.setProperty('width','1200px','important');
+    stage.style.setProperty('min-width','1200px','important');
+    stage.style.setProperty('display','block','important');
+    stage.style.setProperty('position','fixed','important');
+    stage.style.setProperty('left','0','important');
+    stage.style.setProperty('top','0','important');
+    target.style.setProperty('width','1120px','important');
+    target.style.setProperty('min-width','1120px','important');
+    target.style.setProperty('max-width','1120px','important');
+    target.style.setProperty('display','block','important');
+    target.style.setProperty('position','relative','important');
+    target.style.setProperty('box-sizing','border-box','important');
+    target.style.setProperty('flex','none','important');
+    target.style.setProperty('transform','none','important');
+    target.style.setProperty('zoom','1','important');
     await Promise.race([waitForImages(target),new Promise(r=>setTimeout(r,1200))]);
     await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+
+    const measuredWidth=Math.round(target.getBoundingClientRect().width);
+    if(measuredWidth<1100){
+      throw new Error(`عرض التقرير غير صحيح قبل الحفظ: ${measuredWidth}px`);
+    }
 
     const scale=isIOSDevice() ? .82 : 1.35;
     const canvas=await html2canvas(target,{
@@ -754,12 +802,31 @@ async function saveOrShareTopTrades(e){
       backgroundColor:'#fffefa',
       logging:false,
       imageTimeout:1200,
-      width:target.scrollWidth || 1120,
-      height:target.scrollHeight || 1570,
       windowWidth:1200,
       windowHeight:target.scrollHeight || 1570,
       scrollX:0,
-      scrollY:0
+      scrollY:0,
+      onclone:clonedDocument=>{
+        const clonedStage=clonedDocument.getElementById('exportStage');
+        const clonedTarget=clonedDocument.getElementById('shareCapture');
+        if(clonedStage){
+          clonedStage.style.setProperty('left','0','important');
+          clonedStage.style.setProperty('width','1200px','important');
+          clonedStage.style.setProperty('min-width','1200px','important');
+          clonedStage.style.setProperty('transform','none','important');
+        }
+        if(clonedTarget){
+          clonedTarget.style.setProperty('width','1120px','important');
+          clonedTarget.style.setProperty('min-width','1120px','important');
+          clonedTarget.style.setProperty('max-width','1120px','important');
+          clonedTarget.style.setProperty('display','block','important');
+          clonedTarget.style.setProperty('position','relative','important');
+          clonedTarget.style.setProperty('box-sizing','border-box','important');
+          clonedTarget.style.setProperty('flex','none','important');
+          clonedTarget.style.setProperty('transform','none','important');
+          clonedTarget.style.setProperty('zoom','1','important');
+        }
+      }
     });
 
     if(!canvas.width || !canvas.height) throw new Error('تعذر إنشاء مساحة الصورة');
