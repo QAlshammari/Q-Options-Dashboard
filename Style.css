@@ -427,3 +427,100 @@ footer{min-height:58px;display:grid;grid-template-columns:1fr 1fr 1fr;align-item
   .stat-card{min-height:84px;flex-direction:row}
   .stat-copy strong{font-size:16px!important}
 }
+
+
+.preview-modal{position:fixed;inset:0;background:rgba(26,18,10,.66);display:grid;place-items:center;padding:14px;z-index:9999}.preview-dialog{width:min(96vw,980px);max-height:92vh;background:linear-gradient(180deg,#fffdf8,#f4ead8);border:1px solid #d9bc86;border-radius:22px;box-shadow:0 24px 55px rgba(0,0,0,.28);padding:16px 16px 14px;position:relative;overflow:auto}.preview-close{position:absolute;top:10px;left:10px;width:40px;height:40px;border-radius:50%;border:0;background:#3b2c20;color:#fff;font-size:30px;line-height:1;cursor:pointer}.preview-head{text-align:center;color:#3b2c20;margin-bottom:10px}.preview-head b{display:block;font-size:22px}.preview-head small{display:block;color:#876b44;margin-top:4px}.preview-body{display:flex;justify-content:center}.preview-body img{max-width:100%;height:auto;border-radius:14px;box-shadow:0 10px 30px rgba(96,69,26,.14)}.preview-actions{display:flex;justify-content:center;margin-top:12px}.preview-download{display:inline-flex;align-items:center;justify-content:center;min-width:220px;padding:12px 18px;border-radius:14px;text-decoration:none;color:#fff8e7;border:1px solid #6f4b12;background:linear-gradient(180deg,#574018 0%,#2f2415 55%,#1b150e 100%);box-shadow:0 8px 0 #9b6a1d,0 0 0 2px #d9aa4d,0 15px 30px rgba(142,99,32,.25)}
+
+/* =========================================================
+   FINAL TYPOGRAPHY TUNING — 2026-08
+   Digital numbers: lighter + slightly smaller.
+   Metrics / weekly summary: Cairo bold, clean and readable.
+   ========================================================= */
+
+/* Main KPI digital numbers — keep the digital-clock feel, but calmer */
+.digital-main,
+.stat-copy strong,
+.big-profit,
+.big-percent,
+.pill,
+.rows-badge{
+  font-family:"Orbitron","Courier New",monospace!important;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:0!important;
+  font-weight:700!important;
+  direction:ltr;
+  text-shadow:none!important;
+}
+
+.stat-copy strong{
+  font-size:clamp(25px,2.25vw,40px)!important;
+  line-height:1.08!important;
+}
+
+.big-profit{
+  font-size:clamp(30px,2.6vw,44px)!important;
+  font-weight:700!important;
+}
+
+.big-percent{
+  font-size:clamp(25px,2vw,35px)!important;
+  font-weight:700!important;
+}
+
+.pill,.rows-badge{
+  font-weight:700!important;
+}
+
+/* Metrics + weekly summary should NOT use the digital font */
+.metrics-panel .metric-row b,
+.summary-panel .metric-row b{
+  font-family:"Cairo",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-variant-numeric:tabular-nums;
+  font-size:16px!important;
+  font-weight:800!important;
+  letter-spacing:0!important;
+  line-height:1.45!important;
+  direction:ltr;
+  text-shadow:none!important;
+}
+
+.metrics-panel .metric-row,
+.summary-panel .metric-row{
+  font-size:14px!important;
+  font-weight:600;
+}
+
+.metrics-panel .metric-row span,
+.summary-panel .metric-row span{
+  font-weight:700!important;
+  color:#4a3a2d;
+}
+
+/* Public Top Trades infographic: slightly slimmer digital numbers */
+.infographic-card .digital,
+.infographic-card .quick-row .value,
+.infographic-card .donut-core b{
+  font-family:"Orbitron","Courier New",monospace!important;
+  font-weight:700!important;
+  letter-spacing:0!important;
+  text-shadow:none!important;
+}
+
+.infographic-card .info-stat .digital.number{font-size:61px!important}
+.infographic-card .info-stat .digital.green{font-size:56px!important}
+.infographic-card .info-stat .digital.red{font-size:56px!important}
+.infographic-card .info-stat .digital.money{font-size:44px!important}
+.infographic-card .return-ring-content .digital{font-size:50px!important}
+.infographic-card .quick-row .value{font-size:25px!important}
+.infographic-card .donut-core b{font-size:33px!important}
+
+/* Mobile refinement */
+@media(max-width:650px){
+  .stat-copy strong{font-size:clamp(24px,7.2vw,34px)!important}
+  .big-profit{font-size:clamp(28px,8vw,38px)!important}
+  .big-percent{font-size:clamp(23px,6.6vw,31px)!important}
+  .metrics-panel .metric-row b,
+  .summary-panel .metric-row b{font-size:15px!important}
+  .metrics-panel .metric-row,
+  .summary-panel .metric-row{font-size:13px!important}
+}
