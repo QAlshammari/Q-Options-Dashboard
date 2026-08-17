@@ -164,6 +164,10 @@ footer{min-height:58px;display:grid;grid-template-columns:1fr 1fr 1fr;align-item
 
 /* ========================= EXPORT TEMPLATES ========================= */
 .export-stage{position:fixed;left:-20000px;top:0;z-index:-100;width:1200px;pointer-events:none}
+.export-stage .infographic-card{
+  transform:none!important;
+  transform-origin:top left!important;
+}
 .export-card{width:1120px;background:#f8f1e5;color:#382b20;padding:34px;border-radius:0;font-family:"Cairo",Arial,sans-serif;direction:rtl}
 .export-head{display:flex;align-items:center;justify-content:space-between;gap:26px;padding-bottom:20px;border-bottom:2px solid #d1ad68}
 .export-logo{width:250px;height:125px;object-fit:contain;filter:drop-shadow(0 10px 10px rgba(108,75,27,.14))}.export-title{text-align:right}.export-title h2{margin:0;font-size:34px}.export-title p{margin:5px 0 0;color:#876329;font-weight:700}.export-date{margin-top:8px;color:#8f7a5d;font-size:13px;direction:ltr;text-align:right}
@@ -973,6 +977,65 @@ body{
   .refined-light .info-header.logo-only .info-logo.bigger{height:225px!important;width:98%!important}
 }
 
+/* ===== FINAL19: استغلال أعلى المعاينة ومحاذاة البطاقات ===== */
+.preview-dialog{
+  padding:8px 10px 12px!important;
+}
+.preview-body{
+  margin-top:0!important;
+  padding-top:0!important;
+}
+.preview-close{
+  top:10px!important;
+  left:10px!important;
+  z-index:20!important;
+}
+.refined-light .info-header.logo-only{
+  height:370px!important;
+  min-height:370px!important;
+  margin-top:0!important;
+}
+.refined-light .info-header.logo-only .info-logo-wrap{
+  height:370px!important;
+}
+.refined-light .info-header.logo-only .info-logo.bigger{
+  height:360px!important;
+  transform:scale(1.62)!important;
+}
+.refined-light .info-stats.refined-order{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-auto-rows:145px!important;
+  gap:15px!important;
+  align-items:stretch!important;
+}
+.refined-light .info-stat{
+  width:auto!important;
+  height:145px!important;
+  min-height:145px!important;
+  margin:0!important;
+  transform:translateY(-3px)!important;
+  border:1px solid #d6b168!important;
+  background:linear-gradient(180deg,#fffefb 0%,#fff8e8 55%,#f1d9aa 100%)!important;
+  box-shadow:0 7px 0 rgba(171,119,34,.46),0 14px 22px rgba(132,88,22,.18),inset 0 2px 0 rgba(255,255,255,.98)!important;
+}
+.preview-download{
+  width:190px!important;
+  min-width:190px!important;
+  max-width:190px!important;
+  min-height:44px!important;
+  padding:8px 14px!important;
+  border-radius:13px!important;
+  font-size:15px!important;
+}
+@media(max-width:650px){
+  .preview-dialog{padding:6px 7px 10px!important}
+  .refined-light .info-header.logo-only{height:345px!important;min-height:345px!important}
+  .refined-light .info-header.logo-only .info-logo-wrap{height:345px!important}
+  .refined-light .info-header.logo-only .info-logo.bigger{height:335px!important;transform:scale(1.62)!important}
+  .refined-light .info-stats.refined-order{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+
 /* ===== صفحة الصفقات: رأس مطابق للمرجع، جدول عربي، وحالات نصية ===== */
 .refined-light .info-header.logo-only{
   display:flex!important;
@@ -1002,7 +1065,7 @@ body{
   margin:0 auto!important;
   object-fit:contain!important;
   object-position:center!important;
-  transform:scale(1.85)!important;
+  transform:scale(1.62)!important;
   transform-origin:center center!important;
 }
 .trade-page-title{
@@ -1092,9 +1155,50 @@ body{
 @media(max-width:650px){
   .refined-light .info-header.logo-only{height:385px!important;min-height:385px!important}
   .refined-light .info-header.logo-only .info-logo-wrap{height:385px!important}
-  .refined-light .info-header.logo-only .info-logo.bigger{width:1060px!important;max-width:100%!important;height:360px!important;transform:scale(1.85)!important}
+  .refined-light .info-header.logo-only .info-logo.bigger{width:1060px!important;max-width:100%!important;height:350px!important;transform:scale(1.62)!important}
   .trade-page-title{margin:-5px auto 18px}
   .trade-eyebrow{font-size:14px;letter-spacing:4px}
   .trade-title-en{font-size:48px}
   .trade-title-ar{font-size:31px}
+}
+
+/* FINAL19 LAST OVERRIDES — يجب أن تبقى آخر الملف */
+.preview-dialog{padding:7px 9px 11px!important}
+.preview-body{margin:0!important;padding:0!important}
+.refined-light .info-header.logo-only{
+  height:370px!important;
+  min-height:370px!important;
+  margin:0 auto!important;
+}
+.refined-light .info-header.logo-only .info-logo-wrap{height:370px!important}
+.refined-light .info-header.logo-only .info-logo.bigger{
+  height:360px!important;
+  transform:scale(1.62)!important;
+}
+.refined-light .info-stats.refined-order{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-auto-rows:145px!important;
+  gap:15px!important;
+}
+.refined-light .info-stat{
+  height:145px!important;
+  min-height:145px!important;
+  margin:0!important;
+  border:1px solid #d6b168!important;
+  background:linear-gradient(180deg,#fffefb 0%,#fff8e8 56%,#f0d7a5 100%)!important;
+  box-shadow:0 7px 0 rgba(171,119,34,.46),0 14px 22px rgba(132,88,22,.18),inset 0 2px 0 rgba(255,255,255,.98)!important;
+}
+.preview-download{
+  width:190px!important;
+  min-width:190px!important;
+  max-width:190px!important;
+  min-height:44px!important;
+  padding:8px 14px!important;
+  border-radius:13px!important;
+  font-size:15px!important;
+}
+@media(max-width:650px){
+  .refined-light .info-header.logo-only{height:345px!important;min-height:345px!important}
+  .refined-light .info-header.logo-only .info-logo-wrap{height:345px!important}
+  .refined-light .info-header.logo-only .info-logo.bigger{height:335px!important;transform:scale(1.62)!important}
 }
