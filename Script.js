@@ -458,11 +458,11 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
       <div class="info-bottom-swoosh"></div>
 
       <div class="info-header compact logo-only" style="display:flex;align-items:center;justify-content:center;width:100%;height:410px;min-height:410px;margin:0 auto;overflow:hidden;">
-        <div class="info-logo-wrap wide" style="display:flex;align-items:center;justify-content:center;width:100%;height:410px;padding:0;overflow:hidden;"><img src="${logoSrc()}" class="info-logo bigger" alt="Q Options" style="display:block;width:1060px;max-width:100%;height:390px;object-fit:contain;object-position:center;margin:0 auto;transform:scale(2.15);transform-origin:center center;"></div>
+        <div class="info-logo-wrap wide" style="display:flex;align-items:center;justify-content:center;width:100%;height:410px;padding:0;overflow:hidden;"><img src="${logoSrc()}" class="info-logo bigger" alt="Q Options" style="display:block;width:1060px;max-width:100%;height:390px;object-fit:contain;object-position:center;margin:0 auto;transform:scale(1.85);transform-origin:center center;"></div>
       </div>
 
       <div class="info-dates-under-logo">
-        <div class="period-item solo"><span class="period-badge">📅</span><div><div class="digital smallish">${periodText}</div><div class="period-meta">فترة التداول</div></div></div>
+        <div class="period-item solo"><span class="period-badge">📅</span><div class="date-clean">${periodText}</div></div>
       </div>
 
       <div class="info-stats refined-order">
@@ -477,6 +477,10 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
         <div class="info-stat">
           <div class="info-stat-top"><span class="info-icon win">✓</span><div class="info-label"><b>الصفقات الرابحة</b></div></div>
           <div class="digital green">${s.wins.length}</div>
+        </div>
+        <div class="info-stat stopped-stat">
+          <div class="info-stat-top"><span class="info-icon stopped">Ⅱ</span><div class="info-label"><b>الصفقات الموقوفة</b></div></div>
+          <div class="digital cyan">${neutralCount}</div>
         </div>
         <div class="info-stat featured">
           <div class="info-stat-top"><div class="info-label"><b>إجمالي العائد</b></div></div>
@@ -508,7 +512,7 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
             <div class="quick-row"><span class="name"><span class="mini blue">≣</span> إجمالي الصفقات</span><span class="value">${filtered.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini green">✓</span> الصفقات الرابحة</span><span class="value green">${s.wins.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini red">✕</span> الصفقات الخاسرة</span><span class="value red">${s.losses.length}</span></div>
-            <div class="quick-row"><span class="name"><span class="mini gray">◐</span> المحايدة</span><span class="value">${neutralCount}</span></div>
+            <div class="quick-row"><span class="name"><span class="mini cyan">Ⅱ</span> الصفقات الموقوفة</span><span class="value cyan">${neutralCount}</span></div>
             <div class="quick-row"><span class="name"><span class="mini gold">$</span> إجمالي الأرباح</span><span class="value green">${moneyInt(s.net)}</span></div>
           </div>
         </div>
@@ -523,7 +527,7 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
             <div class="donut-legend">
               <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot green"></span> رابحة</span><b>${s.wins.length}</b></div>
               <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot red"></span> خاسرة</span><b>${s.losses.length}</b></div>
-              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot gray"></span> محايدة</span><b>${neutralCount}</b></div>
+              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot cyan"></span> موقوفة</span><b>${neutralCount}</b></div>
             </div>
           </div>
         </div>
@@ -724,13 +728,8 @@ async function shareOrDownloadBlob(blob,dataUrl,filename,iosWindow=null){
 async function saveOrShareTopTrades(e){
   e?.preventDefault?.();
   if(!window.html2canvas){showToast('مكتبة حفظ الصورة لم يتم تحميلها');return}
-
-  // فتح نافذة iOS فور ضغطة المستخدم، قبل أي await، حتى لا يمنع Safari الحفظ لاحقاً.
-  const iosWindow=isIOSDevice()?window.open('', '_blank'):null;
-  if(iosWindow){
-    iosWindow.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>جاري تجهيز الصورة</title></head><body style="font-family:Arial;text-align:center;padding:50px;background:#fffaf2;color:#4b3418"><h2>جاري تجهيز صورة أهم الصفقات…</h2><p>انتظري لحظات.</p></body></html>');
-    iosWindow.document.close();
-  }
+  // لا نفتح نافذة انتظار على الآيفون؛ يتم الحفظ من المعاينة نفسها.
+  const iosWindow=null;
 
   const btn=$('previewDownload');
   const oldText=btn?.textContent || 'حفظ الصورة';
@@ -739,20 +738,24 @@ async function saveOrShareTopTrades(e){
 
   try{
     const stage=$('exportStage');
-    stage.innerHTML=buildShareTemplate(10,'shareCapture');
-    const target=$('shareCapture');
+    let target=$('liveShareCapture');
+    if(!target){
+      stage.innerHTML=buildShareTemplate(10,'shareCapture');
+      target=$('shareCapture');
+    }
     if(!target) throw new Error('لم يتم العثور على صفحة الصفقات');
-    await waitForImages(target);
-    await new Promise(r=>setTimeout(r,350));
+    // المعاينة الظاهرة محمّلة أصلًا؛ حد أقصى قصير يمنع انتظار Safari المبالغ فيه.
+    await Promise.race([waitForImages(target),new Promise(r=>setTimeout(r,700))]);
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
 
-    const scale=isIOSDevice()?1:1.55;
+    const scale=isIOSDevice() ? .82 : 1.35;
     const canvas=await html2canvas(target,{
       scale,
       useCORS:true,
       allowTaint:false,
       backgroundColor:'#fffefa',
       logging:false,
-      imageTimeout:15000,
+      imageTimeout:1200,
       width:target.scrollWidth || 1120,
       height:target.scrollHeight || 1570,
       windowWidth:target.scrollWidth || 1120,
@@ -780,15 +783,14 @@ async function saveOrShareTopTrades(e){
       previewContent.innerHTML=`<div class="saved-image-wrap"><div class="saved-image-hint">اضغط مطولًا على الصورة ثم اختر «حفظ في الصور» إذا لم تظهر نافذة المشاركة</div><img class="saved-trades-image" src="${dataUrl}" alt="صفحة الصفقات"></div>`;
     }
     if(!blob) throw new Error('تعذر إنشاء ملف الصورة');
-    await shareOrDownloadBlob(blob,dataUrl,filename,iosWindow);
-    showToast('تم تجهيز الصورة');
+    if(isIOSDevice()){
+      showToast('تم تجهيز الصورة — اضغط عليها مطولًا للحفظ');
+    }else{
+      await shareOrDownloadBlob(blob,dataUrl,filename,iosWindow);
+      showToast('تم حفظ الصورة');
+    }
   }catch(err){
     console.error(err);
-    if(iosWindow && !iosWindow.closed){
-      iosWindow.document.open();
-      iosWindow.document.write('<!doctype html><html lang="ar" dir="rtl"><meta name="viewport" content="width=device-width,initial-scale=1"><body style="font-family:Arial;text-align:center;padding:40px"><h2>تعذر حفظ الصورة</h2><p>ارجعي للصفحة وحاولي مرة أخرى.</p></body></html>');
-      iosWindow.document.close();
-    }
     showToast('تعذر الحفظ التلقائي — جرّب الضغط مطولًا على المعاينة');
   }finally{
     $('exportStage').innerHTML='';
