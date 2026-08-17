@@ -566,10 +566,10 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
 
         <div class="info-box">
           <h4>توزيع نتائج الصفقات</h4>
-          <div class="result-bars">
-            <div class="result-bar-row win"><div class="result-bar-head"><span>رابحة</span><b>${s.wins.length}</b></div><div class="result-bar-track"><i style="width:${winPct.toFixed(2)}%"></i></div></div>
-            <div class="result-bar-row loss"><div class="result-bar-head"><span>خاسرة</span><b>${s.losses.length}</b></div><div class="result-bar-track"><i style="width:${lossPct.toFixed(2)}%"></i></div></div>
-            <div class="result-bar-row stopped"><div class="result-bar-head"><span>موقوفة</span><b>${stoppedCount}</b></div><div class="result-bar-track"><i style="width:${stoppedPct.toFixed(2)}%"></i></div></div>
+          <div class="result-circles">
+            <div class="result-circle-item win"><div class="result-circle"><b>${s.wins.length}</b></div><span>رابحة</span></div>
+            <div class="result-circle-item loss"><div class="result-circle"><b>${s.losses.length}</b></div><span>خاسرة</span></div>
+            <div class="result-circle-item stopped"><div class="result-circle"><b>${stoppedCount}</b></div><span>موقوفة</span></div>
           </div>
         </div>
       </div>
@@ -790,8 +790,9 @@ async function saveOrShareTopTrades(e){
 
     // Safari كان يحسب عرض التقرير بعرض شاشة الهاتف رغم أن لوحة الحفظ أكبر.
     // نثبت العرض على العنصر نفسه قبل أن يأخذ html2canvas القياسات.
-    stage.style.setProperty('width','1200px','important');
-    stage.style.setProperty('min-width','1200px','important');
+    stage.style.setProperty('width','1120px','important');
+    stage.style.setProperty('min-width','1120px','important');
+    stage.style.setProperty('max-width','1120px','important');
     stage.style.setProperty('display','block','important');
     stage.style.setProperty('position','fixed','important');
     stage.style.setProperty('left','0','important');
@@ -801,6 +802,7 @@ async function saveOrShareTopTrades(e){
     target.style.setProperty('max-width','1120px','important');
     target.style.setProperty('display','block','important');
     target.style.setProperty('position','relative','important');
+    target.style.setProperty('margin','0','important');
     target.style.setProperty('box-sizing','border-box','important');
     target.style.setProperty('flex','none','important');
     target.style.setProperty('transform','none','important');
@@ -814,16 +816,20 @@ async function saveOrShareTopTrades(e){
       throw new Error(`عرض التقرير غير صحيح قبل الحفظ: ${measuredWidth}px`);
     }
 
-    const scale=isIOSDevice() ? .82 : 1.35;
+    const captureWidth=1120;
+    const captureHeight=Math.ceil(Math.max(target.scrollHeight,target.getBoundingClientRect().height));
+    const scale=1;
     const canvas=await html2canvas(target,{
       scale,
+      width:captureWidth,
+      height:captureHeight,
       useCORS:true,
       allowTaint:false,
       backgroundColor:'#fffefa',
       logging:false,
       imageTimeout:1200,
-      windowWidth:1200,
-      windowHeight:target.scrollHeight || 1570,
+      windowWidth:captureWidth,
+      windowHeight:captureHeight,
       scrollX:0,
       scrollY:0,
       onclone:clonedDocument=>{
@@ -831,8 +837,9 @@ async function saveOrShareTopTrades(e){
         const clonedTarget=clonedDocument.getElementById('shareCapture');
         if(clonedStage){
           clonedStage.style.setProperty('left','0','important');
-          clonedStage.style.setProperty('width','1200px','important');
-          clonedStage.style.setProperty('min-width','1200px','important');
+          clonedStage.style.setProperty('width','1120px','important');
+          clonedStage.style.setProperty('min-width','1120px','important');
+          clonedStage.style.setProperty('max-width','1120px','important');
           clonedStage.style.setProperty('transform','none','important');
         }
         if(clonedTarget){
@@ -842,6 +849,7 @@ async function saveOrShareTopTrades(e){
           clonedTarget.style.setProperty('max-width','1120px','important');
           clonedTarget.style.setProperty('display','block','important');
           clonedTarget.style.setProperty('position','relative','important');
+          clonedTarget.style.setProperty('margin','0','important');
           clonedTarget.style.setProperty('box-sizing','border-box','important');
           clonedTarget.style.setProperty('flex','none','important');
           clonedTarget.style.setProperty('transform','none','important');
