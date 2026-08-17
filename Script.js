@@ -457,8 +457,8 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
       <div class="info-top-swoosh"></div>
       <div class="info-bottom-swoosh"></div>
 
-      <div class="info-header compact logo-only" style="display:flex;align-items:center;justify-content:center;width:100%;height:410px;min-height:410px;margin:0 auto;overflow:hidden;">
-        <div class="info-logo-wrap wide" style="display:flex;align-items:center;justify-content:center;width:100%;height:410px;padding:0;overflow:hidden;"><img src="${logoSrc()}" class="info-logo bigger" alt="Q Options" style="display:block;width:1060px;max-width:100%;height:390px;object-fit:contain;object-position:center;margin:0 auto;transform:scale(1.85);transform-origin:center center;"></div>
+      <div class="info-header compact logo-only" style="display:flex;align-items:center;justify-content:center;width:100%;height:370px;min-height:370px;margin:0 auto;overflow:hidden;">
+        <div class="info-logo-wrap wide" style="display:flex;align-items:center;justify-content:center;width:100%;height:370px;padding:0;overflow:hidden;"><img src="${logoSrc()}" class="info-logo bigger" alt="Q Options" style="display:block;width:1060px;max-width:100%;height:360px;object-fit:contain;object-position:center;margin:0 auto;transform:scale(1.62);transform-origin:center center;"></div>
       </div>
 
       <div class="info-dates-under-logo">
@@ -738,14 +738,12 @@ async function saveOrShareTopTrades(e){
 
   try{
     const stage=$('exportStage');
-    let target=$('liveShareCapture');
-    if(!target){
-      stage.innerHTML=buildShareTemplate(10,'shareCapture');
-      target=$('shareCapture');
-    }
+    // نلتقط نسخة مستقلة بالحجم الأصلي، وليس المعاينة المصغّرة داخل الجوال.
+    // التقاط liveShareCapture كان يرث transform من المعاينة ويضغط التقرير في الزاوية.
+    stage.innerHTML=buildShareTemplate(10,'shareCapture');
+    const target=$('shareCapture');
     if(!target) throw new Error('لم يتم العثور على صفحة الصفقات');
-    // المعاينة الظاهرة محمّلة أصلًا؛ حد أقصى قصير يمنع انتظار Safari المبالغ فيه.
-    await Promise.race([waitForImages(target),new Promise(r=>setTimeout(r,700))]);
+    await Promise.race([waitForImages(target),new Promise(r=>setTimeout(r,1200))]);
     await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
 
     const scale=isIOSDevice() ? .82 : 1.35;
@@ -758,7 +756,8 @@ async function saveOrShareTopTrades(e){
       imageTimeout:1200,
       width:target.scrollWidth || 1120,
       height:target.scrollHeight || 1570,
-      windowWidth:target.scrollWidth || 1120,
+      windowWidth:1200,
+      windowHeight:target.scrollHeight || 1570,
       scrollX:0,
       scrollY:0
     });
