@@ -566,10 +566,10 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
 
         <div class="info-box">
           <h4>توزيع نتائج الصفقات</h4>
-          <div class="result-circles">
-            <div class="result-circle-item win"><div class="result-circle"><b>${s.wins.length}</b></div><span>رابحة</span></div>
-            <div class="result-circle-item loss"><div class="result-circle"><b>${s.losses.length}</b></div><span>خاسرة</span></div>
-            <div class="result-circle-item stopped"><div class="result-circle"><b>${stoppedCount}</b></div><span>موقوفة</span></div>
+          <div class="result-bars">
+            <div class="result-bar-row win"><div class="result-bar-head"><span>رابحة</span><b>${s.wins.length}</b></div><div class="result-bar-track"><i style="width:${winPct.toFixed(2)}%"></i></div></div>
+            <div class="result-bar-row loss"><div class="result-bar-head"><span>خاسرة</span><b>${s.losses.length}</b></div><div class="result-bar-track"><i style="width:${lossPct.toFixed(2)}%"></i></div></div>
+            <div class="result-bar-row stopped"><div class="result-bar-head"><span>موقوفة</span><b>${stoppedCount}</b></div><div class="result-bar-track"><i style="width:${stoppedPct.toFixed(2)}%"></i></div></div>
           </div>
         </div>
       </div>
