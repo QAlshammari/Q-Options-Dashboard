@@ -1551,6 +1551,134 @@ body{
 .capture-mode .result-circle::before{display:block!important}
 .capture-mode .result-circle::after{display:block!important;background:#fff!important;opacity:.76!important}
 
+/* FINAL39 — إعادة الشرائط واحتواء محتوى الصناديق البيضاء */
+.result-circles{display:none!important}
+.refined-light .result-bars,
+.capture-mode .result-bars{
+  display:grid!important;
+  align-content:center!important;
+  gap:13px!important;
+  height:174px!important;
+  margin:0!important;
+  padding:4px 8px 0!important;
+}
+.refined-light .info-bottom,
+.capture-mode .info-bottom{align-items:stretch!important}
+.refined-light .info-box,
+.refined-light .info-box:nth-child(n),
+.capture-mode .info-box,
+.capture-mode .info-box:nth-child(n){
+  height:244px!important;
+  min-height:244px!important;
+  padding:13px 14px 12px!important;
+  overflow:hidden!important;
+  background:#fff!important;
+  background-image:none!important;
+  border:1px solid #ddc487!important;
+  border-bottom:8px solid #a66f20!important;
+  border-radius:20px!important;
+  box-shadow:0 11px 0 rgba(177,124,38,.18),0 17px 24px rgba(91,58,15,.16),inset 0 3px 0 #fff,inset 0 -9px 14px rgba(203,159,79,.08)!important;
+}
+.refined-light .info-box::before,
+.capture-mode .info-box::before{display:none!important}
+.refined-light .quick-list,
+.capture-mode .quick-list{
+  display:grid!important;
+  gap:2px!important;
+  margin:2px 0 0!important;
+  padding:0!important;
+}
+.refined-light .quick-row,
+.capture-mode .quick-row{
+  min-height:32px!important;
+  height:32px!important;
+  padding:2px 0!important;
+  margin:0!important;
+  gap:5px!important;
+  overflow:hidden!important;
+}
+.refined-light .quick-row .name,
+.capture-mode .quick-row .name{font-size:16px!important;line-height:1!important;white-space:nowrap!important}
+.refined-light .quick-row .value,
+.capture-mode .quick-row .value{font-size:20px!important;line-height:1!important;flex:none!important}
+.refined-light .quick-row .mini,
+.capture-mode .quick-row .mini{width:22px!important;height:22px!important;font-size:12px!important;flex:none!important}
+.capture-mode .info-box{
+  box-shadow:0 8px 0 #c99b50,0 14px 20px rgba(91,58,15,.14),inset 0 2px 0 #fff!important;
+}
+.refined-light .infographic-table-panel,
+.capture-mode .infographic-table-panel{margin-bottom:22px!important}
+.refined-light .info-contact.footer-only,
+.capture-mode .info-contact.footer-only{
+  position:relative!important;
+  z-index:20!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  width:calc(100% - 36px)!important;
+  min-height:52px!important;
+  margin:0 auto 22px!important;
+  padding:10px 18px!important;
+  overflow:visible!important;
+  color:#57401f!important;
+  background:#fff!important;
+  border:1px solid #dec58f!important;
+  border-bottom:5px solid #aa7423!important;
+  border-radius:15px!important;
+  box-shadow:0 8px 14px rgba(91,58,15,.13),inset 0 2px 0 #fff!important;
+}
+.capture-mode .info-contact.footer-only{box-shadow:0 6px 0 #cfaa68!important}
+
+/* FINAL40 — تفتيح هادئ لصفحة ملخص الصفقات */
+.refined-light.infographic-card,
+.capture-mode.refined-light.infographic-card{
+  background:#fffdf8!important;
+  border-color:#e1c58d!important;
+  box-shadow:0 9px 0 #cda968,0 20px 38px rgba(91,62,23,.18),inset 0 0 0 5px #fffaf0,inset 0 0 24px rgba(195,148,68,.08)!important;
+}
+.refined-light.infographic-card::after,
+.capture-mode.refined-light.infographic-card::after{
+  border-color:rgba(205,163,89,.42)!important;
+  box-shadow:inset 0 2px 0 #fff,0 0 0 3px rgba(255,249,235,.88)!important;
+}
+.refined-light .info-stat,
+.refined-light .info-stat:nth-child(n),
+.capture-mode .info-stat,
+.capture-mode .info-stat:nth-child(n){
+  background:#fff9e9!important;
+  border-color:#e5cc98!important;
+}
+.refined-light .infographic-table-panel,
+.capture-mode .infographic-table-panel{
+  background:#fffdf9!important;
+  border-color:#dfc28b!important;
+  border-bottom-color:#bd8a3d!important;
+  box-shadow:0 12px 20px rgba(102,70,26,.12),inset 0 2px 0 #fff!important;
+}
+.refined-light .info-table.roomy thead th,
+.capture-mode .info-table.roomy thead th{
+  color:#fffdf6!important;
+  background:#bd8733!important;
+  border-bottom-color:#8c5d1d!important;
+  text-shadow:0 1px 1px rgba(75,45,8,.28)!important;
+}
+.refined-light .info-table.roomy tbody td,
+.capture-mode .info-table.roomy tbody td{
+  background:#fffefb!important;
+  border-bottom-color:#d7b879!important;
+}
+.refined-light .info-table.roomy tbody tr:nth-child(even) td,
+.capture-mode .info-table.roomy tbody tr:nth-child(even) td{background:#fbf6ec!important}
+.refined-light .info-table-head h3,
+.capture-mode .info-table-head h3,
+.refined-light .table-week-date,
+.capture-mode .table-week-date{
+  background:#f7dc9f!important;
+  border-color:#d4aa60!important;
+  border-bottom-color:#a57328!important;
+}
+
 /* FINAL24 — وضع حفظ ثابت لمنع تشوه Safari و html2canvas */
 .refined-light .info-header.logo-only .info-logo.bigger{
   transform:none!important;
