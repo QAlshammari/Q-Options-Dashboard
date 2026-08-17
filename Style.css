@@ -2167,3 +2167,135 @@ body{
 }
 .refined-light .quick-row:last-child .value,
 .capture-mode .quick-row:last-child .value{font-size:19px!important}
+
+/* FINAL33 — إزالة الدائرة الخارجة والفراغ المحجوز لها */
+.refined-light .info-bottom{margin-bottom:0!important}
+.refined-light .infographic-table-panel{margin-top:8px!important}
+.refined-light .info-box,
+.capture-mode .info-box{overflow:hidden!important}
+.refined-light .info-box:nth-child(3){padding-bottom:13px!important}
+.result-bars{
+  display:grid;
+  align-content:center;
+  gap:13px;
+  height:174px;
+  margin-top:2px;
+  padding:3px 5px 0;
+}
+.result-bar-row{display:grid;gap:5px}
+.result-bar-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-family:Tahoma,Arial,sans-serif;
+  font-size:15px;
+  font-weight:900;
+  color:#3a2b1e;
+}
+.result-bar-head b{font-size:18px;font-variant-numeric:tabular-nums}
+.result-bar-track{
+  position:relative;
+  height:13px;
+  overflow:hidden;
+  border-radius:999px;
+  background:#eadfc9;
+  box-shadow:inset 0 2px 4px rgba(87,56,14,.16),0 1px 0 #fff;
+}
+.result-bar-track i{
+  display:block;
+  min-width:0;
+  height:100%;
+  border-radius:999px;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.48),0 0 8px currentColor;
+}
+.result-bar-row.win .result-bar-head b{color:#2f9b50}
+.result-bar-row.loss .result-bar-head b{color:#e34b41}
+.result-bar-row.stopped .result-bar-head b{color:#20aeca}
+.result-bar-row.win .result-bar-track i{background:#2f9b50;color:#2f9b50}
+.result-bar-row.loss .result-bar-track i{background:#e34b41;color:#e34b41}
+.result-bar-row.stopped .result-bar-track i{background:#20aeca;color:#20aeca}
+.capture-mode .result-bar-track{background:#eadfc9!important;box-shadow:inset 0 2px 3px rgba(87,56,14,.15)!important}
+.capture-mode .result-bar-track i{box-shadow:none!important}
+
+/* FINAL34 — تكبير نصوص وأرقام الصناديق الستة */
+.refined-light .info-stats.refined-order .info-label b,
+.capture-mode .info-stats.refined-order .info-label b{
+  font-family:Tahoma,Arial,sans-serif!important;
+  font-size:17px!important;
+  font-weight:900!important;
+  line-height:1.18!important;
+}
+.refined-light .info-stats.refined-order .digital,
+.capture-mode .info-stats.refined-order .digital{
+  font-family:Tahoma,Arial,"Helvetica Neue",sans-serif!important;
+  font-weight:900!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  letter-spacing:-.3px!important;
+}
+.refined-light .info-stat .digital.number,
+.refined-light .info-stat .digital.green,
+.refined-light .info-stat .digital.red,
+.refined-light .info-stat .digital.cyan,
+.capture-mode .info-stat .digital.number,
+.capture-mode .info-stat .digital.green,
+.capture-mode .info-stat .digital.red,
+.capture-mode .info-stat .digital.cyan{font-size:40px!important}
+.refined-light .info-stat .digital.money,
+.capture-mode .info-stat .digital.money{font-size:35px!important}
+.refined-light .info-stat.featured .digital,
+.capture-mode .info-stat.featured .digital{font-size:39px!important}
+
+/* FINAL35 — تكبير إحصائيات سريعة وتوزيع النتائج */
+.refined-light .info-box h4,
+.capture-mode .info-box h4{
+  font-family:Tahoma,Arial,sans-serif!important;
+  font-size:27px!important;
+  font-weight:900!important;
+}
+.refined-light .quick-row .name,
+.capture-mode .quick-row .name{
+  font-family:Tahoma,Arial,sans-serif!important;
+  font-size:17px!important;
+  font-weight:900!important;
+}
+.refined-light .quick-row .value,
+.capture-mode .quick-row .value{font-size:22px!important}
+.refined-light .quick-row:last-child .value,
+.capture-mode .quick-row:last-child .value{font-size:21px!important}
+.result-bar-head{
+  font-size:18px!important;
+  font-weight:900!important;
+}
+.result-bar-head b{font-size:22px!important;font-weight:900!important}
+.result-bar-track{height:14px!important}
+
+/* FINAL36 — إطار عرض بارز وآمن داخل الصورة المحفوظة */
+.refined-light.infographic-card{
+  position:relative!important;
+  overflow:hidden!important;
+  border:3px solid #d8b36d!important;
+  outline:1px solid rgba(255,255,255,.92)!important;
+  outline-offset:-7px!important;
+  box-shadow:0 13px 0 #8f5d18,0 26px 48px rgba(68,42,9,.28),inset 0 0 0 5px #fff9e9,inset 0 0 28px rgba(190,132,38,.13)!important;
+}
+.refined-light.infographic-card::after{
+  content:"";
+  position:absolute;
+  z-index:50;
+  inset:7px;
+  border:2px solid rgba(192,137,47,.52);
+  border-radius:21px;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.96),inset 0 -4px 8px rgba(137,86,18,.13),0 0 0 3px rgba(255,250,235,.72);
+  pointer-events:none;
+}
+.capture-mode.refined-light.infographic-card{
+  border:4px solid #c99b4e!important;
+  outline:2px solid #fff8e7!important;
+  outline-offset:-9px!important;
+  box-shadow:inset 0 0 0 6px #f5dfb5,inset 0 0 30px rgba(151,98,23,.16)!important;
+}
+.capture-mode.refined-light.infographic-card::after{
+  display:block!important;
+  border:2px solid #b77c25!important;
+  box-shadow:inset 0 2px 0 #fff,0 0 0 3px #fff5dc!important;
+}
