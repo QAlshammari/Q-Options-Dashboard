@@ -3,6 +3,7 @@ let equityChart, dailyChart, winLossChart;
 
 const $ = id => document.getElementById(id);
 const money = n => (n < 0 ? '-$' : '$') + Math.abs(Number(n) || 0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const moneyInt = n => (n < 0 ? '-$' : '$') + Math.abs(Math.round(Number(n) || 0)).toLocaleString('en-US');
 const pct = n => `${Number(n) >= 0 ? '+' : ''}${(Number(n) || 0).toFixed(2)}%`;
 
 function toISO(date){
@@ -407,75 +408,70 @@ function buildPdfTemplate(){
   return buildShareTemplate(10, "pdfCapture");
 }
 
+
 function buildShareTemplate(maxRows=10, captureId="shareCapture"){
   const filtered=getFilteredTrades();
-  const publicData=buildPublicTrades(filtered,maxRows);
-  const s=calculateStats(publicData);
-  const rowsData=publicData;
-  const periodText=`${$('fromDate').value || '—'} - ${$('toDate').value || '—'}`;
+  const s=calculateStats(filtered);
+  const rowsData=topTrades(filtered,maxRows);
+  const periodText=`${$('fromDate').value || '—'}  →  ${$('toDate').value || '—'}`;
   const winPct = s.closed.length ? (s.wins.length / s.closed.length * 100) : 0;
-  const neutralCount = Math.max(0, publicData.length - s.wins.length - s.losses.length);
+  const neutralCount = Math.max(0, filtered.length - s.wins.length - s.losses.length);
   const rows = rowsData.length ? rowsData.map(t=>{
     const option=tradeOptionLabel(t);
     const st=tradeStatusMeta(t);
+    const statusAr = st.cls==='loss' ? 'خاسرة' : st.cls==='open' ? 'مفتوحة' : 'رابح';
     return `
       <tr>
         <td class="symbol-cell"><div class="symbol-stack"><span>${escapeHtml(t.symbol)}</span></div></td>
         <td><span class="info-chip ${option==='CALL'?'call':'put'}">${option}</span></td>
-        <td class="digital small">${escapeHtml(t.strike)}</td>
-        <td dir="ltr" class="digital small">${money(t.buy)}</td>
-        <td dir="ltr" class="digital small">${t.sell===null?'—':money(t.sell)}</td>
-        <td class="info-profit ${t.profit>=0?'pos':'neg'} digital small">${t.sell===null&&t.profit===0?'—':money(t.profit)}</td>
-        <td class="info-pct ${t.pct>=0?'pos':'neg'} digital small">${t.sell===null&&t.profit===0?'—':pct(t.pct)}</td>
-        <td><span class="info-status ${st.cls}"><span class="info-status-icon">${st.icon}</span><span>${st.labelAr}<br><small>${st.labelEn}</small></span></span></td>
+        <td>${escapeHtml(t.strike)}</td>
+        <td dir="ltr">${money(t.buy)}</td>
+        <td dir="ltr">${t.sell===null?'—':money(t.sell)}</td>
+        <td class="info-profit ${t.profit>=0?'pos':'neg'}">${t.sell===null&&t.profit===0?'—':money(t.profit)}</td>
+        <td class="info-pct ${t.pct>=0?'pos':'neg'}">${t.sell===null&&t.profit===0?'—':pct(t.pct)}</td>
+        <td><span class="info-status ${st.cls}">${statusAr}</span></td>
       </tr>`;
   }).join('') : `<tr><td colspan="8">لا توجد صفقات ضمن الفترة المحددة</td></tr>`;
 
   return `
-    <div class="infographic-card" id="${captureId}">
+    <div class="infographic-card refined-light" id="${captureId}">
       <div class="info-top-swoosh"></div>
       <div class="info-bottom-swoosh"></div>
 
-      <div class="info-header">
-        <div class="info-title">
-          <div class="info-brand"><span class="q">Q</span>OPTIONS</div>
-          <div class="info-brand-sub">US MARKET STOCKS</div>
-          <div class="info-report-en">WEEKLY REPORT</div>
-          <div class="info-report-ar">التقرير الأسبوعي</div>
-          <div class="info-period">
-            <div class="period-item"><span class="period-badge">📅</span><div><div class="digital small">${periodText}</div><div class="period-meta">Trading Period  فترة التداول</div></div></div>
-            <div class="period-item"><span class="period-badge">✈</span><div><div dir="ltr">@Qalshammari</div><div class="period-meta">Telegram Channel  قناة التليجرام</div></div></div>
-          </div>
-        </div>
-        <div class="info-logo-wrap"><img src="${logoSrc()}" class="info-logo" alt="Q Options"></div>
+      <div class="info-header compact logo-only">
+        <div class="info-logo-wrap wide"><img src="${logoSrc()}" class="info-logo bigger" alt="Q Options"></div>
       </div>
 
-      <div class="info-stats">
-        <div class="info-stat">
-          <div class="info-stat-top"><span class="info-icon layers">▤</span><div class="info-label"><b>إجمالي الصفقات</b><small>TOTAL TRADES</small></div></div>
-          <div class="digital number">${publicData.length}</div>
-        </div>
-        <div class="info-stat featured">
-          <div class="info-stat-top"><div class="info-label"><b>إجمالي العائد</b><small>TOTAL RETURN</small></div></div>
-          <div class="digital green">${pct(s.returnP)}</div>
-        </div>
-        <div class="info-stat">
-          <div class="info-stat-top"><span class="info-icon win">✓</span><div class="info-label"><b>الصفقات الرابحة</b><small>WINNING TRADES</small></div></div>
-          <div class="digital green">${s.wins.length}</div>
+      <div class="info-dates-under-logo">
+        <div class="period-item solo"><span class="period-badge">📅</span><div><div class="digital smallish">${periodText}</div><div class="period-meta">فترة التداول  Trading Period</div></div></div>
+      </div>
+
+      <div class="info-stats refined-order">
+        <div class="info-stat totalprofit">
+          <div class="info-stat-top"><span class="info-icon cash">$</span><div class="info-label"><b>إجمالي الأرباح</b><small>TOTAL PROFIT</small></div></div>
+          <div class="digital money bigmoney">${moneyInt(s.net)}</div>
         </div>
         <div class="info-stat">
           <div class="info-stat-top"><span class="info-icon loss">✕</span><div class="info-label"><b>الصفقات الخاسرة</b><small>LOSING TRADES</small></div></div>
           <div class="digital red">${s.losses.length}</div>
         </div>
         <div class="info-stat">
-          <div class="info-stat-top"><span class="info-icon cash">$</span><div class="info-label"><b>إجمالي الأرباح</b><small>TOTAL PROFIT</small></div></div>
-          <div class="digital money">${money(s.net)}</div>
+          <div class="info-stat-top"><span class="info-icon win">✓</span><div class="info-label"><b>الصفقات الرابحة</b><small>WINNING TRADES</small></div></div>
+          <div class="digital green">${s.wins.length}</div>
+        </div>
+        <div class="info-stat featured">
+          <div class="info-stat-top"><div class="info-label"><b>إجمالي العائد</b><small>TOTAL RETURN</small></div></div>
+          <div class="digital green">${pct(s.returnP)}</div>
+        </div>
+        <div class="info-stat">
+          <div class="info-stat-top"><span class="info-icon layers">▤</span><div class="info-label"><b>إجمالي الصفقات</b><small>TOTAL TRADES</small></div></div>
+          <div class="digital number">${filtered.length}</div>
         </div>
       </div>
 
       <div class="infographic-table-panel">
-        <div class="info-table-head"><h3>أهم الصفقات</h3></div>
-        <table class="info-table">
+        <div class="info-table-head centered"><h3>أهم الصفقات</h3></div>
+        <table class="info-table roomy">
           <thead>
             <tr>
               <th>الرمز<br><small>SYMBOL</small></th>
@@ -494,16 +490,14 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
 
       <div class="info-bottom">
         <div class="info-box">
-          <h4>توزيع نتائج الصفقات<small>TRADE DISTRIBUTION</small></h4>
-          <div class="donut-layout">
-            <div style="position:relative;width:170px;height:170px;display:grid;place-items:center">
-              <div class="donut-chart" style="--pct:${winPct.toFixed(2)}"></div>
-              <div class="donut-core"><b>${winPct.toFixed(0)}%</b><span>رابح</span></div>
-            </div>
-            <div class="donut-legend">
-              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot green"></span> رابحة</span><b>${s.wins.length} (${publicData.length?((s.wins.length/publicData.length)*100).toFixed(0):0}%)</b></div>
-              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot red"></span> خاسرة</span><b>${s.losses.length} (${publicData.length?((s.losses.length/publicData.length)*100).toFixed(0):0}%)</b></div>
-              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot gray"></span> محايدة</span><b>${neutralCount} (${publicData.length?((neutralCount/publicData.length)*100).toFixed(0):0}%)</b></div>
+          <h4>إجمالي العائد<small>TOTAL RETURN</small></h4>
+          <div class="return-ring-wrap">
+            <div class="return-ring">
+              <div class="return-ring-arrow">↗</div>
+              <div class="return-ring-content">
+                <div class="digital">${pct(s.returnP)}</div>
+                <div class="ar">إجمالي العائد</div>
+              </div>
             </div>
           </div>
         </div>
@@ -511,33 +505,34 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
         <div class="info-box">
           <h4>إحصائيات سريعة<small>QUICK STATISTICS</small></h4>
           <div class="quick-list">
-            <div class="quick-row"><span class="name"><span class="mini blue">≣</span> إجمالي الصفقات</span><span class="value">${publicData.length}</span></div>
+            <div class="quick-row"><span class="name"><span class="mini blue">≣</span> إجمالي الصفقات</span><span class="value">${filtered.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini green">✓</span> الصفقات الرابحة</span><span class="value green">${s.wins.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini red">✕</span> الصفقات الخاسرة</span><span class="value red">${s.losses.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini gray">◐</span> المحايدة</span><span class="value">${neutralCount}</span></div>
-            <div class="quick-row"><span class="name"><span class="mini gold">$</span> إجمالي الأرباح</span><span class="value green">${money(s.net)}</span></div>
+            <div class="quick-row"><span class="name"><span class="mini gold">$</span> إجمالي الأرباح</span><span class="value green">${moneyInt(s.net)}</span></div>
           </div>
         </div>
 
         <div class="info-box">
-          <h4>إجمالي العائد<small>TOTAL RETURN</small></h4>
-          <div class="return-ring-wrap">
-            <div class="return-ring">
-              <div class="return-ring-arrow">↗</div>
-              <div class="return-ring-content">
-                <div class="en">TOTAL RETURN</div>
-                <div class="digital">${pct(s.returnP)}</div>
-                <div class="ar">إجمالي العائد</div>
-              </div>
+          <h4>توزيع نتائج الصفقات<small>TRADE DISTRIBUTION</small></h4>
+          <div class="donut-layout">
+            <div style="position:relative;width:170px;height:170px;display:grid;place-items:center">
+              <div class="donut-chart" style="--pct:${winPct.toFixed(2)}"></div>
+              <div class="donut-core"><b>${winPct.toFixed(0)}%</b><span>رابح</span></div>
+            </div>
+            <div class="donut-legend">
+              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot green"></span> رابحة</span><b>${s.wins.length}</b></div>
+              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot red"></span> خاسرة</span><b>${s.losses.length}</b></div>
+              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot gray"></span> محايدة</span><b>${neutralCount}</b></div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="info-contact">للتواصل عبر تليجرام <b dir="ltr">@Qalshammari</b></div>
-      <div class="info-disclaimer">جميع الحقوق محفوظة © Q Options 2026</div>
+      <div class="info-contact footer-only">للتواصل عبر تليجرام <b dir="ltr">@Qalshammari</b></div>
     </div>`;
 }
+
 
 function setExportBusy(busy){
   ['pdfBtn','imageBtn'].forEach(id=>{if($(id)) $(id).disabled=busy});
@@ -657,40 +652,52 @@ function openTopTradesPreview(){
   showToast('تم فتح أهم الصفقات');
 }
 
-async function shareOrDownloadBlob(blob,dataUrl,filename){
+
+async function shareOrDownloadBlob(blob,dataUrl,filename,iosWindow=null){
   try{
     if(blob && typeof File!=='undefined' && navigator.share){
       const file=new File([blob],filename,{type:'image/png'});
       if(!navigator.canShare || navigator.canShare({files:[file]})){
         await navigator.share({files:[file],title:'Q Options - أهم الصفقات'});
+        if(iosWindow && !iosWindow.closed) iosWindow.close();
         return true;
       }
     }
   }catch(err){
-    if(err?.name==='AbortError') return true;
-    console.warn('Share fallback:',err);
+    if(err?.name==='AbortError'){
+      if(iosWindow && !iosWindow.closed) iosWindow.close();
+      return true;
+    }
+    console.warn('Native share fallback:',err);
   }
 
   if(isIOSDevice()){
-    const w=window.open();
+    const w=iosWindow && !iosWindow.closed ? iosWindow : window.open('', '_blank');
     if(w){
-      w.document.write(`<html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Q Options Top Trades</title></head><body style="margin:0;background:#111;display:flex;justify-content:center"><img src="${dataUrl}" style="width:100%;height:auto;display:block"></body></html>`);
+      w.document.open();
+      w.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Q Options - أهم الصفقات</title><style>body{margin:0;background:#111;font-family:Arial,sans-serif} .hint{position:sticky;top:0;z-index:2;background:#fff8e8;color:#4b3418;text-align:center;padding:12px;font-weight:700} img{display:block;width:100%;height:auto;margin:0 auto}</style></head><body><div class="hint">اضغطي مطولاً على الصورة ثم اختاري حفظ في الصور</div><img src="${dataUrl}" alt="Q Options Top Trades"></body></html>`);
       w.document.close();
-    }else{
-      location.href=dataUrl;
+      showToast('فتحت الصورة للحفظ — اضغطي عليها مطولاً');
+      return true;
     }
-    return true;
   }
 
   if(blob){
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
-    a.href=url;a.download=filename;
-    document.body.appendChild(a);a.click();a.remove();
+    a.href=url;
+    a.download=filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),3000);
   }else{
     const a=document.createElement('a');
-    a.href=dataUrl;a.download=filename;a.click();
+    a.href=dataUrl;
+    a.download=filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   }
   return true;
 }
@@ -699,46 +706,62 @@ async function saveOrShareTopTrades(e){
   e?.preventDefault?.();
   if(!window.html2canvas){showToast('مكتبة حفظ الصورة لم يتم تحميلها');return}
 
+  // فتح نافذة iOS فور ضغطة المستخدم، قبل أي await، حتى لا يمنع Safari الحفظ لاحقاً.
+  const iosWindow=isIOSDevice()?window.open('', '_blank'):null;
+  if(iosWindow){
+    iosWindow.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>جاري تجهيز الصورة</title></head><body style="font-family:Arial;text-align:center;padding:50px;background:#fffaf2;color:#4b3418"><h2>جاري تجهيز صورة أهم الصفقات…</h2><p>انتظري لحظات.</p></body></html>');
+    iosWindow.document.close();
+  }
+
   const btn=$('previewDownload');
   const oldText=btn?.textContent || 'حفظ / مشاركة الصورة';
   if(btn){btn.disabled=true;btn.textContent='جاري تجهيز الصورة…'}
   showToast('جاري تجهيز الصورة عالية الدقة…');
 
   try{
-    // Render a clean full-size copy off-screen. The visible preview stays responsive.
     const stage=$('exportStage');
     stage.innerHTML=buildShareTemplate(10,'shareCapture');
     const target=$('shareCapture');
     await waitForImages(target);
     await new Promise(r=>setTimeout(r,180));
 
-    const scale=isIOSDevice()?1.35:2;
+    const scale=isIOSDevice()?1:1.55;
     const canvas=await html2canvas(target,{
       scale,
       useCORS:true,
       allowTaint:false,
-      backgroundColor:'#fffaf2',
+      backgroundColor:'#fffefa',
       logging:false,
-      imageTimeout:12000,
-      windowWidth:1240
+      imageTimeout:15000,
+      width:target.scrollWidth || 1120,
+      height:target.scrollHeight || 1570,
+      windowWidth:target.scrollWidth || 1120,
+      scrollX:0,
+      scrollY:0
     });
 
-    const dataUrl=canvas.toDataURL('image/png',1);
-    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',1));
-    if(!blob && !dataUrl) throw new Error('PNG generation failed');
+    const dataUrl=canvas.toDataURL('image/png',0.98);
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',0.98));
+    if(!dataUrl) throw new Error('PNG generation failed');
 
     const filename=`Q-Options-Top-Trades-${safeFileRange()}.png`;
     topTradesExportState={dataUrl,blob,filename};
-    showToast('الصورة جاهزة');
-    await shareOrDownloadBlob(blob,dataUrl,filename);
+    await shareOrDownloadBlob(blob,dataUrl,filename,iosWindow);
+    showToast('تم تجهيز الصورة');
   }catch(err){
     console.error(err);
-    showToast('تعذر حفظ الصورة — المعاينة ما زالت متاحة');
+    if(iosWindow && !iosWindow.closed){
+      iosWindow.document.open();
+      iosWindow.document.write('<!doctype html><html lang="ar" dir="rtl"><meta name="viewport" content="width=device-width,initial-scale=1"><body style="font-family:Arial;text-align:center;padding:40px"><h2>تعذر حفظ الصورة</h2><p>ارجعي للصفحة وحاولي مرة أخرى.</p></body></html>');
+      iosWindow.document.close();
+    }
+    showToast('تعذر حفظ الصورة');
   }finally{
     $('exportStage').innerHTML='';
     if(btn){btn.disabled=false;btn.textContent=oldText}
   }
 }
+
 
 let toastTimer;
 function showToast(message){
@@ -766,5 +789,5 @@ updateFooterClock();
 setInterval(updateFooterClock,60000);
 render();
 
-// Q OPTIONS BUILD v7.1 — cache-busted live preview
+// Q OPTIONS FINAL READY — live preview + iOS save
 console.log('Q OPTIONS BUILD v7.1 LIVE PREVIEW');
