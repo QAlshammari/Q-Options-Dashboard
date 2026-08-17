@@ -159,18 +159,30 @@ function getFilteredTrades(){
   return trades.filter(t => (!from || !t.date || t.date >= from) && (!to || !t.date || t.date <= to));
 }
 
+function tradeOutcome(trade){
+  if(trade.sell===null || trade.sell===undefined || trade.sell==='') return 'open';
+  const buy=Number(trade.buy)||0;
+  const sell=Number(trade.sell)||0;
+  if(sell>buy) return 'win';
+  if(sell>0 && sell<buy) return 'stopped';
+  if(sell===0 && buy>0) return 'loss';
+  return 'flat';
+}
+
 function calculateStats(data){
-  const closed = data.filter(t => t.sell !== null || t.profit !== 0);
-  const wins = closed.filter(t => t.profit > 0);
-  const losses = closed.filter(t => t.profit < 0);
+  const closed = data.filter(t => tradeOutcome(t) !== 'open');
+  const wins = closed.filter(t => tradeOutcome(t) === 'win');
+  const stopped = closed.filter(t => tradeOutcome(t) === 'stopped');
+  const losses = closed.filter(t => tradeOutcome(t) === 'loss');
+  const negativeTrades = [...losses,...stopped];
   const grossWin = wins.reduce((s,t)=>s+t.profit,0);
-  const grossLoss = losses.reduce((s,t)=>s+t.profit,0);
+  const grossLoss = negativeTrades.reduce((s,t)=>s+t.profit,0);
   const net = closed.reduce((s,t)=>s+t.profit,0);
   const totalCost = closed.reduce((s,t)=>s+(Math.abs(t.buy)*100),0);
   const returnP = totalCost ? net/totalCost*100 : 0;
   const winRate = closed.length ? wins.length/closed.length*100 : 0;
   const avgWin = wins.length ? grossWin/wins.length : 0;
-  const avgLoss = losses.length ? grossLoss/losses.length : 0;
+  const avgLoss = negativeTrades.length ? grossLoss/negativeTrades.length : 0;
   const pf = grossLoss ? grossWin/Math.abs(grossLoss) : (grossWin ? Infinity : 0);
   const expectancy = closed.length ? net/closed.length : 0;
 
@@ -190,7 +202,7 @@ function calculateStats(data){
   const worstDay=dayVals.length ? Math.min(...dayVals) : 0;
   const best=[...closed].sort((a,b)=>b.profit-a.profit)[0] || null;
 
-  return {closed,wins,losses,grossWin,grossLoss,net,totalCost,returnP,winRate,avgWin,avgLoss,pf,expectancy,maxDD,sharpe,ordered,byDay,bestDay,worstDay,best};
+  return {closed,wins,stopped,losses,grossWin,grossLoss,net,totalCost,returnP,winRate,avgWin,avgLoss,pf,expectancy,maxDD,sharpe,ordered,byDay,bestDay,worstDay,best};
 }
 
 function render(){
@@ -222,7 +234,7 @@ function render(){
   $('worstDay').textContent=money(s.worstDay); colorize($('worstDay'),s.worstDay);
 
   renderTable(filtered);
-  renderCharts(s.ordered,s.byDay,s.wins.length,s.losses.length);
+  renderCharts(s.ordered,s.byDay,s.wins.length,s.losses.length,s.stopped.length);
   $('equityFinal').textContent=money(s.net);
   $('rowsCount').textContent=`${filtered.length} صفقة`;
 }
@@ -277,7 +289,7 @@ function chartGradient(context,top,bottom){
   return g;
 }
 
-function renderCharts(ordered,byDay,winCount,lossCount){
+function renderCharts(ordered,byDay,winCount,lossCount,stoppedCount=0){
   if(!window.Chart) return;
   chartDefaults();
   const eqLabels=[],eqData=[];let cum=0;
@@ -297,7 +309,7 @@ function renderCharts(ordered,byDay,winCount,lossCount){
   });
   winLossChart=new Chart($('winLossChart'),{
     type:'doughnut',
-    data:{labels:['أرباح','خسائر'],datasets:[{data:[winCount,lossCount],backgroundColor:c=>chartGradient(c,c.dataIndex===0?'#9ee3af':'#ffaaa0',c.dataIndex===0?'#27854b':'#b92e2a'),borderColor:['#fff5d7','#fff0e8'],borderWidth:4,hoverOffset:10,spacing:3}]},
+    data:{labels:['رابحة','خاسرة','موقوفة'],datasets:[{data:[winCount,lossCount,stoppedCount],backgroundColor:c=>chartGradient(c,c.dataIndex===0?'#9ee3af':c.dataIndex===1?'#ffaaa0':'#9fe9f2',c.dataIndex===0?'#27854b':c.dataIndex===1?'#b92e2a':'#159ab1'),borderColor:['#fff5d7','#fff0e8','#e8fbff'],borderWidth:4,hoverOffset:10,spacing:3}]},
     options:{responsive:true,maintainAspectRatio:false,animation:false,cutout:'58%',rotation:-105,circumference:360,plugins:{legend:{position:'right',rtl:true,labels:{boxWidth:15,padding:18,font:{weight:'800'}}}}}
   });
 }
@@ -442,8 +454,11 @@ function tradeOptionLabel(trade){
 }
 
 function tradeStatusMeta(trade){
-  if(trade.sell===null && trade.profit===0) return {cls:'stopped',labelAr:'موقوفة'};
-  if(trade.profit < 0) return {cls:'loss',labelAr:'خاسرة'};
+  const outcome=tradeOutcome(trade);
+  if(outcome==='stopped') return {cls:'stopped',labelAr:'موقوفة'};
+  if(outcome==='loss') return {cls:'loss',labelAr:'خاسرة'};
+  if(outcome==='open') return {cls:'open',labelAr:'مفتوحة'};
+  if(outcome==='flat') return {cls:'flat',labelAr:'متعادل'};
   return {cls:'win',labelAr:'رابحة'};
 }
 
@@ -458,7 +473,7 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
   const rowsData=topTrades(filtered,maxRows);
   const periodText=`${$('fromDate').value || '—'}  →  ${$('toDate').value || '—'}`;
   const winPct = s.closed.length ? (s.wins.length / s.closed.length * 100) : 0;
-  const neutralCount = Math.max(0, filtered.length - s.wins.length - s.losses.length);
+  const stoppedCount = s.stopped.length;
   const rows = rowsData.length ? rowsData.map(t=>{
     const option=tradeOptionLabel(t);
     const st=tradeStatusMeta(t);
@@ -482,12 +497,8 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
       <div class="info-top-swoosh"></div>
       <div class="info-bottom-swoosh"></div>
 
-      <div class="info-header compact logo-only" style="display:flex;align-items:center;justify-content:center;width:100%;height:355px;min-height:355px;margin:0 auto;overflow:visible;">
-        <div class="info-logo-wrap wide" style="display:flex;align-items:center;justify-content:center;width:100%;height:355px;padding:0;overflow:visible;"><img src="${logoSrc()}" class="info-logo bigger" alt="Q Options" style="display:block;width:1060px;max-width:100%;height:345px;object-fit:contain;object-position:center;margin:0 auto;transform:scale(1.40);transform-origin:center center;"></div>
-      </div>
-
-      <div class="info-dates-under-logo">
-        <div class="period-item solo"><span class="period-badge">📅</span><div class="date-clean">${periodText}</div></div>
+      <div class="info-header compact logo-only" style="display:flex;align-items:center;justify-content:center;width:100%;height:390px;min-height:390px;margin:0 auto;overflow:visible;">
+        <div class="info-logo-wrap wide" style="display:flex;align-items:center;justify-content:center;width:100%;height:390px;padding:0;overflow:visible;"><img src="${logoSrc()}" class="info-logo bigger" alt="Q Options" style="display:block;width:1060px;max-width:100%;height:380px;object-fit:contain;object-position:center;margin:0 auto;transform:none;transform-origin:center center;"></div>
       </div>
 
       <div class="info-stats refined-order">
@@ -505,7 +516,7 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
         </div>
         <div class="info-stat stopped-stat">
           <div class="info-stat-top"><span class="info-icon stopped">Ⅱ</span><div class="info-label"><b>الصفقات الموقوفة</b></div></div>
-          <div class="digital cyan">${neutralCount}</div>
+          <div class="digital cyan">${stoppedCount}</div>
         </div>
         <div class="info-stat featured">
           <div class="info-stat-top"><div class="info-label"><b>إجمالي العائد</b></div></div>
@@ -537,7 +548,7 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
             <div class="quick-row"><span class="name"><span class="mini blue">≣</span> إجمالي الصفقات</span><span class="value">${filtered.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini green">✓</span> الصفقات الرابحة</span><span class="value green">${s.wins.length}</span></div>
             <div class="quick-row"><span class="name"><span class="mini red">✕</span> الصفقات الخاسرة</span><span class="value red">${s.losses.length}</span></div>
-            <div class="quick-row"><span class="name"><span class="mini cyan">Ⅱ</span> الصفقات الموقوفة</span><span class="value cyan">${neutralCount}</span></div>
+            <div class="quick-row"><span class="name"><span class="mini cyan">Ⅱ</span> الصفقات الموقوفة</span><span class="value cyan">${stoppedCount}</span></div>
             <div class="quick-row"><span class="name"><span class="mini gold">$</span> إجمالي الأرباح</span><span class="value green">${moneyInt(s.net)}</span></div>
           </div>
         </div>
@@ -552,10 +563,15 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
             <div class="donut-legend">
               <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot green"></span> رابحة</span><b>${s.wins.length}</b></div>
               <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot red"></span> خاسرة</span><b>${s.losses.length}</b></div>
-              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot cyan"></span> موقوفة</span><b>${neutralCount}</b></div>
+              <div class="legend-row"><span style="display:flex;align-items:center;gap:8px"><span class="legend-dot cyan"></span> موقوفة</span><b>${stoppedCount}</b></div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="info-dates-before-table">
+        <span class="period-badge">📅</span>
+        <div class="date-clean">${periodText}</div>
       </div>
 
       <div class="infographic-table-panel">
@@ -786,6 +802,7 @@ async function saveOrShareTopTrades(e){
     target.style.setProperty('flex','none','important');
     target.style.setProperty('transform','none','important');
     target.style.setProperty('zoom','1','important');
+    target.classList.add('capture-mode');
     await Promise.race([waitForImages(target),new Promise(r=>setTimeout(r,1200))]);
     await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
 
@@ -816,6 +833,7 @@ async function saveOrShareTopTrades(e){
           clonedStage.style.setProperty('transform','none','important');
         }
         if(clonedTarget){
+          clonedTarget.classList.add('capture-mode');
           clonedTarget.style.setProperty('width','1120px','important');
           clonedTarget.style.setProperty('min-width','1120px','important');
           clonedTarget.style.setProperty('max-width','1120px','important');
