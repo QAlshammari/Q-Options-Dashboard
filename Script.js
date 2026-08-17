@@ -610,23 +610,77 @@ async function exportPdf(){
   }
 }
 
-function showPreview(url, filename){
+let topTradesExportState = { dataUrl:'', blob:null, filename:'' };
+
+function showPreview(dataUrl, filename, blob){
   const modal=$('previewModal');
   const img=$('previewImage');
   const dl=$('previewDownload');
-  img.src=url;
-  dl.href=url;
-  dl.download=filename;
+
+  topTradesExportState = { dataUrl, blob, filename };
+  img.src=dataUrl;                 // Data URL works reliably for iOS preview
+  img.alt='Q Options Top Trades';
+  dl.href='#';
+  dl.removeAttribute('download');  // iOS Safari is unreliable with blob + download
+  dl.textContent=isIOSDevice() ? 'حفظ / مشاركة الصورة' : 'تنزيل الصورة';
   modal.hidden=false;
 }
 
 function hidePreview(){
   const modal=$('previewModal');
   const img=$('previewImage');
-  const prev=img.dataset.objectUrl;
   modal.hidden=true;
   img.src='';
-  if(prev){ URL.revokeObjectURL(prev); delete img.dataset.objectUrl; }
+}
+
+async function saveOrShareTopTrades(e){
+  e?.preventDefault?.();
+  const {dataUrl,blob,filename}=topTradesExportState;
+  if(!dataUrl){ showToast('الصورة غير جاهزة بعد'); return; }
+
+  try{
+    // Best path on iPhone/iPad: native share sheet can Save Image / Files / AirDrop etc.
+    if(blob && typeof File!=='undefined' && navigator.share){
+      const file=new File([blob],filename||'Q-Options-Top-Trades.png',{type:'image/png'});
+      if(!navigator.canShare || navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:'Q Options - أهم الصفقات'});
+        return;
+      }
+    }
+  }catch(err){
+    // User cancel is normal; other failures fall through to browser fallback.
+    if(err?.name==='AbortError') return;
+    console.warn('Share fallback:',err);
+  }
+
+  if(isIOSDevice()){
+    // Open the PNG itself; user can long-press then Save to Photos.
+    const w=window.open();
+    if(w){
+      w.document.write(`<html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Q Options Top Trades</title></head><body style="margin:0;background:#111;display:flex;justify-content:center"><img src="${dataUrl}" style="width:100%;height:auto;display:block"></body></html>`);
+      w.document.close();
+    }else{
+      location.href=dataUrl;
+    }
+    return;
+  }
+
+  // Desktop/Android fallback: real Blob download.
+  if(blob){
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=filename||'Q-Options-Top-Trades.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),3000);
+  }else{
+    const a=document.createElement('a');
+    a.href=dataUrl;
+    a.download=filename||'Q-Options-Top-Trades.png';
+    a.click();
+  }
 }
 
 async function exportHighlightsImage(){
@@ -637,19 +691,26 @@ async function exportHighlightsImage(){
     stage.innerHTML=buildShareTemplate(10, 'shareCapture');
     const target=$('shareCapture');
     await waitForImages(target);
-    await new Promise(r=>setTimeout(r,180));
-    const canvas=await html2canvas(target,{scale:2,useCORS:true,backgroundColor:'#f8f1e5',logging:false});
+    await new Promise(r=>setTimeout(r,220));
+
+    const canvas=await html2canvas(target,{
+      scale:2,
+      useCORS:true,
+      allowTaint:false,
+      backgroundColor:'#f8f1e5',
+      logging:false,
+      imageTimeout:10000
+    });
+
+    // Data URL is intentionally used for preview because blob: previews can fail in iOS Safari.
+    const dataUrl=canvas.toDataURL('image/png',1);
     const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',1));
-    if(!blob) throw new Error('PNG generation failed');
-    const url=URL.createObjectURL(blob);
     const filename=`Q-Options-Top-Trades-${safeFileRange()}.png`;
-    const previewImg=$('previewImage');
-    if(previewImg.dataset.objectUrl){ URL.revokeObjectURL(previewImg.dataset.objectUrl); }
-    previewImg.dataset.objectUrl=url;
-    showPreview(url, filename);
+
+    showPreview(dataUrl,filename,blob);
     showToast('تم فتح معاينة أهم الصفقات');
   }catch(err){
-    console.error(err);showToast('تعذر تصدير الصورة');
+    console.error(err);showToast('تعذر تجهيز صورة أهم الصفقات');
   }finally{
     $('exportStage').innerHTML='';setExportBusy(false);
   }
@@ -669,6 +730,7 @@ $('demoBtn').addEventListener('click',()=>{setCurrentWeekRange();trades=buildDem
 $('pdfBtn').addEventListener('click',exportPdf);
 $('imageBtn').addEventListener('click',exportHighlightsImage);
 $('previewClose')?.addEventListener('click',hidePreview);
+$('previewDownload')?.addEventListener('click',saveOrShareTopTrades);
 $('previewModal')?.addEventListener('click',e=>{ if(e.target.id==='previewModal') hidePreview(); });
 $('fromDate').addEventListener('change',render);
 $('toDate').addEventListener('change',render);
