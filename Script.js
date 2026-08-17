@@ -685,6 +685,8 @@ async function saveOrShareTopTrades(e){
 
 async function exportHighlightsImage(){
   if(!window.html2canvas){showToast('مكتبة تصدير الصورة لم يتم تحميلها');return}
+  hidePreview();
+  topTradesExportState = { dataUrl:'', blob:null, filename:'' };
   setExportBusy(true);showToast('جاري تجهيز صورة أهم الصفقات…');
   try{
     const stage=$('exportStage');
