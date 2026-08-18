@@ -2841,3 +2841,38 @@ body{
 .capture-mode .info-box,.capture-mode .info-box:nth-child(n){background:#fffaf0!important;box-shadow:0 8px 0 #a87324,0 15px 20px rgba(88,55,14,.15),inset 0 2px 0 #fff!important}
 .capture-mode .info-box:nth-child(1){background:#fff2c9!important}.capture-mode .info-box:nth-child(2){background:#fffaf1!important}.capture-mode .info-box:nth-child(3){background:#f4fbf3!important}
 .refined-light .info-stat.featured .digital,.capture-mode .info-stat.featured .digital{font-size:20px!important;letter-spacing:-.5px!important;overflow:visible!important}
+
+/* SIX-FINAL-STATS — بعد حذف صندوق صافي الربح المكرر */
+.refined-light .info-stats.refined-order,.capture-mode .info-stats.refined-order{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:11px!important}
+
+/* CLEAN-WHITE-CHART-BOXES — خلفية موحدة بلا مستطيلات داخلية عند الحفظ */
+.refined-light .info-box,
+.refined-light .info-box:nth-child(n),
+.capture-mode .info-box,
+.capture-mode .info-box:nth-child(n){
+  background:#fff!important;
+  background-image:none!important;
+  overflow:hidden!important;
+  box-shadow:0 8px 0 #a87324,0 16px 24px rgba(88,55,14,.14),inset 0 2px 0 #fff!important;
+}
+.refined-light .info-box::before,
+.refined-light .info-box::after,
+.capture-mode .info-box::before,
+.capture-mode .info-box::after{display:none!important;background:none!important}
+
+/* FIXED-MOBILE-CAPTURE — الجوال يعرض نسخة مصغرة من مقاس التقرير ولا يعيد تنسيقه */
+.preview-live-scale,.export-stage{width:1120px!important;min-width:1120px!important;max-width:1120px!important}
+.preview-live-scale .infographic-card,.export-stage .infographic-card,.capture-mode.infographic-card{width:1120px!important;min-width:1120px!important;max-width:1120px!important;transform:none!important;zoom:1!important;box-sizing:border-box!important}
+.preview-live-scale .capture-mode *,.export-stage .capture-mode *{animation:none!important;transition:none!important}
+.preview-live-scale .capture-mode .info-bottom,.export-stage .capture-mode .info-bottom{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.preview-live-scale .capture-mode .info-stats.refined-order,.export-stage .capture-mode .info-stats.refined-order{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+.preview-live-scale .capture-mode .info-box,.export-stage .capture-mode .info-box{width:auto!important;height:258px!important;min-height:258px!important}
+.preview-live-scale .capture-mode .report-mini-chart,.export-stage .capture-mode .report-mini-chart{height:185px!important}
+.preview-live-scale .capture-mode .return-ring,.export-stage .capture-mode .return-ring{width:174px!important;height:174px!important}
+
+/* FULL-COLOR-FILL — اللون يغطي الصندوق كاملاً في المعاينة والصورة المحفوظة */
+.refined-light .info-box,.capture-mode .info-box{background-origin:border-box!important;background-clip:border-box!important}
+.refined-light .info-box:nth-child(1),.capture-mode .info-box:nth-child(1){background:linear-gradient(145deg,#fffef8 0%,#fff5d7 52%,#efd391 100%)!important}
+.refined-light .info-box:nth-child(2),.capture-mode .info-box:nth-child(2){background:linear-gradient(145deg,#ffffff 0%,#fffaf0 56%,#ead9b8 100%)!important}
+.refined-light .info-box:nth-child(3),.capture-mode .info-box:nth-child(3){background:linear-gradient(145deg,#ffffff 0%,#f7fff9 56%,#dcefdc 100%)!important}
+.refined-light .info-box::before,.refined-light .info-box::after,.capture-mode .info-box::before,.capture-mode .info-box::after{display:none!important;content:none!important}
