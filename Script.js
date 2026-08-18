@@ -353,15 +353,12 @@ async function handleFile(file){
       const buf=await file.arrayBuffer();
       const wb=XLSX.read(buf,{type:'array',cellDates:false});
 
-      // نجمع جميع أوراق الصفقات (القالب قد يحتوي على أكثر من أسبوع/ورقة).
+      // نفس قارئ الإكسل المستقر: نستخدم أول ورقة تحتوي على بيانات صفقات.
       for(const sheetName of wb.SheetNames){
         const ws=wb.Sheets[sheetName];
         const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:true});
         const candidate=normalizeRows(rows);
-        const headers=rows.length ? Object.keys(rows[0]).map(normalizeKey) : [];
-        const looksLikeTrades=headers.some(h=>['التاريخ','تاريخ','date','اسماءالشركه','اسمالشركه','الشركه','symbol','ticker'].includes(h)) &&
-          headers.some(h=>['سعرالشراء','buy','buyprice','entry','سعرالدخول'].includes(h));
-        if(looksLikeTrades && candidate.length) normalized.push(...candidate);
+        if(candidate.length){normalized=candidate;break}
       }
     }
 
