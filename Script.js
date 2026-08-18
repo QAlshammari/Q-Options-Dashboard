@@ -158,14 +158,9 @@ function normalizeRows(rows){
     const buy = num(pick(['buy','buy price','entry','entry price','سعر الشراء','سعر الدخول','الدخول'],3));
     const sellRaw = pick(['sell','sell price','exit','exit price','سعر البيع','سعر الخروج','الخروج'],4);
     const sell = sellRaw === '' || sellRaw === null || sellRaw === undefined ? null : num(sellRaw);
-    const profitRaw = pick(['profit','p/l','pnl','net profit','الربح','الربح والخسارة','صافي الربح','ربح','الخسارة'],5);
-    const profit = profitRaw === '' || profitRaw === null || profitRaw === undefined
-      ? ((sell !== null ? sell-buy : 0)*100)
-      : num(profitRaw);
-    const pctRaw = pick(['pct','percent','percentage','profit %','return %','النسبة','النسبة %','نسبة الربح','نسبة العائد'],6);
-    const p = pctRaw === '' || pctRaw === null || pctRaw === undefined
-      ? (buy ? ((sell ?? buy)-buy)/buy*100 : 0)
-      : num(pctRaw);
+    // الحساب دائماً من سعري الشراء والبيع حتى لا تتعارض صيغ Excel مع التقرير.
+    const profit = sell === null ? 0 : (sell-buy)*100;
+    const p = sell === null || !buy ? 0 : (sell-buy)/buy*100;
     const notes = pick(['notes','note','remarks','الملاحظات','ملاحظات','ملاحظة'],7) || '';
 
     return {date,symbol:String(symbol).trim(),option,strike:String(strike).trim(),buy,sell,profit,pct:p,notes:String(notes).trim()};
@@ -196,21 +191,21 @@ function tradeOutcome(trade){
 }
 
 function calculateStats(data){
-  const closed = data.filter(t => tradeOutcome(t) !== 'open');
+  const closed = data.filter(t => ['win','loss','stopped'].includes(tradeOutcome(t)));
   const wins = closed.filter(t => tradeOutcome(t) === 'win');
   const stopped = closed.filter(t => tradeOutcome(t) === 'stopped');
   const losses = closed.filter(t => tradeOutcome(t) === 'loss');
   const counted = closed.filter(t => ['win','loss','stopped'].includes(tradeOutcome(t)));
   const negativeTrades = [...losses,...stopped];
   const grossWin = wins.reduce((s,t)=>s+t.profit,0);
-  const grossLoss = negativeTrades.reduce((s,t)=>s+t.profit,0);
-  const net = closed.reduce((s,t)=>s+t.profit,0);
+  const grossLoss = negativeTrades.reduce((s,t)=>s+Math.abs(t.profit),0);
+  const net = grossWin-grossLoss;
   const totalCost = closed.reduce((s,t)=>s+(Math.abs(t.buy)*100),0);
   const returnP = totalCost ? net/totalCost*100 : 0;
   const winRate = counted.length ? wins.length/counted.length*100 : 0;
   const avgWin = wins.length ? grossWin/wins.length : 0;
-  const avgLoss = negativeTrades.length ? grossLoss/negativeTrades.length : 0;
-  const pf = grossLoss ? grossWin/Math.abs(grossLoss) : (grossWin ? Infinity : 0);
+  const avgLoss = negativeTrades.length ? -grossLoss/negativeTrades.length : 0;
+  const pf = grossLoss ? grossWin/grossLoss : (grossWin ? Infinity : 0);
   const expectancy = closed.length ? net/closed.length : 0;
 
   let peak=0,eq=0,maxDD=0;
@@ -255,7 +250,7 @@ function render(){
   $('sharpe').textContent=s.sharpe.toFixed(2); colorize($('sharpe'),s.sharpe);
 
   $('summaryGross').textContent=money(s.grossWin); colorize($('summaryGross'),s.grossWin);
-  $('summaryLoss').textContent=money(s.grossLoss); colorize($('summaryLoss'),s.grossLoss);
+  $('summaryLoss').textContent=money(-s.grossLoss); colorize($('summaryLoss'),-s.grossLoss);
   $('summaryNet').textContent=money(s.net); colorize($('summaryNet'),s.net);
   $('bestDay').textContent=money(s.bestDay); colorize($('bestDay'),s.bestDay);
   $('worstDay').textContent=money(s.worstDay); colorize($('worstDay'),s.worstDay);
@@ -519,6 +514,19 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
   const stoppedPct = s.counted.length ? (stoppedCount / s.counted.length * 100) : 0;
   const returnChartPct = Math.max(0,Math.min(100,Math.abs(s.returnP)));
   const returnChartColor = s.returnP < 0 ? '#e34b41' : '#2f9b50';
+  const chartTrades=rowsData.slice(0,12);
+  const maxTrade=Math.max(1,...chartTrades.map(t=>Math.abs(t.profit)));
+  const tradeBars=chartTrades.map((t,i)=>{
+    const x=18+i*(304/Math.max(1,chartTrades.length));
+    const h=Math.max(4,Math.abs(t.profit)/maxTrade*55);
+    const y=t.profit>=0?72-h:72;
+    const color=tradeOutcome(t)==='win'?'#26924d':tradeOutcome(t)==='stopped'?'#18a2b8':'#d64239';
+    return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${Math.max(8,246/Math.max(1,chartTrades.length)).toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${color}"/><text x="${(x+4).toFixed(1)}" y="140" text-anchor="middle">${escapeHtml(t.symbol).slice(0,4)}</text>`;
+  }).join('');
+  let running=0;
+  const equityValues=chartTrades.map(t=>(running+=t.profit));
+  const eqMin=Math.min(0,...equityValues),eqMax=Math.max(1,...equityValues),eqRange=Math.max(1,eqMax-eqMin);
+  const equityPoints=equityValues.map((v,i)=>`${(16+i*(292/Math.max(1,equityValues.length-1))).toFixed(1)},${(122-(v-eqMin)/eqRange*94).toFixed(1)}`).join(' ');
   const rows = rowsData.length ? rowsData.map(t=>{
     const option=tradeOptionLabel(t);
     const st=tradeStatusMeta(t);
@@ -598,29 +606,34 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
         </div>
 
         <div class="info-box">
-          <h4>إحصائيات سريعة</h4>
-          <div class="quick-list">
-            <div class="quick-row"><span class="name"><span class="mini blue">≣</span> إجمالي الصفقات</span><span class="value">${s.counted.length}</span></div>
-            <div class="quick-row"><span class="name"><span class="mini green">✓</span> الصفقات الرابحة</span><span class="value green">${s.wins.length}</span></div>
-            <div class="quick-row"><span class="name"><span class="mini red">✕</span> الصفقات الخاسرة</span><span class="value red">${s.losses.length}</span></div>
-            <div class="quick-row"><span class="name"><span class="mini cyan">Ⅱ</span> الصفقات الموقوفة</span><span class="value cyan">${stoppedCount}</span></div>
-            <div class="quick-row"><span class="name"><span class="mini gold">$</span> إجمالي الأرباح</span><span class="value green">${moneyInt(s.net)}</span></div>
-          </div>
+          <h4>العائد من كل صفقة</h4>
+          <svg class="report-mini-chart" viewBox="0 0 330 150" role="img" aria-label="العائد من كل صفقة">
+            <line x1="12" y1="72" x2="320" y2="72" stroke="#b99554" stroke-width="2"/>
+            ${tradeBars}
+          </svg>
         </div>
 
         <div class="info-box">
-          <h4>توزيع نتائج الصفقات</h4>
-          <div class="result-bars">
-            <div class="result-bar-row win"><div class="result-bar-head"><span>رابحة</span><b>${s.wins.length}</b></div><div class="result-bar-track"><i style="width:${winPct.toFixed(2)}%"></i></div></div>
-            <div class="result-bar-row loss"><div class="result-bar-head"><span>خاسرة</span><b>${s.losses.length}</b></div><div class="result-bar-track"><i style="width:${lossPct.toFixed(2)}%"></i></div></div>
-            <div class="result-bar-row stopped"><div class="result-bar-head"><span>موقوفة</span><b>${stoppedCount}</b></div><div class="result-bar-track"><i style="width:${stoppedPct.toFixed(2)}%"></i></div></div>
-          </div>
+          <h4>منحنى الأداء التراكمي</h4>
+          <svg class="report-mini-chart" viewBox="0 0 330 150" role="img" aria-label="منحنى الأداء التراكمي">
+            <defs><linearGradient id="equityFill-${captureId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d69b31" stop-opacity=".42"/><stop offset="1" stop-color="#d69b31" stop-opacity=".04"/></linearGradient></defs>
+            <line x1="12" y1="123" x2="320" y2="123" stroke="#d8c49c" stroke-width="2"/>
+            <polygon points="16,123 ${equityPoints} 308,123" fill="url(#equityFill-${captureId})"/>
+            <polyline points="${equityPoints}" fill="none" stroke="#a96f18" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            ${equityValues.map((v,i)=>`<circle cx="${(16+i*(292/Math.max(1,equityValues.length-1))).toFixed(1)}" cy="${(122-(v-eqMin)/eqRange*94).toFixed(1)}" r="4" fill="#fff4cf" stroke="#9c6414" stroke-width="3"/>`).join('')}
+          </svg>
         </div>
       </div>
 
       <div class="infographic-table-panel">
         <div class="info-table-head table-title-row">
-          <h3>جميع الصفقات</h3>
+          <div class="table-title-boxes">
+            <h3>جميع الصفقات</h3>
+            <div class="best-trade-badge">
+              <span class="best-cup">🏆</span>
+              <span class="best-copy"><small>أفضل صفقة</small><b>${s.best ? `${escapeHtml(s.best.symbol)} ${moneyInt(s.best.profit)}` : '—'}</b></span>
+            </div>
+          </div>
           <div class="table-week-date"><span class="week-date-icon">📅</span><span>${periodText}</span></div>
         </div>
         <table class="info-table roomy">
