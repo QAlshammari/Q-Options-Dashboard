@@ -526,7 +526,7 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
     const option=tradeOptionLabel(t);
     const st=tradeStatusMeta(t);
     const statusAr = st.labelAr;
-    const optionAr = option==='CALL' ? 'Call' : 'Put';
+    const optionAr = option==='CALL' ? 'Call 📈' : 'Put 📉';
     return `
       <tr>
         <td class="symbol-cell"><div class="symbol-stack"><span>${escapeHtml(t.symbol)}</span></div></td>
@@ -550,33 +550,33 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
       </div>
 
       <div class="info-stats refined-order">
-        <div class="info-stat totalprofit">
-          <div class="info-stat-top"><span class="info-icon cash">$</span><div class="info-label"><b>إجمالي الأرباح</b></div></div>
-          <div class="digital money bigmoney">${moneyInt(s.grossWin)}</div>
-        </div>
-        <div class="info-stat netprofit">
-          <div class="info-stat-top"><span class="info-icon cash">⚖</span><div class="info-label"><b>صافي الربح</b></div></div>
-          <div class="digital money bigmoney">${moneyInt(s.net)}</div>
-        </div>
-        <div class="info-stat featured">
-          <div class="info-stat-top"><span class="info-icon layers">▦</span><div class="info-label"><b>إجمالي العائد</b></div></div>
-          <div class="digital green">${pct(s.returnP)}</div>
-        </div>
-        <div class="info-stat">
-          <div class="info-stat-top"><span class="info-icon layers">≡</span><div class="info-label"><b>إجمالي الصفقات</b></div></div>
-          <div class="digital number">${s.counted.length}</div>
-        </div>
-        <div class="info-stat win-stat">
-          <div class="info-stat-top"><span class="info-icon win">✓</span><div class="info-label"><b>الصفقات الرابحة</b></div></div>
-          <div class="digital green">${s.wins.length}</div>
+        <div class="info-stat loss-stat">
+          <div class="info-stat-top"><span class="info-icon loss">−</span><div class="info-label"><b>الصفقات الخاسرة</b></div></div>
+          <div class="digital red">${s.losses.length}</div>
         </div>
         <div class="info-stat stopped-stat">
           <div class="info-stat-top"><span class="info-icon stopped">Ⅱ</span><div class="info-label"><b>الصفقات الموقوفة</b></div></div>
           <div class="digital cyan">${stoppedCount}</div>
         </div>
-        <div class="info-stat loss-stat">
-          <div class="info-stat-top"><span class="info-icon loss">✕</span><div class="info-label"><b>الصفقات الخاسرة</b></div></div>
-          <div class="digital red">${s.losses.length}</div>
+        <div class="info-stat win-stat">
+          <div class="info-stat-top"><span class="info-icon win">✓</span><div class="info-label"><b>الصفقات الرابحة</b></div></div>
+          <div class="digital green">${s.wins.length}</div>
+        </div>
+        <div class="info-stat">
+          <div class="info-stat-top"><span class="info-icon layers">≡</span><div class="info-label"><b>إجمالي الصفقات</b></div></div>
+          <div class="digital number">${s.counted.length}</div>
+        </div>
+        <div class="info-stat featured">
+          <div class="info-stat-top"><span class="info-icon layers">▦</span><div class="info-label"><b>إجمالي العائد</b></div></div>
+          <div class="digital green">${pct(s.returnP)}</div>
+        </div>
+        <div class="info-stat netprofit">
+          <div class="info-stat-top"><span class="info-icon cash">⚖</span><div class="info-label"><b>صافي الربح</b></div></div>
+          <div class="digital money bigmoney">${moneyInt(s.net)}</div>
+        </div>
+        <div class="info-stat totalprofit">
+          <div class="info-stat-top"><span class="info-icon cash">$</span><div class="info-label"><b>إجمالي الأرباح</b></div></div>
+          <div class="digital money bigmoney">${moneyInt(s.grossWin)}</div>
         </div>
       </div>
 
