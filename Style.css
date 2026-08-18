@@ -2808,3 +2808,13 @@ body{
 .refined-light .info-stat .info-label b,.capture-mode .info-stat .info-label b{font-size:14px!important;white-space:normal!important;line-height:1.25!important}
 .refined-light .info-stat .digital,.capture-mode .info-stat .digital{font-size:25px!important}
 .refined-light .info-box,.capture-mode .info-box{border-radius:18px!important;border:1px solid #d6b876!important;box-shadow:0 8px 0 rgba(156,105,31,.25),0 16px 27px rgba(101,68,23,.14),inset 0 2px 0 #fff!important}
+
+/* BOXES-REFERENCE-FINAL — الصناديق الثلاثة بنفس إطار وبروز المرجع في العرض والحفظ */
+.refined-light .info-bottom,.capture-mode .info-bottom{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important;align-items:stretch!important;margin:18px 18px 24px!important}
+.refined-light .info-box,.capture-mode .info-box,.refined-light .info-box:nth-child(n),.capture-mode .info-box:nth-child(n){min-height:220px!important;height:220px!important;padding:16px 18px!important;box-sizing:border-box!important;overflow:hidden!important;border:2px solid #d8b978!important;border-bottom:8px solid #9f6919!important;border-radius:20px!important;background:linear-gradient(155deg,#fffefa 0%,#fffaf0 58%,#f2dfb8 100%)!important;box-shadow:0 8px 0 rgba(143,91,19,.32),0 18px 28px rgba(91,58,15,.17),inset 0 2px 0 #fff!important;transform:none!important}
+.refined-light .info-box::before,.capture-mode .info-box::before{content:""!important;display:block!important;position:absolute!important;inset:2px 8% auto!important;height:34%!important;border-radius:16px 16px 55% 55%!important;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,0))!important;opacity:.75!important;pointer-events:none!important}
+.refined-light .info-box>* ,.capture-mode .info-box>*{position:relative!important;z-index:1!important}
+.refined-light .info-box h4,.capture-mode .info-box h4{margin:0 0 10px!important;font-size:24px!important;font-weight:900!important;color:#382717!important;text-align:center!important}
+.refined-light .info-box:nth-child(1),.capture-mode .info-box:nth-child(1){background:linear-gradient(155deg,#fffefa 0%,#fff3c9 58%,#e6bd67 100%)!important}
+.refined-light .info-box:nth-child(2),.capture-mode .info-box:nth-child(2){background:linear-gradient(155deg,#fff 0%,#fffaf1 58%,#ead7b2 100%)!important}
+.refined-light .info-box:nth-child(3),.capture-mode .info-box:nth-child(3){background:linear-gradient(155deg,#fff 0%,#f7fff9 58%,#dcefdc 100%)!important}
