@@ -206,6 +206,42 @@ footer{min-height:58px;display:grid;grid-template-columns:1fr 1fr 1fr;align-item
   footer{grid-template-columns:1fr;text-align:center;padding:14px 6px 3px;gap:4px;font-size:9px}.footer-contact{text-align:center}footer>div:last-child{text-align:center}
 }
 
+/* REPORT-3D-6 — سبعة صناديق كاملة بلا قص + شعار ثابت في المعاينة والحفظ */
+:root{--report-logo-height:300px}
+.refined-light .info-header.logo-only,
+.refined-light .info-header.logo-only .info-logo-wrap,
+.capture-mode .info-header.logo-only,
+.capture-mode .info-header.logo-only .info-logo-wrap{
+  height:300px!important;min-height:300px!important;overflow:visible!important;padding:0 14px!important;
+}
+.refined-light .info-header.logo-only .info-logo.bigger,
+.capture-mode .info-header.logo-only .info-logo.bigger{
+  width:100%!important;max-width:1080px!important;height:292px!important;max-height:292px!important;
+  object-fit:contain!important;object-position:center!important;transform:none!important;
+}
+.refined-light .info-stats.refined-order,
+.capture-mode .info-stats.refined-order{
+  display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;
+  grid-auto-rows:132px!important;gap:9px!important;margin:10px 18px 16px!important;
+}
+.refined-light .info-stat,
+.capture-mode .info-stat{
+  height:132px!important;min-height:132px!important;border-radius:16px!important;overflow:hidden!important;
+  border:1px solid #d7b873!important;border-bottom:7px solid #a86f18!important;
+  background:linear-gradient(160deg,#fffefa 0%,#fff7e5 48%,#e9bd62 100%)!important;
+  box-shadow:0 8px 0 rgba(151,98,21,.30),0 16px 24px rgba(91,60,18,.15),inset 0 2px 0 #fff!important;
+}
+.refined-light .info-stat::before,.capture-mode .info-stat::before{display:block!important}
+.refined-light .info-stat.win-stat,.capture-mode .info-stat.win-stat{border-bottom-color:#2b8750!important;box-shadow:0 8px 0 rgba(39,126,73,.34),0 16px 24px rgba(39,126,73,.14),inset 0 2px 0 #fff!important}
+.refined-light .info-stat.stopped-stat,.capture-mode .info-stat.stopped-stat{border-bottom-color:#168da4!important;box-shadow:0 8px 0 rgba(22,141,164,.34),0 16px 24px rgba(22,141,164,.14),inset 0 2px 0 #fff!important}
+.refined-light .info-stat.loss-stat,.capture-mode .info-stat.loss-stat{border-bottom-color:#b63b34!important;box-shadow:0 8px 0 rgba(182,59,52,.34),0 16px 24px rgba(182,59,52,.14),inset 0 2px 0 #fff!important}
+.refined-light .info-stat .info-label b,.capture-mode .info-stat .info-label b{font-size:14px!important;white-space:normal!important;line-height:1.25!important}
+.refined-light .info-stat .digital,.capture-mode .info-stat .digital{font-size:25px!important}
+.refined-light .info-box,.capture-mode .info-box,.refined-light .chart-panel,.capture-mode .chart-panel{
+  border-radius:18px!important;border:1px solid #d6b876!important;
+  box-shadow:0 8px 0 rgba(156,105,31,.25),0 16px 27px rgba(101,68,23,.14),inset 0 2px 0 #fff!important;
+}
+
 /* ترتيب التقرير النهائي: قيم الصفقات الموقوفة باللون السماوي */
 .refined-light .info-profit.stopped-value,
 .refined-light .info-pct.stopped-value,
@@ -2758,3 +2794,17 @@ body{
   .refined-light .info-header.logo-only .info-logo.bigger{width:auto!important;max-width:920px!important;height:220px!important}
   .refined-light .info-stats.refined-order{margin-inline:18px!important}
 }
+
+/* REPORT-3D-6 FINAL OVERRIDE */
+:root{--report-logo-height:300px!important}
+.refined-light .info-header.logo-only,.refined-light .info-header.logo-only .info-logo-wrap,.capture-mode .info-header.logo-only,.capture-mode .info-header.logo-only .info-logo-wrap{height:300px!important;min-height:300px!important;overflow:visible!important;padding:0 14px!important}
+.refined-light .info-header.logo-only .info-logo.bigger,.capture-mode .info-header.logo-only .info-logo.bigger{width:100%!important;max-width:1080px!important;height:292px!important;max-height:292px!important;object-fit:contain!important;object-position:center!important;transform:none!important}
+.refined-light .info-stats.refined-order,.capture-mode .info-stats.refined-order{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;grid-auto-rows:132px!important;gap:9px!important;margin:10px 18px 16px!important}
+.refined-light .info-stat,.capture-mode .info-stat{height:132px!important;min-height:132px!important;border-radius:16px!important;overflow:hidden!important;border:1px solid #d7b873!important;border-bottom:7px solid #a86f18!important;background:linear-gradient(160deg,#fffefa 0%,#fff7e5 48%,#e9bd62 100%)!important;box-shadow:0 8px 0 rgba(151,98,21,.30),0 16px 24px rgba(91,60,18,.15),inset 0 2px 0 #fff!important}
+.refined-light .info-stat::before,.capture-mode .info-stat::before{display:block!important}
+.refined-light .info-stat.win-stat,.capture-mode .info-stat.win-stat{border-bottom-color:#2b8750!important;box-shadow:0 8px 0 rgba(39,126,73,.34),0 16px 24px rgba(39,126,73,.14),inset 0 2px 0 #fff!important}
+.refined-light .info-stat.stopped-stat,.capture-mode .info-stat.stopped-stat{border-bottom-color:#168da4!important;box-shadow:0 8px 0 rgba(22,141,164,.34),0 16px 24px rgba(22,141,164,.14),inset 0 2px 0 #fff!important}
+.refined-light .info-stat.loss-stat,.capture-mode .info-stat.loss-stat{border-bottom-color:#b63b34!important;box-shadow:0 8px 0 rgba(182,59,52,.34),0 16px 24px rgba(182,59,52,.14),inset 0 2px 0 #fff!important}
+.refined-light .info-stat .info-label b,.capture-mode .info-stat .info-label b{font-size:14px!important;white-space:normal!important;line-height:1.25!important}
+.refined-light .info-stat .digital,.capture-mode .info-stat .digital{font-size:25px!important}
+.refined-light .info-box,.capture-mode .info-box{border-radius:18px!important;border:1px solid #d6b876!important;box-shadow:0 8px 0 rgba(156,105,31,.25),0 16px 27px rgba(101,68,23,.14),inset 0 2px 0 #fff!important}
