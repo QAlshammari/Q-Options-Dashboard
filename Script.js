@@ -353,12 +353,15 @@ async function handleFile(file){
       const buf=await file.arrayBuffer();
       const wb=XLSX.read(buf,{type:'array',cellDates:false});
 
-      // نجرب جميع الأوراق حتى نجد ورقة تحتوي على صفقات صالحة.
+      // نجمع جميع أوراق الصفقات (القالب قد يحتوي على أكثر من أسبوع/ورقة).
       for(const sheetName of wb.SheetNames){
         const ws=wb.Sheets[sheetName];
         const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:true});
         const candidate=normalizeRows(rows);
-        if(candidate.length){normalized=candidate;break}
+        const headers=rows.length ? Object.keys(rows[0]).map(normalizeKey) : [];
+        const looksLikeTrades=headers.some(h=>['التاريخ','تاريخ','date','اسماءالشركه','اسمالشركه','الشركه','symbol','ticker'].includes(h)) &&
+          headers.some(h=>['سعرالشراء','buy','buyprice','entry','سعرالدخول'].includes(h));
+        if(looksLikeTrades && candidate.length) normalized.push(...candidate);
       }
     }
 
@@ -371,10 +374,13 @@ async function handleFile(file){
     importedWorkbookActive=true;
     // لا نسمح لملف Excel بتغيير التاريخ الذي اختاره المستخدم.
     saveSelectedRange();
+    // تحديث فوري ثم تحديث مؤكد بعد إغلاق منتقي الملفات في Safari/iPhone.
     render();
-    // إعادة رسم إضافية بعد انتهاء المتصفح من تحديث واجهة اختيار الملف، خصوصاً على iPhone.
+    document.body.offsetHeight;
     await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     render();
+    setTimeout(render,80);
+    setTimeout(render,260);
     showToast(`تم تحميل ${trades.length} صفقة بنجاح`);
   }catch(err){
     console.error(err);
@@ -546,13 +552,21 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
       <div class="info-stats refined-order">
         <div class="info-stat totalprofit">
           <div class="info-stat-top"><span class="info-icon cash">$</span><div class="info-label"><b>إجمالي الأرباح</b></div></div>
+          <div class="digital money bigmoney">${moneyInt(s.grossWin)}</div>
+        </div>
+        <div class="info-stat netprofit">
+          <div class="info-stat-top"><span class="info-icon cash">⚖</span><div class="info-label"><b>صافي الربح</b></div></div>
           <div class="digital money bigmoney">${moneyInt(s.net)}</div>
         </div>
-        <div class="info-stat">
-          <div class="info-stat-top"><span class="info-icon loss">✕</span><div class="info-label"><b>الصفقات الخاسرة</b></div></div>
-          <div class="digital red">${s.losses.length}</div>
+        <div class="info-stat featured">
+          <div class="info-stat-top"><span class="info-icon layers">▦</span><div class="info-label"><b>إجمالي العائد</b></div></div>
+          <div class="digital green">${pct(s.returnP)}</div>
         </div>
         <div class="info-stat">
+          <div class="info-stat-top"><span class="info-icon layers">≡</span><div class="info-label"><b>إجمالي الصفقات</b></div></div>
+          <div class="digital number">${s.counted.length}</div>
+        </div>
+        <div class="info-stat win-stat">
           <div class="info-stat-top"><span class="info-icon win">✓</span><div class="info-label"><b>الصفقات الرابحة</b></div></div>
           <div class="digital green">${s.wins.length}</div>
         </div>
@@ -560,13 +574,9 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
           <div class="info-stat-top"><span class="info-icon stopped">Ⅱ</span><div class="info-label"><b>الصفقات الموقوفة</b></div></div>
           <div class="digital cyan">${stoppedCount}</div>
         </div>
-        <div class="info-stat featured">
-          <div class="info-stat-top"><div class="info-label"><b>إجمالي العائد</b></div></div>
-          <div class="digital green">${pct(s.returnP)}</div>
-        </div>
-        <div class="info-stat">
-          <div class="info-stat-top"><span class="info-icon layers">▤</span><div class="info-label"><b>إجمالي الصفقات</b></div></div>
-          <div class="digital number">${s.counted.length}</div>
+        <div class="info-stat loss-stat">
+          <div class="info-stat-top"><span class="info-icon loss">✕</span><div class="info-label"><b>الصفقات الخاسرة</b></div></div>
+          <div class="digital red">${s.losses.length}</div>
         </div>
       </div>
 
