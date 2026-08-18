@@ -502,8 +502,8 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
       <div class="info-top-swoosh"></div>
       <div class="info-bottom-swoosh"></div>
 
-      <div class="info-header compact logo-only" style="display:flex;align-items:center;justify-content:center;width:100%;height:390px;min-height:390px;margin:0 auto;overflow:visible;">
-        <div class="info-logo-wrap wide" style="display:flex;align-items:center;justify-content:center;width:100%;height:390px;padding:0;overflow:visible;"><img src="${logoSrc()}" class="info-logo bigger" alt="Q Options" style="display:block;width:1060px;max-width:100%;height:380px;object-fit:contain;object-position:center;margin:0 auto;transform:none;transform-origin:center center;"></div>
+      <div class="info-header compact logo-only">
+        <div class="info-logo-wrap wide"><img src="${logoSrc()}" class="info-logo bigger" alt="Q Options"></div>
       </div>
 
       <div class="info-stats refined-order">
@@ -818,7 +818,8 @@ async function saveOrShareTopTrades(e){
 
     const captureWidth=1120;
     const captureHeight=Math.ceil(Math.max(target.scrollHeight,target.getBoundingClientRect().height));
-    const scale=1;
+    // دقة أعلى للصورة النهائية مع حد آمن لذاكرة Safari على الآيفون.
+    const scale=isIOSDevice()?1.5:2;
     const canvas=await html2canvas(target,{
       scale,
       width:captureWidth,
