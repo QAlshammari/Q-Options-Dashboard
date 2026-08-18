@@ -21,45 +21,6 @@
   --shadow-gold:0 8px 0 #876126,0 13px 24px rgba(147,105,42,.24),inset 0 1px 0 rgba(255,255,255,.82);
 }
 
-/* ==============================================================
-   FINAL42 — صفحة التقرير 4:5 المعتمدة
-   ============================================================== */
-.q-final-report{
-  position:relative;box-sizing:border-box;width:1080px;min-height:1350px;padding:22px 25px 20px;
-  overflow:hidden;color:#2e261f;font-family:"Cairo",Arial,sans-serif;
-  background:
-    radial-gradient(ellipse at 10% 8%,rgba(151,147,141,.13),transparent 20%),
-    radial-gradient(ellipse at 88% 83%,rgba(207,167,91,.09),transparent 26%),
-    linear-gradient(135deg,#fffefa 0%,#fff 42%,#fbf8f0 100%);
-  border:8px double #c58a28;border-radius:27px;
-  box-shadow:inset 0 0 0 3px #fff9e8,inset 0 0 0 7px rgba(183,118,25,.45),0 12px 28px rgba(80,52,17,.22);
-}
-.q-final-report::before,.q-final-report::after{content:"";position:absolute;z-index:0;pointer-events:none;opacity:.55}
-.q-final-report::before{inset:12px;background:
-  linear-gradient(23deg,transparent 0 11%,rgba(201,152,58,.17) 11.2% 11.5%,transparent 11.7% 39%,rgba(190,141,46,.12) 39.3% 39.6%,transparent 40%),
-  linear-gradient(151deg,transparent 0 75%,rgba(130,128,124,.08) 75.2% 75.5%,transparent 75.7%);border-radius:18px}
-.q-final-report::after{inset:15px;border:1px solid rgba(205,155,61,.5);border-radius:17px;box-shadow:inset 0 0 26px rgba(170,111,26,.08)}
-.q-final-report>*{position:relative;z-index:1}
-.marble-vein{position:absolute!important;z-index:0!important;width:460px;height:170px;opacity:.16;filter:blur(.2px);border-top:2px solid #bd8431;border-radius:50%;transform:rotate(-13deg)}
-.vein-a{left:-100px;top:94px}.vein-b{right:-130px;bottom:105px;transform:rotate(17deg)}
-.final-logo{height:196px;display:flex;align-items:center;justify-content:center;margin:-3px 4px 5px;overflow:hidden}
-.final-logo img{width:100%;height:205px;display:block;object-fit:contain;object-position:center;filter:saturate(.82) contrast(.97) brightness(1.04)}
-.final-stats{direction:ltr;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px;margin:5px 3px 15px}
-.final-stats article{direction:rtl;grid-column:span 3;min-width:0;height:82px;padding:8px 10px 6px;text-align:center;border:1px solid #d8b36f;border-radius:13px;background:linear-gradient(145deg,#fff,#fffaf0);box-shadow:0 5px 0 rgba(163,107,24,.23),0 9px 16px rgba(83,54,20,.10),inset 0 2px 0 #fff}
-.final-stats article:nth-child(n+5){grid-column:span 4;height:88px;padding-top:9px}
-.final-stats small{display:block;height:26px;font-size:15px;font-weight:900;white-space:nowrap}
-.final-stats strong{display:block;font-family:Orbitron,Arial,sans-serif;font-size:27px;line-height:1.25;color:#309455;direction:ltr}
-.final-stats strong.neutral{color:#2d2824}.final-stats .win{box-shadow:0 5px 0 #4caa65,0 9px 16px rgba(49,145,75,.15),inset 0 2px 0 #fff}.final-stats .stopped{box-shadow:0 5px 0 #24abc1,0 9px 16px rgba(28,164,188,.15),inset 0 2px 0 #fff}.final-stats .stopped strong{color:#149eb8}.final-stats .loss{box-shadow:0 5px 0 #df4a40,0 9px 16px rgba(204,54,48,.15),inset 0 2px 0 #fff}.final-stats .loss strong{color:#db4036}
-.final-charts{direction:ltr;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 3px 14px}
-.final-charts article{direction:rtl;height:252px;padding:12px 12px 8px;border:1px solid #d7b36d;border-radius:16px;background:rgba(255,255,255,.94);box-shadow:0 7px 0 rgba(161,106,24,.24),0 14px 22px rgba(78,52,20,.12),inset 0 2px 0 #fff}
-.final-charts h3{margin:0;text-align:center;font-size:20px;line-height:1.2}.mini-chart{width:100%;height:202px;overflow:visible}.mini-chart .grid path{stroke:#d9c9ac;stroke-width:1}.mini-chart .axis{stroke:#bfa87e;stroke-width:1.5}.equity-shadow{fill:none;stroke:rgba(77,47,9,.25);stroke-width:9;transform:translateY(5px)}.equity-line{fill:none;stroke:url(#lineGold);stroke-width:6;stroke-linecap:round;stroke-linejoin:round}.equity-dots circle{fill:#f6cf6a;stroke:#92590b;stroke-width:3;filter:drop-shadow(0 3px 2px rgba(89,52,4,.28))}
-.bar3d rect,.bar3d path,.summary3d rect,.summary3d path{stroke-width:1.2}.bar3d.win rect,.bar3d.win path,.summary3d.gross rect,.summary3d.gross path{fill:#26984c;stroke:#116d30}.bar3d.stopped rect,.bar3d.stopped path{fill:#22a9c5;stroke:#087b94}.bar3d.loss rect,.bar3d.loss path,.summary3d.loss rect,.summary3d.loss path{fill:#df4438;stroke:#a72520}.summary3d.net rect,.summary3d.net path{fill:#d99b25;stroke:#9a6508}.summary3d text{font:700 11px Cairo,Arial;fill:#3b3027;text-anchor:middle}.bar3d,.summary3d{filter:drop-shadow(4px 6px 4px rgba(64,43,17,.22))}
-.report-strip{direction:ltr;display:grid;grid-template-columns:1.55fr .9fr .62fr;gap:12px;align-items:center;margin:2px 3px 12px}.best-trade,.period-chip,.report-strip h2{height:73px;box-sizing:border-box;border:1px solid #d5aa5c;border-radius:13px;background:rgba(255,255,255,.94);box-shadow:0 5px 0 rgba(155,102,24,.24),0 9px 15px rgba(71,48,19,.1),inset 0 2px 0 #fff}.best-trade{display:flex;align-items:center;justify-content:space-around;padding:6px 13px;color:#26904a}.best-trade span{width:51px;height:51px;display:grid;place-items:center;border-radius:50%;color:#fff;font-size:27px;background:linear-gradient(#4dbb66,#167b39);box-shadow:0 4px 0 #075a27,0 7px 12px rgba(15,105,48,.22)}.best-trade small{font-size:16px;font-weight:900}.best-trade b{font:900 24px Orbitron,Arial}.best-trade strong{font:900 23px Orbitron,Arial}.best-trade em{font:900 21px Orbitron,Arial;font-style:normal}.period-chip{display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px}.report-strip h2{margin:0;display:grid;place-items:center;font-size:25px;background:linear-gradient(145deg,#fff5c9,#edbd57);color:#3c2a15}
-.final-table-wrap{margin:0 3px}.final-table{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:3px 3px;font-size:14px;text-align:center}.final-table th{height:35px;padding:2px 4px;color:white;background:linear-gradient(#d99a24,#9a5e05);border:1px solid #8a5205;box-shadow:0 4px 0 #6d4307,inset 0 2px 0 #f6c864;font-weight:900;direction:rtl}.final-table th:first-child{width:16%}.final-table th:nth-child(2){width:9%}.final-table th:nth-child(3){width:11%}.final-table th:nth-child(4),.final-table th:nth-child(5){width:13%}.final-table th:nth-child(6){width:13%}.final-table th:nth-child(7){width:12%}.final-table th:last-child{width:13%}.final-table td{height:30px;padding:1px 4px;background:linear-gradient(145deg,#fff,#fbf7ef);border:1px solid #d8c49d;border-radius:4px;box-shadow:0 3px 0 rgba(157,117,57,.27),inset 0 1px 0 #fff;font-weight:800;direction:ltr;color:#211e1b}.ticker-wrap{display:flex;align-items:center;justify-content:center;gap:7px}.ticker-wrap b{font-family:Orbitron,Arial;font-size:14px}.company-logo{width:21px;height:21px;display:inline-grid;place-items:center;box-sizing:border-box;border-radius:50%;font:bold 10px Arial;background:#fff;border:1px solid #bbb;color:#111;line-height:1}.company-logo.nvidia{background:#76b900;color:#fff;border-color:#5c9200}.company-logo.amazon{font-size:18px}.company-logo.apple{font-size:13px;background:#111;color:#fff}.company-logo.qqq{color:#254adb;font-size:15px}.company-logo.google{font-size:16px;color:#4285f4}.company-logo.microsoft{border-radius:2px;color:#e54822;font-size:17px}.company-logo.meta{color:#1674e8;font-size:19px}.company-logo.coin{background:#1559e8;color:#fff;font-size:14px}.company-logo.rivn{color:#d58a00}.company-logo.intel{color:#0868c5;font-size:8px}.company-logo.tesla{color:#e82127;font-size:16px}.company-logo.amd{border-radius:2px;background:#111;color:#fff;font-size:13px}
-.trade-row.win .state-color{color:#39a65a}.trade-row.stopped .state-color{color:#18a9c5}.trade-row.loss .state-color{color:#df4037}.trade-row .always-black,.trade-row .symbol-col{color:#211e1b!important}.status-word{font-size:15px;font-weight:900!important;direction:rtl!important}
-.final-contact{height:48px;margin:9px 3px 0;display:flex;align-items:center;justify-content:center;gap:8px;border-top:1px solid rgba(184,125,32,.45);font-weight:800;color:#7b4e14}.final-contact span{color:#179dc2}.final-contact b{font-family:Orbitron,Arial}
-@media(max-width:700px){.q-final-report{transform-origin:top center}}
-
 *{box-sizing:border-box}
 html{background:var(--cream)}
 body{
