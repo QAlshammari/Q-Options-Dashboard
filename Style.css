@@ -2624,3 +2624,71 @@ body{
   transform:none!important;
   zoom:1!important;
 }
+
+/* FINAL41 REPORT FIX — نفس القياس للمعاينة والصورة، وشعار بلا قص أو تمدد */
+:root{--report-width:1120px;--report-logo-height:255px}
+
+.refined-light.infographic-card,
+.capture-mode.refined-light.infographic-card{
+  width:var(--report-width)!important;
+  min-width:var(--report-width)!important;
+  max-width:var(--report-width)!important;
+  box-sizing:border-box!important;
+}
+
+.refined-light .info-header.logo-only,
+.refined-light .info-header.logo-only .info-logo-wrap,
+.capture-mode .info-header.logo-only,
+.capture-mode .info-header.logo-only .info-logo-wrap{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  height:var(--report-logo-height)!important;
+  min-height:var(--report-logo-height)!important;
+  margin:0 auto!important;
+  padding:0 34px!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+}
+
+.refined-light .info-header.logo-only .info-logo.bigger,
+.capture-mode .info-header.logo-only .info-logo.bigger{
+  display:block!important;
+  width:100%!important;
+  max-width:980px!important;
+  height:235px!important;
+  margin:0 auto!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  filter:drop-shadow(0 10px 12px rgba(101,69,22,.11))!important;
+}
+
+.preview-live-content{width:100%!important;overflow:hidden!important}
+.preview-live-viewport{width:100%!important;overflow:hidden!important;position:relative!important}
+.preview-live-scale{
+  position:absolute!important;
+  top:0!important;
+  left:50%!important;
+  width:var(--report-width)!important;
+  transform-origin:top center!important;
+}
+
+.export-stage{
+  position:fixed!important;
+  left:-20000px!important;
+  top:0!important;
+  width:var(--report-width)!important;
+  min-width:var(--report-width)!important;
+  max-width:var(--report-width)!important;
+  overflow:visible!important;
+}
+.export-stage .refined-light.infographic-card{margin:0!important;transform:none!important;zoom:1!important}
+
+@media(max-width:650px){
+  :root{--report-logo-height:255px}
+  .refined-light .info-header.logo-only,
+  .refined-light .info-header.logo-only .info-logo-wrap{height:255px!important;min-height:255px!important}
+  .refined-light .info-header.logo-only .info-logo.bigger{height:235px!important;transform:none!important}
+}
