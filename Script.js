@@ -1,5 +1,6 @@
 let trades = [];
 let equityChart, dailyChart, winLossChart;
+let importedWorkbookActive = false;
 
 const $ = id => document.getElementById(id);
 const REPORT_WIDTH = 1120;
@@ -177,6 +178,8 @@ function colorize(el,value){
 }
 
 function getFilteredTrades(){
+  // بعد رفع Excel نعرض جميع صفوف الملف فوراً؛ التاريخ المختار يبقى عنواناً للتقرير.
+  if(importedWorkbookActive) return [...trades];
   const from = $('fromDate').value;
   const to = $('toDate').value;
   return trades.filter(t => (!from || !t.date || t.date >= from) && (!to || !t.date || t.date <= to));
@@ -364,9 +367,13 @@ async function handleFile(file){
       return;
     }
 
-    trades=normalized;
+    trades=[...normalized];
+    importedWorkbookActive=true;
     // لا نسمح لملف Excel بتغيير التاريخ الذي اختاره المستخدم.
     saveSelectedRange();
+    render();
+    // إعادة رسم إضافية بعد انتهاء المتصفح من تحديث واجهة اختيار الملف، خصوصاً على iPhone.
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
     render();
     showToast(`تم تحميل ${trades.length} صفقة بنجاح`);
   }catch(err){
@@ -935,7 +942,7 @@ function showToast(message){
 }
 
 $('excelFile').addEventListener('change',e=>{const f=e.target.files[0];if(f) handleFile(f)});
-$('demoBtn').addEventListener('click',()=>{setCurrentWeekRange();trades=buildDemoTrades();render();showToast('تم تحميل بيانات تجريبية للأسبوع الحالي')});
+$('demoBtn').addEventListener('click',()=>{importedWorkbookActive=false;setCurrentWeekRange();trades=buildDemoTrades();render();showToast('تم تحميل بيانات تجريبية للأسبوع الحالي')});
 $('pdfBtn').addEventListener('click',exportPdf);
 $('imageBtn').addEventListener('click',openTopTradesPreview);
 $('previewClose')?.addEventListener('click',hidePreview);
