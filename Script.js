@@ -56,6 +56,7 @@ function addDays(iso,days){
   return toISO(date);
 }
 
+// البيانات التجريبية من Q-Options-FINAL41(2) فقط — بدون أي تعديل.
 function buildDemoTrades(){
   const {from} = currentWeekRange();
   return [
@@ -191,21 +192,22 @@ function tradeOutcome(trade){
 }
 
 function calculateStats(data){
-  const closed = data.filter(t => ['win','loss','stopped'].includes(tradeOutcome(t)));
+  // مطابق تماماً لطريقة كود 41 للنسخة التجريبية.
+  const closed = data.filter(t => tradeOutcome(t) !== 'open');
   const wins = closed.filter(t => tradeOutcome(t) === 'win');
   const stopped = closed.filter(t => tradeOutcome(t) === 'stopped');
   const losses = closed.filter(t => tradeOutcome(t) === 'loss');
   const counted = closed.filter(t => ['win','loss','stopped'].includes(tradeOutcome(t)));
   const negativeTrades = [...losses,...stopped];
   const grossWin = wins.reduce((s,t)=>s+t.profit,0);
-  const grossLoss = negativeTrades.reduce((s,t)=>s+Math.abs(t.profit),0);
-  const net = grossWin-grossLoss;
+  const grossLoss = negativeTrades.reduce((s,t)=>s+t.profit,0);
+  const net = closed.reduce((s,t)=>s+t.profit,0);
   const totalCost = closed.reduce((s,t)=>s+(Math.abs(t.buy)*100),0);
   const returnP = totalCost ? net/totalCost*100 : 0;
   const winRate = counted.length ? wins.length/counted.length*100 : 0;
   const avgWin = wins.length ? grossWin/wins.length : 0;
-  const avgLoss = negativeTrades.length ? -grossLoss/negativeTrades.length : 0;
-  const pf = grossLoss ? grossWin/grossLoss : (grossWin ? Infinity : 0);
+  const avgLoss = negativeTrades.length ? grossLoss/negativeTrades.length : 0;
+  const pf = grossLoss ? grossWin/Math.abs(grossLoss) : (grossWin ? Infinity : 0);
   const expectancy = closed.length ? net/closed.length : 0;
 
   let peak=0,eq=0,maxDD=0;
@@ -250,7 +252,7 @@ function render(){
   $('sharpe').textContent=s.sharpe.toFixed(2); colorize($('sharpe'),s.sharpe);
 
   $('summaryGross').textContent=money(s.grossWin); colorize($('summaryGross'),s.grossWin);
-  $('summaryLoss').textContent=money(-s.grossLoss); colorize($('summaryLoss'),-s.grossLoss);
+  $('summaryLoss').textContent=money(s.grossLoss); colorize($('summaryLoss'),s.grossLoss);
   $('summaryNet').textContent=money(s.net); colorize($('summaryNet'),s.net);
   $('bestDay').textContent=money(s.bestDay); colorize($('bestDay'),s.bestDay);
   $('worstDay').textContent=money(s.worstDay); colorize($('worstDay'),s.worstDay);
@@ -581,7 +583,7 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
         </div>
         <div class="info-stat totalprofit">
           <div class="info-stat-top"><span class="info-icon cash">$</span><div class="info-label"><b>إجمالي الأرباح</b></div></div>
-          <div class="digital money bigmoney">${moneyInt(s.grossWin)}</div>
+          <div class="digital money bigmoney">${moneyInt(s.net)}</div>
         </div>
       </div>
 
