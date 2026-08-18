@@ -2,7 +2,7 @@ let trades = [];
 let equityChart, dailyChart, winLossChart;
 
 const $ = id => document.getElementById(id);
-const REPORT_WIDTH = 1400;
+const REPORT_WIDTH = 1120;
 const SAVED_RANGE_KEY = 'qOptionsSelectedReportRange';
 
 function saveSelectedRange(){
