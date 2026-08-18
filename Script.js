@@ -2,6 +2,29 @@ let trades = [];
 let equityChart, dailyChart, winLossChart;
 
 const $ = id => document.getElementById(id);
+const REPORT_WIDTH = 1400;
+const SAVED_RANGE_KEY = 'qOptionsSelectedReportRange';
+
+function saveSelectedRange(){
+  try{
+    localStorage.setItem(SAVED_RANGE_KEY,JSON.stringify({
+      from:$('fromDate')?.value || '',
+      to:$('toDate')?.value || ''
+    }));
+  }catch(_e){}
+}
+
+function restoreSelectedRange(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(SAVED_RANGE_KEY)||'null');
+    if(saved?.from && saved?.to){
+      $('fromDate').value=saved.from;
+      $('toDate').value=saved.to;
+      return true;
+    }
+  }catch(_e){}
+  return false;
+}
 const money = n => (n < 0 ? '-$' : '$') + Math.abs(Number(n) || 0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const moneyInt = n => (n < 0 ? '-$' : '$') + Math.abs(Math.round(Number(n) || 0)).toLocaleString('en-US');
 const pct = n => `${Number(n) >= 0 ? '+' : ''}${(Number(n) || 0).toFixed(2)}%`;
@@ -342,7 +365,8 @@ async function handleFile(file){
     }
 
     trades=normalized;
-    setRangeFromTrades();
+    // لا نسمح لملف Excel بتغيير التاريخ الذي اختاره المستخدم.
+    saveSelectedRange();
     render();
     showToast(`تم تحميل ${trades.length} صفقة بنجاح`);
   }catch(err){
@@ -471,7 +495,13 @@ function buildPdfTemplate(){
 function buildShareTemplate(maxRows=10, captureId="shareCapture"){
   const filtered=getFilteredTrades();
   const s=calculateStats(filtered);
-  const rowsData=[...s.counted].sort((a,b)=>(a.date||'').localeCompare(b.date||'') || String(a.symbol).localeCompare(String(b.symbol)));
+  // ترتيب التقرير: الرابحة أولاً، ثم الموقوفة، ثم الخاسرة.
+  const outcomeOrder={win:0,stopped:1,loss:2};
+  const rowsData=[...s.counted].sort((a,b)=>
+    (outcomeOrder[tradeOutcome(a)]??9)-(outcomeOrder[tradeOutcome(b)]??9) ||
+    (a.date||'').localeCompare(b.date||'') ||
+    String(a.symbol).localeCompare(String(b.symbol))
+  );
   const periodText=`${$('fromDate').value || '—'}  →  ${$('toDate').value || '—'}`;
   const winPct = s.counted.length ? (s.wins.length / s.counted.length * 100) : 0;
   const stoppedCount = s.stopped.length;
@@ -491,8 +521,8 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
         <td>${escapeHtml(t.strike)}</td>
         <td dir="ltr">${money(t.buy)}</td>
         <td dir="ltr">${t.sell===null?'—':money(t.sell)}</td>
-        <td class="info-profit ${t.profit>=0?'pos':'neg'}">${t.sell===null&&t.profit===0?'—':money(t.profit)}</td>
-        <td class="info-pct ${t.pct>=0?'pos':'neg'}">${t.sell===null&&t.profit===0?'—':pct(t.pct)}</td>
+        <td class="info-profit ${st.cls==='stopped'?'stopped-value':(t.profit>=0?'pos':'neg')}">${t.sell===null&&t.profit===0?'—':money(t.profit)}</td>
+        <td class="info-pct ${st.cls==='stopped'?'stopped-value':(t.pct>=0?'pos':'neg')}">${t.sell===null&&t.profit===0?'—':pct(t.pct)}</td>
         <td><span class="info-status ${st.cls}" style="display:inline;background:transparent;border:0;border-radius:0;box-shadow:none;padding:0;font-size:27px;font-weight:900">${statusAr}</span></td>
       </tr>`;
   }).join('') : `<tr><td colspan="8">لا توجد صفقات ضمن الفترة المحددة</td></tr>`;
@@ -790,16 +820,16 @@ async function saveOrShareTopTrades(e){
 
     // Safari كان يحسب عرض التقرير بعرض شاشة الهاتف رغم أن لوحة الحفظ أكبر.
     // نثبت العرض على العنصر نفسه قبل أن يأخذ html2canvas القياسات.
-    stage.style.setProperty('width','1120px','important');
-    stage.style.setProperty('min-width','1120px','important');
-    stage.style.setProperty('max-width','1120px','important');
+    stage.style.setProperty('width',`${REPORT_WIDTH}px`,'important');
+    stage.style.setProperty('min-width',`${REPORT_WIDTH}px`,'important');
+    stage.style.setProperty('max-width',`${REPORT_WIDTH}px`,'important');
     stage.style.setProperty('display','block','important');
     stage.style.setProperty('position','fixed','important');
     stage.style.setProperty('left','0','important');
     stage.style.setProperty('top','0','important');
-    target.style.setProperty('width','1120px','important');
-    target.style.setProperty('min-width','1120px','important');
-    target.style.setProperty('max-width','1120px','important');
+    target.style.setProperty('width',`${REPORT_WIDTH}px`,'important');
+    target.style.setProperty('min-width',`${REPORT_WIDTH}px`,'important');
+    target.style.setProperty('max-width',`${REPORT_WIDTH}px`,'important');
     target.style.setProperty('display','block','important');
     target.style.setProperty('position','relative','important');
     target.style.setProperty('margin','0','important');
@@ -812,11 +842,11 @@ async function saveOrShareTopTrades(e){
     await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
 
     const measuredWidth=Math.round(target.getBoundingClientRect().width);
-    if(measuredWidth<1100){
+    if(measuredWidth<REPORT_WIDTH-20){
       throw new Error(`عرض التقرير غير صحيح قبل الحفظ: ${measuredWidth}px`);
     }
 
-    const captureWidth=1120;
+    const captureWidth=REPORT_WIDTH;
     const captureHeight=Math.ceil(Math.max(target.scrollHeight,target.getBoundingClientRect().height));
     // دقة أعلى للصورة النهائية مع حد آمن لذاكرة Safari على الآيفون.
     const scale=isIOSDevice()?1.5:2;
@@ -838,16 +868,16 @@ async function saveOrShareTopTrades(e){
         const clonedTarget=clonedDocument.getElementById('shareCapture');
         if(clonedStage){
           clonedStage.style.setProperty('left','0','important');
-          clonedStage.style.setProperty('width','1120px','important');
-          clonedStage.style.setProperty('min-width','1120px','important');
-          clonedStage.style.setProperty('max-width','1120px','important');
+          clonedStage.style.setProperty('width',`${REPORT_WIDTH}px`,'important');
+          clonedStage.style.setProperty('min-width',`${REPORT_WIDTH}px`,'important');
+          clonedStage.style.setProperty('max-width',`${REPORT_WIDTH}px`,'important');
           clonedStage.style.setProperty('transform','none','important');
         }
         if(clonedTarget){
           clonedTarget.classList.add('capture-mode');
-          clonedTarget.style.setProperty('width','1120px','important');
-          clonedTarget.style.setProperty('min-width','1120px','important');
-          clonedTarget.style.setProperty('max-width','1120px','important');
+          clonedTarget.style.setProperty('width',`${REPORT_WIDTH}px`,'important');
+          clonedTarget.style.setProperty('min-width',`${REPORT_WIDTH}px`,'important');
+          clonedTarget.style.setProperty('max-width',`${REPORT_WIDTH}px`,'important');
           clonedTarget.style.setProperty('display','block','important');
           clonedTarget.style.setProperty('position','relative','important');
           clonedTarget.style.setProperty('margin','0','important');
@@ -912,10 +942,13 @@ $('previewClose')?.addEventListener('click',hidePreview);
 $('previewDownload')?.addEventListener('click',saveOrShareTopTrades);
 $('previewModal')?.addEventListener('click',e=>{ if(e.target.id==='previewModal') hidePreview(); });
 window.addEventListener('resize',()=>{if(!$('previewModal')?.hidden) fitLivePreview()});
-$('fromDate').addEventListener('change',render);
-$('toDate').addEventListener('change',render);
+$('fromDate').addEventListener('change',()=>{saveSelectedRange();render()});
+$('toDate').addEventListener('change',()=>{saveSelectedRange();render()});
 
-setCurrentWeekRange();
+if(!restoreSelectedRange()){
+  setCurrentWeekRange();
+  saveSelectedRange();
+}
 trades=buildDemoTrades();
 updateFooterClock();
 setInterval(updateFooterClock,60000);
