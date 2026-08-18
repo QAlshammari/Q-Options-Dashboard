@@ -2635,7 +2635,7 @@ body{
 }
 
 /* FINAL41 REPORT FIX — نفس القياس للمعاينة والصورة، وشعار بلا قص أو تمدد */
-:root{--report-width:1400px;--report-logo-height:255px}
+:root{--report-width:1120px;--report-logo-height:255px}
 
 .refined-light.infographic-card,
 .capture-mode.refined-light.infographic-card{
@@ -2665,7 +2665,7 @@ body{
 .capture-mode .info-header.logo-only .info-logo.bigger{
   display:block!important;
   width:100%!important;
-  max-width:1220px!important;
+  max-width:980px!important;
   height:235px!important;
   margin:0 auto!important;
   object-fit:contain!important;
