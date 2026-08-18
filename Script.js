@@ -577,10 +577,6 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
           <div class="info-stat-top"><span class="info-icon layers">▦</span><div class="info-label"><b>إجمالي العائد</b></div></div>
           <div class="digital green">${pct(s.returnP)}</div>
         </div>
-        <div class="info-stat netprofit">
-          <div class="info-stat-top"><span class="info-icon cash">⚖</span><div class="info-label"><b>صافي الربح</b></div></div>
-          <div class="digital money bigmoney">${moneyInt(s.net)}</div>
-        </div>
         <div class="info-stat totalprofit">
           <div class="info-stat-top"><span class="info-icon cash">$</span><div class="info-label"><b>إجمالي الأرباح</b></div></div>
           <div class="digital money bigmoney">${moneyInt(s.net)}</div>
@@ -740,12 +736,14 @@ function fitLivePreview(){
   const card=$('liveShareCapture');
   if(!content || !viewport || !scaleBox || !card) return;
 
-  const available=Math.max(280, content.clientWidth || 320);
-  const cardWidth=card.offsetWidth || 1240;
-  const cardHeight=card.offsetHeight || 1740;
-  const scale=Math.min(1, available/cardWidth);
+  const available=Math.max(280, content.getBoundingClientRect().width || 320);
+  const cardWidth=REPORT_WIDTH;
+  const cardHeight=Math.ceil(Math.max(card.scrollHeight,card.offsetHeight,card.getBoundingClientRect().height));
+  const scale=Math.min(1, available/REPORT_WIDTH);
 
   scaleBox.style.transform=`translateX(-50%) scale(${scale})`;
+  scaleBox.style.width=`${REPORT_WIDTH}px`;
+  scaleBox.style.height=`${cardHeight}px`;
   viewport.style.height=`${Math.ceil(cardHeight*scale)}px`;
 }
 
@@ -756,6 +754,7 @@ function showLivePreview(){
 
   topTradesExportState={dataUrl:'',blob:null,filename:''};
   content.innerHTML=`<div class="preview-live-viewport" id="previewLiveViewport"><div class="preview-live-scale" id="previewLiveScale">${buildShareTemplate(10,'liveShareCapture')}</div></div>`;
+  $('liveShareCapture')?.classList.add('capture-mode');
   modal.hidden=false;
   document.body.classList.add('preview-open');
 
@@ -878,7 +877,7 @@ async function saveOrShareTopTrades(e){
     const captureWidth=REPORT_WIDTH;
     const captureHeight=Math.ceil(Math.max(target.scrollHeight,target.getBoundingClientRect().height));
     // دقة أعلى للصورة النهائية مع حد آمن لذاكرة Safari على الآيفون.
-    const scale=isIOSDevice()?1.5:2;
+    const scale=2;
     const canvas=await html2canvas(target,{
       scale,
       width:captureWidth,
@@ -893,6 +892,11 @@ async function saveOrShareTopTrades(e){
       scrollX:0,
       scrollY:0,
       onclone:clonedDocument=>{
+        clonedDocument.documentElement.style.setProperty('width',`${REPORT_WIDTH}px`,'important');
+        clonedDocument.documentElement.style.setProperty('min-width',`${REPORT_WIDTH}px`,'important');
+        clonedDocument.body.style.setProperty('width',`${REPORT_WIDTH}px`,'important');
+        clonedDocument.body.style.setProperty('min-width',`${REPORT_WIDTH}px`,'important');
+        clonedDocument.body.style.setProperty('margin','0','important');
         const clonedStage=clonedDocument.getElementById('exportStage');
         const clonedTarget=clonedDocument.getElementById('shareCapture');
         if(clonedStage){
