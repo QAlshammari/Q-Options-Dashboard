@@ -205,6 +205,15 @@ footer{min-height:58px;display:grid;grid-template-columns:1fr 1fr 1fr;align-item
   .trades-panel{padding:7px}.table-heading h3{font-size:16px}table{font-size:10px}
   footer{grid-template-columns:1fr;text-align:center;padding:14px 6px 3px;gap:4px;font-size:9px}.footer-contact{text-align:center}footer>div:last-child{text-align:center}
 }
+
+/* ترتيب التقرير النهائي: قيم الصفقات الموقوفة باللون السماوي */
+.refined-light .info-profit.stopped-value,
+.refined-light .info-pct.stopped-value,
+.capture-mode .info-profit.stopped-value,
+.capture-mode .info-pct.stopped-value{
+  color:#14a9bf!important;
+  font-weight:900!important;
+}
 .saved-image-wrap{width:100%;text-align:center}
 .saved-image-hint{
   margin:4px auto 10px;
@@ -2626,7 +2635,7 @@ body{
 }
 
 /* FINAL41 REPORT FIX — نفس القياس للمعاينة والصورة، وشعار بلا قص أو تمدد */
-:root{--report-width:1120px;--report-logo-height:255px}
+:root{--report-width:1400px;--report-logo-height:255px}
 
 .refined-light.infographic-card,
 .capture-mode.refined-light.infographic-card{
@@ -2656,7 +2665,7 @@ body{
 .capture-mode .info-header.logo-only .info-logo.bigger{
   display:block!important;
   width:100%!important;
-  max-width:980px!important;
+  max-width:1220px!important;
   height:235px!important;
   margin:0 auto!important;
   object-fit:contain!important;
