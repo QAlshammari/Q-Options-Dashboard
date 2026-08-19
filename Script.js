@@ -523,7 +523,15 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
     const h=Math.max(4,Math.abs(t.profit)/maxTrade*55);
     const y=t.profit>=0?72-h:72;
     const color=tradeOutcome(t)==='win'?'#26924d':tradeOutcome(t)==='stopped'?'#18a2b8':'#d64239';
-    return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${Math.max(8,246/Math.max(1,chartTrades.length)).toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${color}"/><text x="${(x+4).toFixed(1)}" y="140" text-anchor="middle">${escapeHtml(t.symbol).slice(0,4)}</text>`;
+    const w=Math.max(8,246/Math.max(1,chartTrades.length));
+    const cx=x+w/2;
+    const capY=t.profit>=0?y:y+h;
+    return `<g class="cylinder-bar">
+      <rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${(w*.35).toFixed(1)}" fill="${color}"/>
+      <rect x="${(x+w*.16).toFixed(1)}" y="${y.toFixed(1)}" width="${(w*.22).toFixed(1)}" height="${h.toFixed(1)}" rx="${(w*.11).toFixed(1)}" fill="rgba(255,255,255,.34)"/>
+      <ellipse cx="${cx.toFixed(1)}" cy="${capY.toFixed(1)}" rx="${(w/2).toFixed(1)}" ry="${Math.max(2.6,w*.17).toFixed(1)}" fill="${t.profit>=0?'#8ee0a6':t.profit<0?'#ff9b90':'#8de5ef'}" stroke="rgba(91,60,18,.18)" stroke-width="1"/>
+      <text x="${cx.toFixed(1)}" y="140" text-anchor="middle">${escapeHtml(t.symbol).slice(0,4)}</text>
+    </g>`;
   }).join('');
   let running=0;
   const equityValues=chartTrades.map(t=>(running+=t.profit));
@@ -569,13 +577,9 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
           <div class="info-stat-top"><span class="info-icon win">✓</span><div class="info-label"><b>الصفقات الرابحة</b></div></div>
           <div class="digital green">${s.wins.length}</div>
         </div>
-        <div class="info-stat">
+        <div class="info-stat total-trades-stat">
           <div class="info-stat-top"><span class="info-icon layers">≡</span><div class="info-label"><b>إجمالي الصفقات</b></div></div>
           <div class="digital number">${s.counted.length}</div>
-        </div>
-        <div class="info-stat featured">
-          <div class="info-stat-top"><span class="info-icon layers">▦</span><div class="info-label"><b>إجمالي العائد</b></div></div>
-          <div class="digital green">${pct(s.returnP)}</div>
         </div>
         <div class="info-stat totalprofit">
           <div class="info-stat-top"><span class="info-icon cash">$</span><div class="info-label"><b>إجمالي الأرباح</b></div></div>
@@ -588,13 +592,13 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
           <h4>إجمالي العائد</h4>
           <div class="return-ring-wrap">
             <div class="return-ring">
-              <svg class="return-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
-                <circle class="ring-depth" cx="60" cy="63" r="47" pathLength="100"/>
-                <circle class="ring-track" cx="60" cy="60" r="47" pathLength="100"/>
-                <circle class="ring-gold" cx="60" cy="60" r="47" pathLength="100" stroke-dasharray="100 0"/>
-                <circle class="ring-value" cx="60" cy="60" r="47" pathLength="100" stroke="${returnChartColor}" stroke-dasharray="${returnChartPct.toFixed(2)} ${(100-returnChartPct).toFixed(2)}"/>
+              <svg class="return-ring-svg return-swoosh-svg" viewBox="0 0 120 120" aria-hidden="true">
+                <path class="swoosh-depth" d="M22 87 C12 51 32 20 65 17 C84 15 101 23 110 37"/>
+                <path class="swoosh-track" d="M22 84 C13 50 34 23 65 20 C83 18 98 25 106 37"/>
+                <path class="swoosh-value" d="M22 84 C13 50 34 23 65 20 C83 18 98 25 106 37" stroke="${returnChartColor}"/>
+                <path class="swoosh-shine" d="M28 73 C24 48 41 29 64 27"/>
+                <path class="swoosh-arrow" d="M101 25 L114 38 L96 43 Z"/>
               </svg>
-              <div class="return-ring-arrow">↗</div>
               <div class="return-ring-content">
                 <div class="digital">${pct(s.returnP)}</div>
                 <div class="ar">إجمالي العائد</div>
@@ -605,7 +609,7 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
 
         <div class="info-box">
           <h4>العائد من كل صفقة</h4>
-          <svg class="report-mini-chart" viewBox="0 0 330 150" role="img" aria-label="العائد من كل صفقة">
+          <svg class="report-mini-chart cylinder-chart" viewBox="0 0 330 150" role="img" aria-label="العائد من كل صفقة">
             <line x1="12" y1="72" x2="320" y2="72" stroke="#b99554" stroke-width="2"/>
             ${tradeBars}
           </svg>
@@ -625,14 +629,14 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
 
       <div class="infographic-table-panel">
         <div class="info-table-head table-title-row">
-          <div class="table-title-boxes">
-            <h3>جميع الصفقات</h3>
-            <div class="best-trade-badge">
+          <div class="table-title-boxes unified-table-boxes">
+            <h3 class="table-head-box all-trades-box">جميع الصفقات</h3>
+            <div class="best-trade-badge table-head-box">
               <span class="best-cup">🏆</span>
               <span class="best-copy"><small>أفضل صفقة</small><b>${s.best ? `${escapeHtml(s.best.symbol)} ${moneyInt(s.best.profit)}` : '—'}</b></span>
             </div>
           </div>
-          <div class="table-week-date"><span class="week-date-icon">📅</span><span>${periodText}</span></div>
+          <div class="table-week-date table-head-box"><span class="week-date-icon">📅</span><span>${periodText}</span></div>
         </div>
         <table class="info-table roomy">
           <thead>
