@@ -3561,3 +3561,96 @@ body{
   margin-top:5px!important;font-size:31px!important;line-height:1!important;
   max-width:100%!important;overflow:visible!important;white-space:nowrap!important;text-align:center!important;
 }
+
+/* FINAL REPORT POLISH — إطار ضاغط وخطوط رسوم أوضح في الشاشة والصورة */
+.refined-light.infographic-card,
+.capture-mode.refined-light.infographic-card{
+  border:2px solid #d2ad64!important;
+  border-bottom:9px solid #9b661c!important;
+  border-radius:25px!important;
+  box-shadow:
+    0 10px 0 #805316,
+    0 20px 34px rgba(75,50,19,.20),
+    inset 0 3px 0 #fff,
+    inset 0 -3px 0 rgba(172,117,32,.13)!important;
+  overflow:visible!important;
+}
+.capture-mode.refined-light.infographic-card{
+  box-shadow:
+    0 8px 0 #8d5c18,
+    inset 0 3px 0 #fff,
+    inset 0 -3px 0 rgba(172,117,32,.13)!important;
+}
+
+/* إبقاء مكعب الأيقونة كاملاً داخل الصندوق عند حفظ الصورة */
+.refined-light .info-stat .info-icon,
+.capture-mode .info-stat .info-icon{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex:0 0 42px!important;line-height:1!important;top:0!important;
+  transform:none!important;z-index:3!important;color:#fff!important;
+}
+.refined-light .info-icon.cash,.capture-mode .info-icon.cash,
+.refined-light .info-icon.layers,.capture-mode .info-icon.layers{color:#71470b!important}
+.refined-light .info-stat .info-icon::before,
+.capture-mode .info-stat .info-icon::before,
+.refined-light .info-stat .info-icon::after,
+.capture-mode .info-stat .info-icon::after{z-index:-1!important}
+
+/* وضوح الرسم مثل النسخة الأولى مع أسماء رأسية سوداء مقروءة */
+.refined-light .report-mini-chart,
+.capture-mode .report-mini-chart{
+  filter:none!important;
+  shape-rendering:geometricPrecision!important;
+  text-rendering:geometricPrecision!important;
+}
+.report-mini-chart .chart-grid line{
+  stroke:#dfd5c3!important;stroke-width:.8!important;opacity:.48!important;
+}
+.report-mini-chart .chart-zero{
+  stroke:#b89558!important;stroke-width:1.4!important;opacity:.78!important;
+}
+.refined-light .equity-chart polyline,
+.capture-mode .equity-chart polyline{
+  stroke:#ad7113!important;stroke-width:4.2!important;filter:none!important;
+}
+.refined-light .equity-chart circle,
+.capture-mode .equity-chart circle{
+  fill:#fff9e9!important;stroke:#a66a10!important;stroke-width:2.4px!important;
+}
+.refined-light .cylinder-chart .cylinder-bar,
+.capture-mode .cylinder-chart .cylinder-bar{filter:none!important}
+.refined-light .bar-symbol,.capture-mode .bar-symbol,
+.refined-light .equity-symbol,.capture-mode .equity-symbol{
+  font-family:Arial,Tahoma,sans-serif!important;
+  font-size:11px!important;font-weight:900!important;
+  fill:#050505!important;stroke:none!important;paint-order:normal!important;
+  letter-spacing:0!important;
+}
+.refined-light .dense-chart .bar-symbol,.capture-mode .dense-chart .bar-symbol,
+.refined-light .dense-chart .equity-symbol,.capture-mode .dense-chart .equity-symbol{
+  font-size:9px!important;stroke:none!important;
+}
+
+/* إجمالي الأرباح: نفس أبعاد وخط الصناديق الأربعة بلا أي امتداد موروث */
+.refined-light .info-stat.totalprofit,
+.capture-mode .info-stat.totalprofit{
+  grid-column:auto!important;grid-row:auto!important;align-self:stretch!important;
+  width:100%!important;height:148px!important;min-height:148px!important;max-height:148px!important;
+  padding:10px!important;margin:0!important;border-bottom-width:7px!important;
+  transform:none!important;
+}
+.refined-light .info-stat.totalprofit .info-stat-top,
+.capture-mode .info-stat.totalprofit .info-stat-top{
+  margin:0!important;gap:5px!important;transform:none!important;
+}
+.refined-light .info-stat.totalprofit .info-label b,
+.capture-mode .info-stat.totalprofit .info-label b{
+  font-size:14px!important;line-height:1.25!important;
+}
+.refined-light .info-stat.totalprofit .digital,
+.capture-mode .info-stat.totalprofit .digital,
+.refined-light .info-stat.totalprofit .digital.money,
+.capture-mode .info-stat.totalprofit .digital.money{
+  margin-top:5px!important;font-size:31px!important;line-height:1!important;
+  letter-spacing:0!important;transform:none!important;
+}
