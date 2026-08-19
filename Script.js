@@ -523,12 +523,14 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
     const h=Math.max(4,Math.abs(t.profit)/maxTrade*55);
     const y=t.profit>=0?72-h:72;
     const color=tradeOutcome(t)==='win'?'#26924d':tradeOutcome(t)==='stopped'?'#18a2b8':'#d64239';
-    const w=Math.max(8,246/Math.max(1,chartTrades.length));
-    const cx=x+w/2;
+    const slot=304/Math.max(1,chartTrades.length);
+    const w=Math.min(18,Math.max(11,slot*.46));
+    const barX=x+(slot-w)/2;
+    const cx=barX+w/2;
     const capY=t.profit>=0?y:y+h;
     return `<g class="cylinder-bar">
-      <rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${(w*.35).toFixed(1)}" fill="${color}"/>
-      <rect x="${(x+w*.16).toFixed(1)}" y="${y.toFixed(1)}" width="${(w*.22).toFixed(1)}" height="${h.toFixed(1)}" rx="${(w*.11).toFixed(1)}" fill="rgba(255,255,255,.34)"/>
+      <rect x="${barX.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="2.5" fill="${color}"/>
+      <rect x="${(barX+w*.16).toFixed(1)}" y="${(y+2).toFixed(1)}" width="${(w*.20).toFixed(1)}" height="${Math.max(0,h-4).toFixed(1)}" rx="1.5" fill="rgba(255,255,255,.34)"/>
       <ellipse cx="${cx.toFixed(1)}" cy="${capY.toFixed(1)}" rx="${(w/2).toFixed(1)}" ry="${Math.max(2.6,w*.17).toFixed(1)}" fill="${t.profit>=0?'#8ee0a6':t.profit<0?'#ff9b90':'#8de5ef'}" stroke="rgba(91,60,18,.18)" stroke-width="1"/>
       <text x="${cx.toFixed(1)}" y="140" text-anchor="middle">${escapeHtml(t.symbol).slice(0,4)}</text>
     </g>`;
@@ -669,26 +671,52 @@ function isIOSDevice(){
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 }
 
-function openNativePdfPrint(){
-  showToast('فتح نافذة PDF / الطباعة…');
-  setTimeout(()=>window.print(),180);
+function clearNativeReportPrint(){
+  document.body.classList.remove('print-top-trades-report');
+  const stage=$('exportStage');
+  if(stage) stage.innerHTML='';
+  setExportBusy(false);
+}
+
+async function openNativePdfPrint(){
+  const stage=$('exportStage');
+  if(!stage) return;
+  setExportBusy(true);
+  showToast('جاري تجهيز صفحة أهم الصفقات PDF…');
+  stage.innerHTML=buildShareTemplate(10,'nativePdfCapture');
+  const target=$('nativePdfCapture');
+  target?.classList.add('capture-mode');
+  await waitForImages(target);
+  document.body.classList.add('print-top-trades-report');
+
+  const cleanup=()=>{
+    window.removeEventListener('afterprint',cleanup);
+    clearNativeReportPrint();
+  };
+  window.addEventListener('afterprint',cleanup,{once:true});
+  setTimeout(()=>window.print(),260);
+  // احتياط لـ Safari إذا لم يرسل afterprint بعد إغلاق نافذة الطباعة.
+  setTimeout(()=>{
+    if(document.body.classList.contains('print-top-trades-report')) cleanup();
+  },120000);
 }
 
 async function exportPdf(){
   // على iPhone/iPad: نافذة الطباعة الأصلية أكثر ثباتاً، ومنها يمكن حفظ/مشاركة PDF.
   if(isIOSDevice()){
-    openNativePdfPrint();
+    await openNativePdfPrint();
     return;
   }
 
   // إذا لم تحمل مكتبات التصدير لأي سبب، لا يتعطل الزر: ننتقل مباشرة للطباعة.
   if(!window.html2canvas || !window.jspdf){
-    openNativePdfPrint();
+    await openNativePdfPrint();
     return;
   }
 
   setExportBusy(true);
   showToast('جاري تجهيز تقرير PDF…');
+  let nativeFallback=false;
   try{
     const stage=$('exportStage');
     stage.innerHTML=buildPdfTemplate();
@@ -724,10 +752,13 @@ async function exportPdf(){
     showToast('تم تجهيز تقرير PDF');
   }catch(err){
     console.error(err);
-    openNativePdfPrint();
+    nativeFallback=true;
+    await openNativePdfPrint();
   }finally{
-    $('exportStage').innerHTML='';
-    setExportBusy(false);
+    if(!nativeFallback){
+      $('exportStage').innerHTML='';
+      setExportBusy(false);
+    }
   }
 }
 
