@@ -419,6 +419,92 @@ footer{min-height:58px;display:grid;grid-template-columns:1fr 1fr 1fr;align-item
   table{font-size:8px;min-width:0}th,td{padding:2px 3px}footer{min-height:36px;font-size:8px}
 }
 
+/* EQUITY CLARITY — شرح مبسط وتعبئة خفيفة */
+.refined-light .equity-title,.capture-mode .equity-title{margin-bottom:2px!important}
+.refined-light .chart-explain,.capture-mode .chart-explain{
+  position:relative!important;z-index:2!important;text-align:center!important;
+  margin:-1px 0 2px!important;color:#806a4a!important;font-size:11px!important;
+  font-weight:700!important;line-height:1.35!important;
+}
+.refined-light .equity-title~.report-mini-chart,
+.capture-mode .equity-title~.report-mini-chart{height:168px!important;max-height:168px!important}
+
+/* QABLAN ART V4 — تنظيف جذري لطبقات Safari الداخلية */
+.refined-light .info-stat,
+.capture-mode .info-stat,
+.refined-light .info-box,
+.capture-mode .info-box{position:relative!important;isolation:isolate!important;background:#fff!important;background-image:none!important}
+
+/* التعبئة العلوية تغطي الصندوق كله، وليست مستطيلاً داخل المحتوى */
+.refined-light .info-stat::before,
+.capture-mode .info-stat::before{
+  content:""!important;display:block!important;position:absolute!important;
+  inset:0!important;width:auto!important;height:auto!important;
+  border-radius:inherit!important;z-index:0!important;
+  background:radial-gradient(ellipse at 50% 54%,#f6e5b8 0%,#fff8e9 48%,#fff 88%)!important;
+  opacity:1!important;transform:none!important;clip-path:none!important;pointer-events:none!important;
+}
+.refined-light .info-stat.totalprofit::before,
+.capture-mode .info-stat.totalprofit::before{
+  background:radial-gradient(ellipse at 50% 52%,#edc96c 0%,#fff0bd 48%,#fff 91%)!important;
+}
+.refined-light .info-stat>* ,.capture-mode .info-stat>*{position:relative!important;z-index:1!important}
+
+/* تعبئة الصناديق السفلية كاملة: أبيض من الأطراف وذهبي في المركز */
+.refined-light .info-box::before,
+.capture-mode .info-box::before{
+  content:""!important;display:block!important;position:absolute!important;
+  inset:0!important;width:auto!important;height:auto!important;
+  border-radius:inherit!important;z-index:0!important;
+  background:radial-gradient(ellipse at 50% 55%,#f1d99d 0%,#fff5dc 46%,#fff 86%,#fff 100%)!important;
+  opacity:1!important;transform:none!important;clip-path:none!important;pointer-events:none!important;
+}
+.refined-light .info-box::after,
+.capture-mode .info-box::after{display:none!important;content:none!important}
+.refined-light .info-box>* ,.capture-mode .info-box>*{position:relative!important;z-index:1!important}
+
+/* منع خلفيات داخلية من الرسوم نفسها */
+.refined-light .report-mini-chart,
+.capture-mode .report-mini-chart,
+.refined-light .return-ring-wrap,
+.capture-mode .return-ring-wrap,
+.refined-light .return-ring,
+.capture-mode .return-ring{background:transparent!important;background-image:none!important}
+
+/* قوس العائد: واسع، مفتوح، والنص في الوسط دون قص */
+.refined-light .return-ring,
+.capture-mode .return-ring{width:220px!important;height:185px!important;min-width:220px!important;min-height:185px!important;overflow:visible!important}
+.return-swoosh-svg{width:220px!important;height:185px!important;overflow:visible!important}
+.return-swoosh-svg .swoosh-depth{stroke-width:12!important}
+.return-swoosh-svg .swoosh-track{stroke-width:11!important}
+.return-swoosh-svg .swoosh-value{stroke-width:11!important}
+.return-swoosh-svg .swoosh-shine{stroke-width:2.5!important}
+.refined-light .return-ring-content,
+.capture-mode .return-ring-content{width:132px!important;left:44px!important;top:62px!important;position:absolute!important;text-align:center!important}
+.refined-light .return-ring-content .digital,
+.capture-mode .return-ring-content .digital{font-size:28px!important;line-height:1.1!important;overflow:visible!important;white-space:nowrap!important}
+.refined-light .return-ring-content .ar,
+.capture-mode .return-ring-content .ar{font-size:15px!important;margin-top:6px!important}
+
+/* أعمدة أوضح وأقوى بصرياً */
+.refined-light .cylinder-chart,
+.capture-mode .cylinder-chart{padding-inline:4px!important;box-sizing:border-box!important}
+.cylinder-chart .cylinder-bar{filter:drop-shadow(3px 6px 4px rgba(73,52,22,.24))!important}
+
+/* خط الصناديق العلوية أوضح */
+.refined-light .info-stat .info-label b,
+.capture-mode .info-stat .info-label b{font-size:15px!important;line-height:1.3!important}
+.refined-light .info-stat .digital,
+.capture-mode .info-stat .digital{font-size:30px!important}
+.refined-light .info-stat.totalprofit .digital,
+.capture-mode .info-stat.totalprofit .digital{font-size:32px!important}
+
+/* شريط رأس الجدول متصل بلا فراغ أبيض بين الخلايا */
+.refined-light .info-table.roomy thead tr,
+.capture-mode .info-table.roomy thead tr{background:linear-gradient(180deg,#fff8e8 0%,#ecd19b 55%,#d9b36c 100%)!important}
+.refined-light .info-table.roomy thead th,
+.capture-mode .info-table.roomy thead th{background:transparent!important;background-image:none!important}
+
 
 /* ===== Infographic export v4 ===== */
 .infographic-card{
@@ -951,6 +1037,72 @@ body{
     height:220px!important;
   }
 }
+
+/* QABLAN ART V5 — FINAL OVERRIDE (must remain last) */
+.refined-light.infographic-card,
+.capture-mode.refined-light.infographic-card{
+  background:#fff!important;
+  background-image:none!important;
+}
+.refined-light.infographic-card::before,
+.refined-light.infographic-card::after,
+.capture-mode.refined-light.infographic-card::before,
+.capture-mode.refined-light.infographic-card::after{display:none!important;content:none!important}
+.refined-light .info-header.logo-only,
+.capture-mode .info-header.logo-only,
+.refined-light .infographic-table-panel,
+.capture-mode .infographic-table-panel{background:#fff!important;background-image:none!important}
+
+.refined-light .info-stat,
+.capture-mode .info-stat,
+.refined-light .info-box,
+.capture-mode .info-box{position:relative!important;isolation:isolate!important;background:#fff!important;background-image:none!important}
+.refined-light .info-stat::before,
+.capture-mode .info-stat::before{
+  content:""!important;display:block!important;position:absolute!important;inset:0!important;
+  width:auto!important;height:auto!important;border-radius:inherit!important;z-index:0!important;
+  background:radial-gradient(ellipse at 50% 54%,#f7e9c4 0%,#fffaf0 48%,#fff 88%)!important;
+  opacity:1!important;transform:none!important;clip-path:none!important;pointer-events:none!important;
+}
+.refined-light .info-stat.totalprofit::before,
+.capture-mode .info-stat.totalprofit::before{background:radial-gradient(ellipse at 50% 52%,#efd17d 0%,#fff3c9 46%,#fff 91%)!important}
+.refined-light .info-stat>* ,.capture-mode .info-stat>*{position:relative!important;z-index:1!important}
+
+.refined-light .info-box::before,
+.capture-mode .info-box::before{
+  content:""!important;display:block!important;position:absolute!important;inset:0!important;
+  width:auto!important;height:auto!important;border-radius:inherit!important;z-index:0!important;
+  background:radial-gradient(ellipse at 50% 55%,#f3dfa9 0%,#fff7e4 43%,#fff 84%,#fff 100%)!important;
+  opacity:1!important;transform:none!important;clip-path:none!important;pointer-events:none!important;
+}
+.refined-light .info-box::after,.capture-mode .info-box::after{display:none!important;content:none!important}
+.refined-light .info-box>* ,.capture-mode .info-box>*{position:relative!important;z-index:1!important}
+
+.refined-light .report-mini-chart,.capture-mode .report-mini-chart,
+.refined-light .return-ring-wrap,.capture-mode .return-ring-wrap,
+.refined-light .return-ring,.capture-mode .return-ring{background:transparent!important;background-image:none!important}
+.refined-light .return-ring::before,.refined-light .return-ring::after,
+.capture-mode .return-ring::before,.capture-mode .return-ring::after{display:none!important;content:none!important}
+
+.refined-light .return-ring,.capture-mode .return-ring{width:220px!important;height:185px!important;min-width:220px!important;min-height:185px!important;overflow:visible!important;border-radius:0!important;box-shadow:none!important}
+.refined-light .return-swoosh-svg,.capture-mode .return-swoosh-svg{display:block!important;visibility:visible!important;opacity:1!important;width:220px!important;height:185px!important;overflow:visible!important;transform:none!important;inset:0!important}
+.return-swoosh-svg .swoosh-depth{stroke-width:12!important}
+.return-swoosh-svg .swoosh-track{stroke-width:11!important}
+.return-swoosh-svg .swoosh-value{stroke-width:11!important}
+.return-swoosh-svg .swoosh-shine{stroke-width:2.5!important}
+.refined-light .return-ring-content,.capture-mode .return-ring-content{position:absolute!important;width:132px!important;left:44px!important;top:62px!important;text-align:center!important}
+.refined-light .return-ring-content .digital,.capture-mode .return-ring-content .digital{font-size:28px!important;line-height:1.1!important;overflow:visible!important;white-space:nowrap!important}
+.refined-light .return-ring-content .ar,.capture-mode .return-ring-content .ar{font-size:15px!important;margin-top:6px!important}
+
+.cylinder-chart .cylinder-bar{filter:drop-shadow(3px 6px 4px rgba(73,52,22,.24))!important}
+.refined-light .info-stat .info-label b,.capture-mode .info-stat .info-label b{font-size:15px!important;line-height:1.3!important}
+.refined-light .info-stat .digital,.capture-mode .info-stat .digital{font-size:30px!important}
+.refined-light .info-stat.totalprofit .digital,.capture-mode .info-stat.totalprofit .digital{font-size:32px!important}
+
+.refined-light .info-table.roomy thead tr,
+.capture-mode .info-table.roomy thead tr{background:linear-gradient(180deg,#fffaf1 0%,#efd7a7 57%,#dcb970 100%)!important}
+.refined-light .info-table.roomy thead th,
+.capture-mode .info-table.roomy thead th{background:transparent!important;background-image:none!important}
 
 
 /* =========================================================
@@ -3095,3 +3247,133 @@ body{
     page-break-inside:avoid!important;
   }
 }
+
+/* QABLAN ART V6 — LOCKED FINAL LAYER */
+.refined-light.infographic-card,.capture-mode.refined-light.infographic-card{background:#fff!important;background-image:none!important}
+.refined-light.infographic-card::before,.refined-light.infographic-card::after,.capture-mode.refined-light.infographic-card::before,.capture-mode.refined-light.infographic-card::after{display:none!important;content:none!important}
+.refined-light .info-header.logo-only,.capture-mode .info-header.logo-only,.refined-light .infographic-table-panel,.capture-mode .infographic-table-panel{background:#fff!important;background-image:none!important}
+.refined-light .info-top-swoosh,.capture-mode .info-top-swoosh{display:none!important}
+
+.refined-light .info-stat,.capture-mode .info-stat,.refined-light .info-box,.capture-mode .info-box{position:relative!important;isolation:isolate!important;background:#fff!important;background-image:none!important}
+.refined-light .info-stat::before,.capture-mode .info-stat::before{content:""!important;display:block!important;position:absolute!important;inset:0!important;width:auto!important;height:auto!important;border-radius:inherit!important;z-index:0!important;background:radial-gradient(ellipse at 50% 54%,#f7e9c4 0%,#fffaf0 48%,#fff 88%)!important;opacity:1!important;transform:none!important;clip-path:none!important}
+.refined-light .info-stat.totalprofit::before,.capture-mode .info-stat.totalprofit::before{background:radial-gradient(ellipse at 50% 52%,#efd17d 0%,#fff3c9 46%,#fff 91%)!important}
+.refined-light .info-stat>* ,.capture-mode .info-stat>*{position:relative!important;z-index:1!important}
+.refined-light .info-box::before,.capture-mode .info-box::before{content:""!important;display:block!important;position:absolute!important;inset:0!important;width:auto!important;height:auto!important;border-radius:inherit!important;z-index:0!important;background:radial-gradient(ellipse at 50% 55%,#f3dfa9 0%,#fff7e4 43%,#fff 84%,#fff 100%)!important;opacity:1!important;transform:none!important;clip-path:none!important}
+.refined-light .info-box::after,.capture-mode .info-box::after{display:none!important;content:none!important}
+.refined-light .info-box>* ,.capture-mode .info-box>*{position:relative!important;z-index:1!important}
+
+.refined-light .report-mini-chart,.capture-mode .report-mini-chart,.refined-light .return-ring-wrap,.capture-mode .return-ring-wrap,.refined-light .return-ring,.capture-mode .return-ring{background:transparent!important;background-image:none!important}
+.refined-light .return-ring::before,.refined-light .return-ring::after,.capture-mode .return-ring::before,.capture-mode .return-ring::after{display:none!important;content:none!important}
+.refined-light .return-ring,.capture-mode .return-ring{width:220px!important;height:185px!important;min-width:220px!important;min-height:185px!important;overflow:visible!important;border-radius:0!important;box-shadow:none!important}
+.refined-light .return-swoosh-svg,.capture-mode .return-swoosh-svg{display:block!important;visibility:visible!important;opacity:1!important;width:220px!important;height:185px!important;overflow:visible!important;transform:none!important;inset:0!important}
+.return-swoosh-svg .swoosh-depth{stroke-width:12!important}.return-swoosh-svg .swoosh-track{stroke-width:11!important}.return-swoosh-svg .swoosh-value{stroke-width:11!important}.return-swoosh-svg .swoosh-shine{stroke-width:2.5!important}
+.refined-light .return-ring-content,.capture-mode .return-ring-content{position:absolute!important;width:132px!important;left:44px!important;top:62px!important;text-align:center!important}
+.refined-light .return-ring-content .digital,.capture-mode .return-ring-content .digital{font-size:28px!important;line-height:1.1!important;overflow:visible!important;white-space:nowrap!important}
+.refined-light .return-ring-content .ar,.capture-mode .return-ring-content .ar{font-size:15px!important;margin-top:6px!important}
+.cylinder-chart .cylinder-bar{filter:drop-shadow(3px 6px 4px rgba(73,52,22,.24))!important}
+.refined-light .info-stat .info-label b,.capture-mode .info-stat .info-label b{font-size:15px!important;line-height:1.3!important}
+.refined-light .info-stat .digital,.capture-mode .info-stat .digital{font-size:30px!important}.refined-light .info-stat.totalprofit .digital,.capture-mode .info-stat.totalprofit .digital{font-size:32px!important}
+.refined-light .info-table.roomy thead tr,.capture-mode .info-table.roomy thead tr{background:linear-gradient(180deg,#fffaf1 0%,#efd7a7 57%,#dcb970 100%)!important}
+.refined-light .info-table.roomy thead th,.capture-mode .info-table.roomy thead th{background:transparent!important;background-image:none!important}
+
+/* QABLAN PDF FIT — نفس نسبة التقرير بلا قص من اليسار */
+@media print{
+  @page{size:A4 portrait;margin:0}
+  body.print-top-trades-report #exportStage{
+    width:210mm!important;min-width:0!important;max-width:210mm!important;
+    margin:0!important;padding:0!important;overflow:hidden!important;
+  }
+  body.print-top-trades-report #nativePdfImage{
+    display:block!important;width:210mm!important;max-width:210mm!important;
+    height:auto!important;margin:0!important;padding:0!important;object-fit:contain!important;
+  }
+  body.print-top-trades-report #nativePdfCapture{
+    transform-origin:top left!important;
+    max-width:100%!important;
+  }
+}
+
+/* EQUITY CLARITY FINAL */
+.refined-light .equity-title,.capture-mode .equity-title{margin-bottom:2px!important}
+.refined-light .chart-explain,.capture-mode .chart-explain{position:relative!important;z-index:2!important;text-align:center!important;margin:-1px 0 2px!important;color:#806a4a!important;font-size:11px!important;font-weight:700!important;line-height:1.35!important}
+.refined-light .equity-title~.report-mini-chart,.capture-mode .equity-title~.report-mini-chart{height:168px!important;max-height:168px!important}
+.refined-light .equity-symbol,.capture-mode .equity-symbol{font:900 8px Tahoma,Arial,sans-serif!important;fill:#111!important;paint-order:stroke!important;stroke:#fff!important;stroke-width:2.5px!important;stroke-linejoin:round!important}
+.refined-light .bar-symbol,.capture-mode .bar-symbol{font:900 9px Tahoma,Arial,sans-serif!important;fill:#111!important;letter-spacing:.2px!important;paint-order:stroke!important;stroke:#fff!important;stroke-width:2.8px!important;stroke-linejoin:round!important}
+.refined-light .equity-symbol,.capture-mode .equity-symbol{font-size:9px!important;letter-spacing:.2px!important}
+
+/* TABLE 3D + 20 TRADES CAPACITY */
+.refined-light .infographic-table-panel,
+.capture-mode .infographic-table-panel{
+  border:1px solid #d8b978!important;
+  border-bottom:9px solid #9f6b20!important;
+  border-radius:24px!important;
+  box-shadow:0 10px 0 rgba(156,103,27,.28),0 23px 36px rgba(86,58,20,.17),inset 0 2px 0 #fff,inset 0 -10px 18px rgba(205,159,72,.06)!important;
+  transform:translateY(-2px)!important;
+}
+.refined-light .info-table.roomy tbody tr,
+.capture-mode .info-table.roomy tbody tr{filter:drop-shadow(0 4px 3px rgba(94,64,24,.14))!important}
+.refined-light .info-table.roomy tbody td,
+.capture-mode .info-table.roomy tbody td{
+  border-top:1px solid #efe1c8!important;
+  border-bottom:3px solid #c99b51!important;
+  box-shadow:inset 0 2px 0 #fff,inset 0 -4px 8px rgba(184,133,54,.05)!important;
+}
+.refined-light .infographic-table-panel.many-trades .info-table.roomy tbody td,
+.capture-mode .infographic-table-panel.many-trades .info-table.roomy tbody td{
+  font-size:19px!important;padding:10px 5px!important;line-height:1.15!important;
+}
+.refined-light .infographic-table-panel.many-trades .info-chip,
+.refined-light .infographic-table-panel.many-trades .info-status,
+.capture-mode .infographic-table-panel.many-trades .info-chip,
+.capture-mode .infographic-table-panel.many-trades .info-status{font-size:21px!important}
+.refined-light .infographic-table-panel.many-trades .symbol-cell,
+.capture-mode .infographic-table-panel.many-trades .symbol-cell{font-size:22px!important}
+
+/* الأسماء رأسية وتتكثف تلقائياً حتى 20 صفقة */
+.refined-light .dense-chart .bar-symbol,.capture-mode .dense-chart .bar-symbol,
+.refined-light .dense-chart .equity-symbol,.capture-mode .dense-chart .equity-symbol{
+  font-size:6.5px!important;letter-spacing:0!important;stroke-width:1.8px!important;
+}
+.refined-light .equity-symbol.upper-symbol,.capture-mode .equity-symbol.upper-symbol{fill:#111!important;stroke:#fff!important;font-weight:900!important}
+
+/* DISTRIBUTION DONUT — بديل إجمالي العائد */
+.distribution-layout{display:grid!important;grid-template-columns:158px minmax(0,1fr)!important;align-items:center!important;gap:10px!important;height:190px!important;direction:ltr!important}
+.distribution-donut-wrap{position:relative!important;width:150px!important;height:150px!important;display:grid!important;place-items:center!important}
+.distribution-donut{width:150px!important;height:150px!important;overflow:visible!important;transform:rotate(-90deg)!important;filter:drop-shadow(0 8px 6px rgba(81,58,26,.18))!important}
+.distribution-donut circle{fill:none!important;stroke-linecap:butt!important}
+.distribution-depth{stroke:#9d6b27!important;stroke-width:22!important;opacity:.25!important}
+.distribution-track{stroke:#eee4d2!important;stroke-width:20!important}
+.distribution-segment{stroke-width:20!important}
+.distribution-segment.win{stroke:#29984d!important}.distribution-segment.stopped{stroke:#19a5bd!important}.distribution-segment.loss{stroke:#dc4037!important}
+.distribution-total{position:absolute!important;inset:0!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;color:#2e241a!important;direction:rtl!important}
+.distribution-total b{font:900 34px Tahoma,Arial,sans-serif!important;line-height:1!important}.distribution-total span{margin-top:4px!important;font-size:13px!important;font-weight:900!important}
+.distribution-legend{display:flex!important;flex-direction:column!important;gap:9px!important;direction:rtl!important}
+.legend-row{display:grid!important;grid-template-columns:13px 1fr!important;align-items:center!important;column-gap:7px!important;line-height:1.1!important}
+.legend-row i{width:12px!important;height:12px!important;border-radius:3px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 2px 3px rgba(0,0,0,.12)!important}
+.legend-row.win i{background:#29984d!important}.legend-row.stopped i{background:#19a5bd!important}.legend-row.loss i{background:#dc4037!important}
+.legend-row span{font-size:14px!important;font-weight:900!important;color:#33271c!important;text-align:right!important}.legend-row b{grid-column:2!important;font-size:13px!important;font-weight:900!important;color:#111!important;direction:ltr!important;text-align:right!important;margin-top:2px!important}
+.capture-mode .distribution-donut{filter:none!important}
+
+/* FIVE KPI ICONS — شارات صغيرة بارزة ثلاثية الأبعاد */
+.refined-light .info-stat .info-icon,
+.capture-mode .info-stat .info-icon{
+  position:relative!important;width:31px!important;height:31px!important;min-width:31px!important;
+  border:1px solid rgba(155,105,31,.22)!important;border-radius:10px!important;
+  font-size:16px!important;font-weight:900!important;overflow:hidden!important;
+  transform:translateY(-2px)!important;
+  box-shadow:0 5px 0 rgba(112,76,27,.28),0 9px 13px rgba(83,58,25,.16),inset 0 2px 0 rgba(255,255,255,.92),inset 0 -4px 7px rgba(93,59,14,.10)!important;
+}
+.refined-light .info-stat .info-icon::before,
+.capture-mode .info-stat .info-icon::before{
+  content:""!important;display:block!important;position:absolute!important;inset:1px 4px auto!important;
+  height:38%!important;border-radius:8px 8px 50% 50%!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,0))!important;
+  pointer-events:none!important;
+}
+.refined-light .info-icon.cash,.capture-mode .info-icon.cash{color:#80520c!important;background:linear-gradient(145deg,#fff4bd,#e4ad39 58%,#a86b12)!important;box-shadow:0 5px 0 #916017,0 9px 13px rgba(125,80,18,.20),inset 0 2px 0 #fff!important}
+.refined-light .info-icon.layers,.capture-mode .info-icon.layers{color:#805b1d!important;background:linear-gradient(145deg,#fffdf4,#eed49b 58%,#c59642)!important}
+.refined-light .info-icon.win,.capture-mode .info-icon.win{color:#fff!important;background:linear-gradient(145deg,#a9e6b9,#3ead64 56%,#247d43)!important;box-shadow:0 5px 0 #24733e,0 9px 13px rgba(37,126,69,.19),inset 0 2px 0 rgba(255,255,255,.92)!important}
+.refined-light .info-icon.stopped,.capture-mode .info-icon.stopped{color:#fff!important;background:linear-gradient(145deg,#aeeef5,#31b7cc 56%,#168aa0)!important;box-shadow:0 5px 0 #167d91,0 9px 13px rgba(22,137,159,.19),inset 0 2px 0 rgba(255,255,255,.92)!important}
+.refined-light .info-icon.loss,.capture-mode .info-icon.loss{color:#fff!important;background:linear-gradient(145deg,#ffc0b9,#e95b50 56%,#b52f29)!important;box-shadow:0 5px 0 #a42c27,0 9px 13px rgba(181,47,41,.19),inset 0 2px 0 rgba(255,255,255,.92)!important}
+.refined-light .info-stat.totalprofit .info-stat-top,
+.capture-mode .info-stat.totalprofit .info-stat-top{transform:translateY(-4px)!important}
