@@ -527,16 +527,16 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
     const x=18+i*(304/Math.max(1,chartTrades.length));
     const h=Math.max(4,Math.abs(t.profit)/maxTrade*55);
     const y=t.profit>=0?72-h:72;
-    const color=tradeOutcome(t)==='win'?'#26924d':tradeOutcome(t)==='stopped'?'#18a2b8':'#d64239';
+    const state=tradeOutcome(t);
+    const color=state==='win'?`url(#barWin-${captureId})`:state==='stopped'?`url(#barStopped-${captureId})`:`url(#barLoss-${captureId})`;
     const slot=304/Math.max(1,chartTrades.length);
     const w=Math.min(24,Math.max(7,slot*.58));
     const barX=x+(slot-w)/2;
     const cx=barX+w/2;
     const capY=t.profit>=0?y:y+h;
     return `<g class="cylinder-bar">
-      <rect x="${barX.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${color}"/>
+      <rect x="${barX.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${Math.min(7,w/2).toFixed(1)}" fill="${color}" stroke="${state==='win'?'#237b43':state==='stopped'?'#14859a':'#a92f29'}" stroke-width="1.2"/>
       <rect x="${(barX+w*.16).toFixed(1)}" y="${(y+2).toFixed(1)}" width="${(w*.20).toFixed(1)}" height="${Math.max(0,h-4).toFixed(1)}" rx="1.5" fill="rgba(255,255,255,.34)"/>
-      <ellipse cx="${cx.toFixed(1)}" cy="${capY.toFixed(1)}" rx="${(w/2).toFixed(1)}" ry="${Math.max(3.5,w*.15).toFixed(1)}" fill="${t.profit>=0?'#8ee0a6':t.profit<0?'#ff9b90':'#8de5ef'}" stroke="rgba(91,60,18,.18)" stroke-width="1"/>
       <text class="bar-symbol" x="${cx.toFixed(1)}" y="146" text-anchor="start" transform="rotate(-90 ${cx.toFixed(1)} 146)">${escapeHtml(t.symbol).slice(0,5)}</text>
     </g>`;
   }).join('');
@@ -619,7 +619,13 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
         <div class="info-box">
           <h4>العائد من كل صفقة</h4>
           <svg class="report-mini-chart cylinder-chart ${denseCharts?'dense-chart':''}" viewBox="0 0 330 150" role="img" aria-label="العائد من كل صفقة">
-            <line x1="12" y1="72" x2="320" y2="72" stroke="#b99554" stroke-width="2"/>
+            <defs>
+              <linearGradient id="barWin-${captureId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#78ce91"/><stop offset=".5" stop-color="#31a65a"/><stop offset="1" stop-color="#247947"/></linearGradient>
+              <linearGradient id="barStopped-${captureId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ce0ea"/><stop offset=".55" stop-color="#26adc2"/><stop offset="1" stop-color="#168298"/></linearGradient>
+              <linearGradient id="barLoss-${captureId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffaaa2"/><stop offset=".52" stop-color="#e65348"/><stop offset="1" stop-color="#ad302b"/></linearGradient>
+            </defs>
+            <g class="chart-grid"><line x1="12" y1="22" x2="320" y2="22"/><line x1="12" y1="47" x2="320" y2="47"/><line x1="12" y1="72" x2="320" y2="72"/><line x1="12" y1="97" x2="320" y2="97"/><line x1="12" y1="122" x2="320" y2="122"/></g>
+            <line class="chart-zero" x1="12" y1="72" x2="320" y2="72"/>
             ${tradeBars}
           </svg>
         </div>
@@ -627,8 +633,9 @@ function buildShareTemplate(maxRows=10, captureId="shareCapture"){
         <div class="info-box">
           <h4 class="equity-title">منحنى الأداء التراكمي</h4>
           <svg class="report-mini-chart equity-chart ${denseEquity?'dense-chart':''}" viewBox="0 0 330 150" role="img" aria-label="منحنى الأداء التراكمي للصفقات الرابحة">
-            <defs><linearGradient id="equityFill-${captureId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d69b31" stop-opacity=".13"/><stop offset="1" stop-color="#d69b31" stop-opacity=".01"/></linearGradient></defs>
-            <line x1="12" y1="123" x2="320" y2="123" stroke="#d8c49c" stroke-width="2"/>
+            <defs><linearGradient id="equityFill-${captureId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d69b31" stop-opacity=".20"/><stop offset="1" stop-color="#d69b31" stop-opacity=".015"/></linearGradient></defs>
+            <g class="chart-grid"><line x1="12" y1="28" x2="320" y2="28"/><line x1="12" y1="52" x2="320" y2="52"/><line x1="12" y1="76" x2="320" y2="76"/><line x1="12" y1="100" x2="320" y2="100"/><line x1="12" y1="123" x2="320" y2="123"/></g>
+            <line class="chart-zero" x1="12" y1="123" x2="320" y2="123"/>
             <polygon points="16,123 ${equityPoints} 308,123" fill="url(#equityFill-${captureId})"/>
             <polyline points="${equityPoints}" fill="none" stroke="#a96f18" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
             ${equityValues.map((v,i)=>{
