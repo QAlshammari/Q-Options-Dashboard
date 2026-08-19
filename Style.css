@@ -2985,3 +2985,113 @@ body{
 .return-swoosh-svg .swoosh-shine{stroke:rgba(255,255,255,.78);stroke-width:3}
 .return-swoosh-svg .swoosh-arrow{fill:#7896aa;stroke:#fff;stroke-width:2;filter:drop-shadow(0 4px 3px rgba(55,78,94,.28))}
 .capture-mode .return-swoosh-svg{filter:none!important}
+
+/* QABLAN ART V3 — تصحيح مطابق لالتقاط iPad/Safari */
+.refined-light .info-stat.totalprofit,
+.capture-mode .info-stat.totalprofit{
+  transform:none!important;
+  height:132px!important;
+  min-height:132px!important;
+  border-width:1px!important;
+  border-bottom-width:7px!important;
+  padding:10px 12px!important;
+  align-self:stretch!important;
+}
+
+/* إزالة الشخطة/العلامة المائية خلف الثور فقط */
+.refined-light .info-top-swoosh,
+.capture-mode .info-top-swoosh{display:none!important;background:none!important;opacity:0!important}
+.refined-light .info-header.logo-only,
+.capture-mode .info-header.logo-only{background:#fff!important}
+
+/* خلفية الصناديق الثلاثة: أطراف بيضاء ومركز ذهبي فاتح */
+.refined-light .info-box,
+.refined-light .info-box:nth-child(n),
+.capture-mode .info-box,
+.capture-mode .info-box:nth-child(n){
+  background:radial-gradient(ellipse at 50% 54%,#f4dfaa 0%,#fff7e5 46%,#fff 82%,#fff 100%)!important;
+  background-image:radial-gradient(ellipse at 50% 54%,#f4dfaa 0%,#fff7e5 46%,#fff 82%,#fff 100%)!important;
+}
+
+/* إلغاء أي بقايا للحلقة القديمة وإظهار القوس المفتوح فقط */
+.refined-light .return-ring,
+.capture-mode .return-ring{
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+.refined-light .return-ring::before,
+.refined-light .return-ring::after,
+.capture-mode .return-ring::before,
+.capture-mode .return-ring::after{display:none!important;content:none!important}
+.refined-light .return-swoosh-svg,
+.capture-mode .return-swoosh-svg{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  transform:none!important;
+  inset:0!important;
+}
+
+/* أعمدة مالية طويلة ونظيفة بدل شكل الحبوب */
+.cylinder-chart .cylinder-bar{filter:drop-shadow(2px 5px 3px rgba(73,52,22,.20))!important}
+
+/* رأس الجدول كشريط واحد ممتد بالكامل */
+.refined-light .info-table.roomy,
+.capture-mode .info-table.roomy{border-spacing:0 8px!important}
+.refined-light .info-table.roomy thead,
+.capture-mode .info-table.roomy thead{
+  background:linear-gradient(180deg,#fff8e8 0%,#eed6a6 55%,#ddbd7d 100%)!important;
+}
+.refined-light .info-table.roomy thead tr,
+.capture-mode .info-table.roomy thead tr{
+  background:inherit!important;
+  box-shadow:0 7px 0 #b27d2d,0 11px 16px rgba(111,73,22,.14)!important;
+}
+.refined-light .info-table.roomy thead th,
+.capture-mode .info-table.roomy thead th{
+  background:transparent!important;
+  border-left:1px solid rgba(180,139,73,.28)!important;
+  border-right:0!important;
+  border-top:0!important;
+  border-bottom:0!important;
+  border-radius:0!important;
+}
+.refined-light .info-table.roomy thead th:first-child,
+.capture-mode .info-table.roomy thead th:first-child{border-radius:0 14px 14px 0!important}
+.refined-light .info-table.roomy thead th:last-child,
+.capture-mode .info-table.roomy thead th:last-child{border-radius:14px 0 0 14px!important;border-left:0!important}
+
+/* PDF على iPhone/iPad: طباعة صفحة أهم الصفقات فقط */
+@media print{
+  body.print-top-trades-report{margin:0!important;padding:0!important;background:#fff!important}
+  body.print-top-trades-report .app-shell,
+  body.print-top-trades-report .preview-modal,
+  body.print-top-trades-report .toast,
+  body.print-top-trades-report .page-glow{display:none!important}
+  body.print-top-trades-report #exportStage{
+    display:block!important;
+    visibility:visible!important;
+    position:static!important;
+    inset:auto!important;
+    width:1120px!important;
+    min-width:1120px!important;
+    max-width:1120px!important;
+    margin:0 auto!important;
+    overflow:visible!important;
+  }
+  body.print-top-trades-report #nativePdfCapture{
+    display:block!important;
+    visibility:visible!important;
+    position:relative!important;
+    width:1120px!important;
+    min-width:1120px!important;
+    max-width:1120px!important;
+    margin:0!important;
+    transform:none!important;
+    zoom:1!important;
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+  }
+}
